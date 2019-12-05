@@ -1,0 +1,30 @@
+{
+  "name": "matcha",
+  "version": "1.0.0",
+  "description": "This is an app allowing two potential lovers to meet,from the registration to the final encounter.",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BrandonSwanepoel/Matcha.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BrandonSwanepoel/Matcha/issues"
+  },
+  "homepage": "https://github.com/BrandonSwanepoel/Matcha#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "ejs": "^3.0.1",
+    "express": "^4.17.1",
+    "mongoose": "^5.7.13"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.1"
+  }
+}

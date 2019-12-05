@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Matcha</title>
+    <link rel="stylesheet" href="../layout/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+    <script defer="" src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+</head>
+<body style ="background: url(../images/bg.png)">
+<header style="background: black;">
+    <section class="section" style="background: black;">
+        <div class="container">
+            <a href="/">
+                <h1 class="title" style="font-weight:200;color:white; text-align: center;">Matcha</h1>
+                <p class="subtitle" style="color:#fff; text-align: center;">Find love here!</p>
+            </a>
+        </div><a href="/"><button id="button" style="background-color:#828afc;color:#fff;">Login</button><a></a></a>
+      </section>
+    <hr style="color:#fff;">
+ 
+</header>
+
+<div  class="wrapper" style="background: url(../images/bg.png)">
+    <div class="profile-img">
+        <figure><img class="is-rounded" src="../images/profile_image_holder.png"></figure>
+    </div>
+    <div class="field"></div>
+    <form method="POST" action="/register">
+
+      <label class="label" style="color:white; ;">Name</label>
+        <div class="control">
+          <input class="input" type="text" placeholder="Text input" name="name"></div>
+   
+    <div class="field">
+        <label class="label" style="color:white; ;">Surname</label>
+        <div class="control">
+          <input class="input" type="text" placeholder="Text input" name="surname"></div>
+   
+    <div class="field">
+      <label class="label" style="color:white;">Username</label>
+        <div class="control has-icons-left has-icons-right">
+          <input class="input is-success" type="text" placeholder="Text input" name="username">
+          <span class="icon is-small is-left"><i class="fas fa-user"></i>
+          </span><span class="icon is-small is-right"><i class="fas fa-check"></i>
+          </span>
+        </div>
+        <p class="help is-success">This username is available</p>
+    </div>
+    <label class="label" style="color:white; ;">Password</label>
+    <div class="control">
+      <input class="input" type="text" placeholder="Text input" name="password"></div>
+    <div class="field"><label class="label" style="color:white;">Email</label>
+        <div class="control has-icons-left has-icons-right">
+          <input class="input" type="text" placeholder="Email input" name="email">
+          <!-- <span class="icon is-small is-left"><i class="fas fa-envelope"></i></span>
+          <span class="icon is-small is-right"><i class="fas fa-exclamation-triangle"></i>
+          </span>
+        </div>
+        <p
+            class="help is-danger">This email is invalid</p>
+    </div> -->
+    <div class="field"><label class="label" style="color:white;">Age</label>
+        <div class="control">
+          <input class="input" type="text" placeholder="Age" name="age"></div>
+    </div>
+    <div class="field"><label class="label" style="color:white;">Gender</label>
+        <div class="control">
+            <div class="select">
+              <select name="gender">
+              <option>Male</option>
+              <option>Female</option>
+            </select>
+          </div>
+        </div>
+    </div>
+    <div class="field"><label class="label" style="color:white;">Sexual preference</label>
+        <div class="control">
+            <div class="select">
+              <select name="sp">
+              <option>heterosexual</option>
+              <option>Homosexual</option>
+              <option>Bisexual</option>
+            </select>
+          </div>
+        </div>
+    </div>
+    <div class="field"><label class="label" style="color:white;" type="text">Bio</label>
+        <div class="control"><textarea class="textarea" placeholder="Textarea" name="bio"></textarea></div>
+    </div>
+    <div class="field is-grouped">
+        <div class="control"><button class="button is-link" type="submit" name="submit">Submit</button></div>
+        <div class="control"><button class="button is-link is-light" type="submit" name="cancel">Cancel</button></div>
+    </div>
+</div>
+</form>
+</body>
+<footer class="footer" style="background: url(../images/menu.png);">
+    <div class="content has-text-centered">
+        <p style="color:white;"><strong style="color:white;">Matcha</strong> by J.T.A.B <a href="https://github.com/BrandonSwanepoel/Matcha"></a></p>
+    </div>
+</footer>
+

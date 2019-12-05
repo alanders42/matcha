@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Matcha</title>
+    <link rel="stylesheet" href="../layout/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+  </head>
+  <body style="background: url(../images/bg.png)">
+    <header style="background: url(../images/menu.png)">
+        <section class="section">
+            <div class="container">
+                    <a href="http://localhost:3000"> <h1 style="font-weight:200;color:white; text-align: center"class="title">
+                    Matcha
+                </h1>
+                <p style="color:#fff; text-align: center" class ="subtitle">
+                    Find love here!
+                </p>
+                </a>
+            </div>
+            <a href="register.html"><button style="color:#fff"id="button">Login</button><a>
+        </section>
+        <hr style="color:#fff"/>
+    </header>
+
+    <div class="wrapper">
+      <div class=profile-img>
+            <figure >
+                    <img class="is-rounded" src="../images/profile_image_holder.png">
+                  </figure>
+      </div>
+      <form id="registration-form" method="POST" action="/register">
+        <div class="field">
+            <label style="color:white; " class="label">Name</label>
+            <div class="control">
+                <input class="input" type="text" name="name">
+            </div>
+        </div>
+        
+        <div class="field">
+            <label style="color:white; " class="label">Surname</label>
+            <div class="control">
+                <input class="input" type="text" name="surname">
+            </div>
+        </div>
+        
+        <div class="field">
+        <label style="color:white;" class="label">Username</label>
+        <div class="control has-icons-left has-icons-right">
+            <input class="input" type="text" name="username">
+            <span class="icon is-small is-left">
+            <i class="fas fa-user"></i>
+            </span>
+            <span class="icon is-small is-right">
+            <i class="fas fa-check"></i>
+            </span>
+                  
+        <div class="field">
+        <label style="color:white;" class="label">Email</label>
+        <div class="control has-icons-left has-icons-right">
+            <input class="input" type="email" name="email">
+            <span class="icon is-small is-left">
+            <i class="fas fa-envelope"></i>
+            </span>
+            <span class="icon is-small is-right">
+            <i class="fas fa-exclamation-triangle"></i>
+            </span>
+        <div class="field">
+            <label style="color:white;" class="label">Age</label>
+            <div class="control">
+                <input class="input" type="text" name="age">
+            </div>
+            </div>
+        
+        <div class="field">
+        <label style="color:white;"class="label">Gender</label>
+        <div class="control">
+            <div class="select">
+            <select>
+                <option>Male</option>
+                <option>Female</option>
+            </select>
+            </div>
+        </div>
+        </div>
+        <div class="field">
+            <label style="color:white;" class="label">Sexual preference</label>
+            <div class="control">
+                <div class="select">
+                <select>
+                    <option>heterosexual</option>
+                    <option>Homosexual</option>
+                    <option>Bisexual</option>
+
+                </select>
+                </div>
+            </div>
+            </div>
+            <div class="field">
+            <label style="color:white;" class="label">Bio</label>
+            <div class="control">
+                <input type="textarea" name="bio" class="textarea" placeholder="Textarea"></textarea>
+            </div>
+            </div>
+            
+            <div class="field is-grouped">
+            <div class="control">
+               <input type="submit" value="submit" />
+            </div>
+        </form>
+            <div class="control">
+                <button class="button is-link is-light">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <footer style = "background: url(../images/menu.png);" class="footer">
+        <div class="content has-text-centered">
+          <p style="color:white;">
+            <strong style="color:white;">Matcha</strong> by J.T.A.B <a href="https://github.com/BrandonSwanepoel/Matcha"></a>
+          </p>
+        </div>
+    </footer>
+  </body>
+</html>

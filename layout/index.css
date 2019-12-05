@@ -1,0 +1,53 @@
+
+h1{
+    text-align: center;
+    font: bolder;
+    color:white;
+    font-weight:bolder;
+
+}
+.wrapper{
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-bottom: 4em;
+    margin-top: 4em;
+    background: url("../images/bg.png");
+
+}
+.profile-img{
+    margin-top:2em;
+    margin-bottom:2em;
+    justify-content: center;
+    border-radius: 50%;
+    display: flex;
+}
+.login-page{
+    margin-top: 5em;
+}
+.register-button{
+    float:right;
+    width: 10em;
+    height: 2em;
+    margin-top:3em;
+}
+.register-button a hover{
+    color:green;
+    background:green;
+}
+
+#button{
+    color:black;
+    background-color: #828afc;
+    padding: 0px 18px;
+    border:none;
+    font-size: 14px;
+    margin-top:10px;
+    float:right;
+    width: 10em;
+    height: 2em;
+    margin-top:2em;
+}
+button :hover{
+    background-color: #009f8b;
+    color: #fff;
+}
