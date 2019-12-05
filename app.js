@@ -24,7 +24,20 @@ app.set('view engine', 'ejs');
 app.get('/',(req,res) => {
     res.render('login')
 });
+//Get all Users
 app.get('/register',(req,res) => {
+    schema.user.find({},function(err, data){
+        if(err) throw err;
+        console.log(data);
+    });
+    res.render('register');
+});
+//Get specific user
+app.get('/register/:username', (req, res) => {
+    schema.user.findOne({username: req.params.username},function(err, data){
+        if(err) throw err;
+        console.log(data);
+    });
     res.render('register');
 });
 
@@ -57,6 +70,8 @@ app.post('/register', urlencodedParser, function(req,res) {
         res.redirect('/register');
     }
 });
+
+
 
 //Connect to DB
 mongoose.connect(
