@@ -28,7 +28,7 @@ app.get('/',(req,res) => {
 app.get('/register',(req,res) => {
     schema.user.find({},function(err, data){
         if(err) throw err;
-        console.log(data);
+        
     });
     res.render('register');
 });
@@ -44,11 +44,16 @@ app.get('/register/:username', (req, res) => {
 //Adding User to DB!
 app.post('/register', urlencodedParser, function(req,res) {
     console.log(req.body);
+
+    //validate password
     if (validate.checkPassword(req.body.password))
     {
         const hash= crypto.createHash("sha256");
         hash.update(req.body.password);
-       
+       //checks if user exists and insert user data into db
+       schema.user.findOne({username: req.body.username}, function(err, data){
+        if (err) throw err;
+        if (data == null){
         var details = schema.user({
             name: req.body.name,
             surname: req.body.surname,        
@@ -64,7 +69,12 @@ app.post('/register', urlencodedParser, function(req,res) {
                 console.log("Added user to DB!")
             })
         res.redirect('/');
-    }else
+        }
+        else {
+            console.log("User Exists!");
+        }
+       })}
+    else
     {
         console.log("Password invalid!");
         res.redirect('/register');
@@ -77,7 +87,7 @@ app.post('/register', urlencodedParser, function(req,res) {
 mongoose.connect(
    process.env.DB_CONNECTION,
     { useNewUrlParser: true },
-    () => console.log('connect to DB!')
+    () => console.log('connected to DB!', '\nServer is up and running!')
 );
 //How to start listening to the server
-app.listen(1997);
+app.listen(8080);

@@ -8,9 +8,5 @@ module.exports = {
         else{ 
             return false;
         }
-    },
-    ifEmty: (value) =>{
-        value
-
-    }
+    }  
 }
