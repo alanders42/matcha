@@ -101,11 +101,15 @@ app.post('/',urlencodedParser,(req,res) => {
                     console.log("Logged in");
                     res.redirect('home');
                 }
+                else{
+                    console.log("Password incorrect");
+                     res.redirect('/');
+                }
                    
                    
         })}
         else{
-            console.log("Password incorrect");
+            console.log("Username incorrect");
              res.redirect('/');
         }
     });
