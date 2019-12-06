@@ -30,9 +30,11 @@
          <!-- login -->
          <div class="login-page">
         <div class="field">
+            <!--Form start-->
+            <form action="/" method="POST">
                 <h1 style="font-weight:200; font-size:30px; margin-bottom: 1em;">Login</h1>
             <p class="control has-icons-left has-icons-right">
-                <input class="input" type="email" placeholder="Email">
+                <input name="enter_username" class="input" type="text" placeholder="Username">
                 <span class="icon is-small is-left">
                 <i class="fas fa-envelope"></i>
                 </span>
@@ -43,7 +45,7 @@
             </div>
             <div class="field">
             <p class="control has-icons-left">
-                <input class="input" type="password" placeholder="Password">
+                <input name="enter_password" class="input" type="password" placeholder="Password">
                 <span class="icon is-small is-left">
                 <i class="fas fa-lock"></i>
                 </span>
@@ -51,11 +53,11 @@
             </div>
             <div class="field">
             <p class="control">
-                <button class="button is-success">
-                Login
+                <div class="control"><button class="button is-link" type="submit" name="submit">login</button></div>
                 </button>
             </p>
                 </div>
+            </form>
                 </div>
             </div>
             </section>

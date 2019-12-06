@@ -24,14 +24,20 @@ app.set('view engine', 'ejs');
 app.get('/',(req,res) => {
     res.render('login')
 });
+app.get('/home',(req,res) => {
+    res.render('home')
+});
+app.get('/home',(req,res) => {
+    res.render('home')
+});
 //Get all Users
 app.get('/register',(req,res) => {
     schema.user.find({},function(err, data){
         if(err) throw err;
-        
     });
     res.render('register');
 });
+
 //Get specific user
 app.get('/register/:username', (req, res) => {
     schema.user.findOne({username: req.params.username},function(err, data){
@@ -80,8 +86,30 @@ app.post('/register', urlencodedParser, function(req,res) {
         res.redirect('/register');
     }
 });
-
-
+//login
+app.post('/',urlencodedParser,(req,res) => {
+    const hash= crypto.createHash("sha256");
+        hash.update(req.body.enter_password);
+    schema.user.findOne({username: req.body.enter_username}, function(err, data){
+        if (err) throw err;
+    
+        if (data != null){
+            schema.user.findOne({password: hash.digest("hex")}, function(err, data){
+                if (err) throw err;
+                
+                if (data != null){
+                    console.log("Logged in");
+                    res.redirect('home');
+                }
+                   
+                   
+        })}
+        else{
+            console.log("Password incorrect");
+             res.redirect('/');
+        }
+    });
+})
 
 //Connect to DB
 mongoose.connect(
@@ -90,4 +118,4 @@ mongoose.connect(
     () => console.log('connected to DB!', '\nServer is up and running!')
 );
 //How to start listening to the server
-app.listen(8080);
+app.listen(8009);

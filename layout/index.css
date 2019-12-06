@@ -51,3 +51,18 @@ button :hover{
     background-color: #009f8b;
     color: #fff;
 }
+.pick_user_button{
+    margin-top:2em;
+    margin-bottom:2em;
+    justify-content: center;
+    display: flex;
+}
+@media screen and (max-width: 40rem) {
+    .profile-img{
+        margin-top:2em;
+        margin-bottom:2em;
+        justify-content: center;
+        border-radius: 50%;
+        display: flex;
+    }
+}
