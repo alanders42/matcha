@@ -1,4 +1,5 @@
 const express = require('express');
+const session = require('express-session');
 const app = express();
 const router = express.Router();
 const mongoose = require('mongoose');
@@ -8,8 +9,9 @@ require('dotenv/config');
 const schema = require('./models/User');
 const validate = require("./functions/validation");
 const crypto = require('crypto');
+app.use(session({secret: 'ssshhhhh',saveUninitialized: true,resave: true}));
 
-
+var sess;
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 //app.use(bodyParser.json());
 
@@ -19,7 +21,7 @@ app.set('view engine', 'ejs');
  app.use('/layout', express.static('layout'));
  app.use('/images', express.static('images'));
 // app.use('/pages', express.static('pages'));
-
+var sess;
 //ROUTES
 app.get('/',(req,res) => {
     res.render('login')
@@ -27,9 +29,7 @@ app.get('/',(req,res) => {
 app.get('/home',(req,res) => {
     res.render('home')
 });
-app.get('/home',(req,res) => {
-    res.render('home')
-});
+
 //Get all Users
 app.get('/register',(req,res) => {
     schema.user.find({},function(err, data){
@@ -49,19 +49,21 @@ app.get('/register/:username', (req, res) => {
 
 //Adding User to DB!
 app.post('/register', urlencodedParser, function(req,res) {
+    sess = req.session;
     console.log(req.body);
 
     //validate password
     if (validate.checkPassword(req.body.password))
     {
+        var password = req.body.password;
         const hash= crypto.createHash("sha256");
-        hash.update(req.body.password);
+        hash.update(password);
        //checks if user exists and insert user data into db
        schema.user.findOne({username: req.body.username}, function(err, data){
         if (err) throw err;
         if (data == null){
         var details = schema.user({
-            name: req.body.name,
+            name:  req.body.name,
             surname: req.body.surname,        
             username: req.body.username,
             password: hash.digest("hex"),
@@ -74,6 +76,8 @@ app.post('/register', urlencodedParser, function(req,res) {
                 else
                 console.log("Added user to DB!")
             })
+            sess.name = req.body.name;
+            console.log(sess.name);
         res.redirect('/');
         }
         else {
@@ -86,6 +90,7 @@ app.post('/register', urlencodedParser, function(req,res) {
         res.redirect('/register');
     }
 });
+
 //login
 app.post('/',urlencodedParser,(req,res) => {
     const hash= crypto.createHash("sha256");
@@ -114,6 +119,15 @@ app.post('/',urlencodedParser,(req,res) => {
         }
     });
 })
+
+app.get('/profile',(req,res) => {
+    sess =req.session;
+   
+    
+});
+var sess = req.session;
+console.log(sess.name);
+//Update profile
 
 //Connect to DB
 mongoose.connect(
