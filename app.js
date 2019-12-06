@@ -11,7 +11,6 @@ const validate = require("./functions/validation");
 const crypto = require('crypto');
 app.use(session({secret: 'ssshhhhh',saveUninitialized: true,resave: true}));
 
-var sess;
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 //app.use(bodyParser.json());
 
@@ -21,7 +20,6 @@ app.set('view engine', 'ejs');
  app.use('/layout', express.static('layout'));
  app.use('/images', express.static('images'));
 // app.use('/pages', express.static('pages'));
-var sess;
 //ROUTES
 app.get('/',(req,res) => {
     res.render('login')
@@ -76,8 +74,6 @@ app.post('/register', urlencodedParser, function(req,res) {
                 else
                 console.log("Added user to DB!")
             })
-            sess.name = req.body.name;
-            console.log(sess.name);
         res.redirect('/');
         }
         else {
@@ -110,23 +106,23 @@ app.post('/',urlencodedParser,(req,res) => {
                     console.log("Password incorrect");
                      res.redirect('/');
                 }
-                   
-                   
         })}
         else{
             console.log("Username incorrect");
              res.redirect('/');
         }
+        req.session.user = req.body.enter_username; 
     });
 })
 
 app.get('/profile',(req,res) => {
-    sess =req.session;
+    schema.user.findOne({username: req.session.user}, function(err, data){
+        if (err) throw err;
+        res.render('profile', {name: data.name, surname: data.surname, username: data.username, password: "******", email: data.email, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio});
+    });
    
     
 });
-var sess = req.session;
-console.log(sess.name);
 //Update profile
 
 //Connect to DB
