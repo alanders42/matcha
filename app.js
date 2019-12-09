@@ -46,7 +46,7 @@ app.get('/register/:username', (req, res) => {
 });
 
 //Adding User to DB!
-app.post('/register', urlencodedParser, function(req,res) {
+app.post('/register', urlencodedParser,async  function(req,res) {
     sess = req.session;
     console.log(req.body);
 
@@ -58,28 +58,36 @@ app.post('/register', urlencodedParser, function(req,res) {
         hash.update(password);
        //checks if user exists and insert user data into db
        schema.user.findOne({username: req.body.username}, function(err, data){
-        if (err) throw err;
-        if (data == null){
-        var details = schema.user({
-            name:  req.body.name,
-            surname: req.body.surname,        
-            username: req.body.username,
-            password: hash.digest("hex"),
-            email: req.body.email,
-            age: req.body.age,
-            gender: req.body.gender,
-            sp: req.body.sp,
-            bio: req.body.bio}).save(function(err){
-                if(err) throw err;
-                else
-                console.log("Added user to DB!")
-            })
-        res.redirect('/');
-        }
-        else {
-            console.log("User Exists!");
-        }
-       })}
+           if(req.body.age >= 18)
+           {
+                if (err) throw err;
+                if (data == null){
+                var details = schema.user({
+                    name:  req.body.name,
+                    surname: req.body.surname,        
+                    username: req.body.username,
+                    password: hash.digest("hex"),
+                    email: req.body.email,
+                    age: req.body.age,
+                    gender: req.body.gender,
+                    sp: req.body.sp,
+                    bio: req.body.bio}).save(function(err){
+                        if(err) throw err;
+                        else
+                        console.log("Added user to DB!")
+                    })
+                    req.session.user = req.body.username; 
+                res.redirect('/');
+                }
+                else {
+                    console.log("User Exists!");
+                }
+            }
+        else{
+            console.log('User needs to be 18 or older');
+            res.redirect('/register');
+        }})
+    }
     else
     {
         console.log("Password invalid!");
@@ -91,7 +99,7 @@ app.post('/register', urlencodedParser, function(req,res) {
 app.post('/',urlencodedParser,(req,res) => {
     const hash= crypto.createHash("sha256");
         hash.update(req.body.enter_password);
-    schema.user.findOne({username: req.body.enter_username}, function(err, data){
+    schema.user.findOne({username: req.body.enter_username}, async function(err, data){
         if (err) throw err;
     
         if (data != null){
@@ -116,7 +124,7 @@ app.post('/',urlencodedParser,(req,res) => {
 })
 
 app.get('/profile',(req,res) => {
-    schema.user.findOne({username: req.session.user}, function(err, data){
+    schema.user.findOne({username: req.session.user}, async function(err, data){
         if (err) throw err;
         res.render('profile', {name: data.name, surname: data.surname, username: data.username, password: "******", email: data.email, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio});
     });
