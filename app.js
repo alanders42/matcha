@@ -74,6 +74,7 @@ app.post('/register', urlencodedParser,async  function(req,res) {
         const hashkey = crypto.createHash("sha256");
         hashpw.update(password);
         hashkey.update(key);
+        vkey = hashkey.digest("hex");
        //checks if user exists and insert user data into db
        schema.user.findOne({username: req.body.username}, function(err, data){
            if(req.body.age >= 18)
@@ -90,12 +91,13 @@ app.post('/register', urlencodedParser,async  function(req,res) {
                     gender: req.body.gender,
                     sp: req.body.sp,
                     bio: req.body.bio,
-                    vkey: hashkey.digest("hex")}).save(function(err){
+                    vkey: vkey}).save(function(err){
                         if(err) throw err;
                         else{
                         app.mailer.send('email', {
                             to: req.body.email,
-                            subject: 'Test Email!'
+                            subject: 'Test Email!',
+                            vkey: vkey
                         }, function (err) {
                             if (err) {
                                 console.log(err);
