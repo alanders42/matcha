@@ -1,5 +1,6 @@
 const express = require('express');
 const session = require('express-session');
+const mailer = require('express-mailer');
 const app = express();
 const router = express.Router();
 const mongoose = require('mongoose');
@@ -13,7 +14,17 @@ app.use(session({secret: 'ssshhhhh',saveUninitialized: true,resave: true}));
 
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 //app.use(bodyParser.json());
-
+mailer.extend(app, {
+    from: 'matchaprojectsup@gmail.com',
+    host: 'smtp.gmail.com', // hostname
+    secureConnection: true, // use SSL
+    port: 465, // port for secure SMTP
+    transportMethod: 'SMTP', // default is SMTP. Accepts anything that nodemailer accepts
+    auth: {
+      user: 'matchaprojectsup@gmail.com',
+      pass: 'Matcha123'
+    }
+  })
 //Import Routes
 app.set('view engine', 'ejs');
 
@@ -58,8 +69,11 @@ app.post('/register', urlencodedParser,async  function(req,res) {
     if (validate.checkPassword(req.body.password))
     {
         var password = req.body.password;
-        const hash= crypto.createHash("sha256");
-        hash.update(password);
+        var key = req.body.username + Date.now();
+        const hashpw = crypto.createHash("sha256");
+        const hashkey = crypto.createHash("sha256");
+        hashpw.update(password);
+        hashkey.update(key);
        //checks if user exists and insert user data into db
        schema.user.findOne({username: req.body.username}, function(err, data){
            if(req.body.age >= 18)
@@ -70,14 +84,25 @@ app.post('/register', urlencodedParser,async  function(req,res) {
                     name:  req.body.name,
                     surname: req.body.surname,        
                     username: req.body.username,
-                    password: hash.digest("hex"),
+                    password: hashpw.digest("hex"),
                     email: req.body.email,
                     age: req.body.age,
                     gender: req.body.gender,
                     sp: req.body.sp,
-                    bio: req.body.bio}).save(function(err){
+                    bio: req.body.bio,
+                    vkey: hashkey.digest("hex")}).save(function(err){
                         if(err) throw err;
-                        else
+                        else{
+                        app.mailer.send('email', {
+                            to: req.body.email,
+                            subject: 'Test Email!'
+                        }, function (err) {
+                            if (err) {
+                                console.log(err);
+                                return;
+                            }
+                            console.log('Email Sent!');
+                        })}
                         console.log("Added user to DB!")
                     })
                     req.session.user = req.body.username;
