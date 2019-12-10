@@ -36,6 +36,15 @@ const mongoose = require('mongoose');
     bio: {
         type: String,
         require: false
+    },
+    verified: {
+        type: Boolean,
+        default: 0,
+        require: false
+    },
+    vkey: {
+        type: String,
+        require: false
     }
 });
 user = mongoose.model('Insert',UserSchema);
