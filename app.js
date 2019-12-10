@@ -33,7 +33,9 @@ app.get('/register',(req,res) => {
     schema.user.find({},function(err, data){
         if(err) throw err;
     });
-    res.render('register');
+    if (app.locals.err == undefined)
+        app.locals.err=  'Please fill in the form to register!';
+    res.render('register', {err: app.locals.err});
 });
 
 //Get specific user
@@ -42,7 +44,9 @@ app.get('/register/:username', (req, res) => {
         if(err) throw err;
         console.log(data);
     });
-    res.render('register');
+    if (app.locals.err == undefined)
+        app.locals.err=  'Please fill in the form to register!';
+    res.render('register', {err: app.locals.err});
 });
 
 //Adding User to DB!
@@ -76,21 +80,26 @@ app.post('/register', urlencodedParser,async  function(req,res) {
                         else
                         console.log("Added user to DB!")
                     })
-                    req.session.user = req.body.username; 
+                    req.session.user = req.body.username;
+                    app.locals.err = undefined;
                 res.redirect('/');
                 }
                 else {
                     console.log("User Exists!");
+                    app.locals.err =  'User Exists!';
+                    res.redirect('/register');
                 }
             }
         else{
             console.log('User needs to be 18 or older');
+            app.locals.err =  'User must be 18 or older to register!';
             res.redirect('/register');
         }})
     }
     else
     {
         console.log("Password invalid!");
+        app.locals.err = 'Password must be 6-20 characters with 1 capital and 1 number';
         res.redirect('/register');
     }
 });
