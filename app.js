@@ -30,13 +30,29 @@ app.set('view engine', 'ejs');
 
  app.use('/layout', express.static('layout'));
  app.use('/images', express.static('images'));
-// app.use('/pages', express.static('pages'));
+
 //ROUTES
 app.get('/',(req,res) => {
-    res.render('login')
+    if (app.locals.err == undefined)
+        app.locals.err =  'Please fill in the form to login!';
+    res.render('login', {err: app.locals.err});
 });
+//render home page
 app.get('/home',(req,res) => {
     res.render('home')
+});
+
+app.get('/verify', (req, res) => {
+    res.render('verify');
+});
+
+//verify user account
+app.get('/verify/:vkey', (req, res) => {
+    schema.user.findOne({vkey: req.params.vkey},function(err, data){
+        if(err) throw err;
+        console.log(data);
+        res.render('verify');
+    });
 });
 
 //Get all Users
@@ -62,12 +78,10 @@ app.get('/register/:username', (req, res) => {
 
 //Adding User to DB!
 app.post('/register', urlencodedParser,async  function(req,res) {
-    sess = req.session;
-    console.log(req.body);
-
     //validate password
     if (validate.checkPassword(req.body.password))
     {
+        //hash password and vkey
         var password = req.body.password;
         var key = req.body.username + Date.now();
         const hashpw = crypto.createHash("sha256");
@@ -81,6 +95,7 @@ app.post('/register', urlencodedParser,async  function(req,res) {
            {
                 if (err) throw err;
                 if (data == null){
+                //add new user to db
                 var details = schema.user({
                     name:  req.body.name,
                     surname: req.body.surname,        
@@ -94,19 +109,21 @@ app.post('/register', urlencodedParser,async  function(req,res) {
                     vkey: vkey}).save(function(err){
                         if(err) throw err;
                         else{
+                        //send verification email to user
                         app.mailer.send('email', {
                             to: req.body.email,
-                            subject: 'Test Email!',
+                            subject: 'Matcha Registration',
                             vkey: vkey
                         }, function (err) {
                             if (err) {
                                 console.log(err);
                                 return;
                             }
-                            console.log('Email Sent!');
+                            console.log('Registration email sent to ' + req.body.username);
                         })}
                         console.log("Added user to DB!")
                     })
+                    //set session variable and unset local error variable
                     req.session.user = req.body.username;
                     app.locals.err = undefined;
                 res.redirect('/');
@@ -131,34 +148,36 @@ app.post('/register', urlencodedParser,async  function(req,res) {
     }
 });
 
-//login
+//Get login form data and check if user exists
 app.post('/',urlencodedParser,(req,res) => {
     const hash= crypto.createHash("sha256");
         hash.update(req.body.enter_password);
     schema.user.findOne({username: req.body.enter_username}, async function(err, data){
         if (err) throw err;
-    
-        if (data != null){
-            schema.user.findOne({password: hash.digest("hex")}, function(err, data){
-                if (err) throw err;
-                
-                if (data != null){
+
+        if (data){
+            if (data.username == req.body.enter_username) {
+                pass = hash.digest("hex");
+                if (data.password == pass){
                     console.log("Logged in");
+                    req.session.user = req.body.enter_username;
+                    app.locals.err = undefined;
                     res.redirect('home');
                 }
                 else{
-                    console.log("Password incorrect");
-                     res.redirect('/');
+                    app.locals.err = 'Password incorrect';
+                    res.redirect('/');
                 }
-        })}
-        else{
-            console.log("Username incorrect");
-             res.redirect('/');
+            }
         }
-        req.session.user = req.body.enter_username; 
+        else{
+            app.locals.err = 'Username does not exist';
+            res.redirect('/');
+        }
     });
 })
 
+//render profile page
 app.get('/profile',(req,res) => {
     schema.user.findOne({username: req.session.user}, async function(err, data){
         if (err) throw err;
@@ -167,7 +186,6 @@ app.get('/profile',(req,res) => {
    
     
 });
-//Update profile
 
 //Connect to DB
 mongoose.connect(
