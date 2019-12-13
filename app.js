@@ -33,9 +33,9 @@ app.set('view engine', 'ejs');
 
 //ROUTES
 app.get('/',(req,res) => {
-    if (app.locals.err == undefined)
-        app.locals.err =  'Please fill in the form to login!';
-    res.render('login', {err: app.locals.err});
+    if (app.locals.errlog == undefined)
+        app.locals.errlog =  'Please fill in the form to login!';
+    res.render('login', {err: app.locals.errlog});
 });
 //render home page
 app.get('/home',(req,res) => {
@@ -60,9 +60,9 @@ app.get('/register',(req,res) => {
     schema.user.find({},function(err, data){
         if(err) throw err;
     });
-    if (app.locals.err == undefined)
-        app.locals.err=  'Please fill in the form to register!';
-    res.render('register', {err: app.locals.err});
+    if (app.locals.erreg == undefined)
+        app.locals.erreg =  'Please fill in the form to register!';
+    res.render('register', {erreg: app.locals.erreg});
 });
 
 //Get specific user
@@ -71,9 +71,9 @@ app.get('/register/:username', (req, res) => {
         if(err) throw err;
         console.log(data);
     });
-    if (app.locals.err == undefined)
-        app.locals.err=  'Please fill in the form to register!';
-    res.render('register', {err: app.locals.err});
+    if (app.locals.erreg == undefined)
+        app.locals.erreg =  'Please fill in the form to register!';
+    res.render('register', {erreg: app.locals.err});
 });
 
 //Adding User to DB!
@@ -96,7 +96,7 @@ app.post('/register', urlencodedParser,async  function(req,res) {
                 if (err) throw err;
                 if (data == null){
                 //add new user to db
-                var details = schema.user({
+                    var details = schema.user({
                     name:  req.body.name,
                     surname: req.body.surname,        
                     username: req.body.username,
@@ -125,25 +125,25 @@ app.post('/register', urlencodedParser,async  function(req,res) {
                     })
                     //set session variable and unset local error variable
                     req.session.user = req.body.username;
-                    app.locals.err = undefined;
+                    app.locals.erreg = undefined;
                 res.redirect('/');
                 }
                 else {
                     console.log("User Exists!");
-                    app.locals.err =  'User Exists!';
+                    app.locals.erreg =  'User Exists!';
                     res.redirect('/register');
                 }
             }
         else{
             console.log('User needs to be 18 or older');
-            app.locals.err =  'User must be 18 or older to register!';
+            app.locals.erreg =  'User must be 18 or older to register!';
             res.redirect('/register');
         }})
     }
     else
     {
         console.log("Password invalid!");
-        app.locals.err = 'Password must be 6-20 characters with 1 capital and 1 number';
+        app.locals.erreg = 'Password must be 6-20 characters with 1 capital and 1 number';
         res.redirect('/register');
     }
 });
@@ -158,20 +158,21 @@ app.post('/',urlencodedParser,(req,res) => {
         if (data){
             if (data.username == req.body.enter_username) {
                 pass = hash.digest("hex");
+                console.log(pass);
                 if (data.password == pass){
                     console.log("Logged in");
                     req.session.user = req.body.enter_username;
-                    app.locals.err = undefined;
+                    app.locals.errlog = undefined;
                     res.redirect('home');
                 }
                 else{
-                    app.locals.err = 'Password incorrect';
+                    app.locals.errlog = 'Password incorrect';
                     res.redirect('/');
                 }
             }
         }
         else{
-            app.locals.err = 'Username does not exist';
+            app.locals.errlog = 'Username does not exist';
             res.redirect('/');
         }
     });
@@ -183,10 +184,85 @@ app.get('/profile',(req,res) => {
         if (err) throw err;
         res.render('profile', {name: data.name, surname: data.surname, username: data.username, password: "******", email: data.email, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio});
     });
-   
-    
 });
 
+app.post('/profile',urlencodedParser,(req,res) => {
+    schema.user.findOne({username: req.session.user}, async function(err, data){
+        if (err) throw err;
+
+        if (req.body.name){
+            name = req.body.name;
+        }
+        else {
+            name = data.name;
+        }
+        if (req.body.surname){
+            surname = req.body.surname;
+        }
+        else {
+            surname = data.surname;
+        }
+        if (req.body.username){
+            username = req.body.username;
+        }
+        else {
+            username = data.username;
+        }
+        if (req.body.password){
+            var password = req.body.password;
+            const hash = crypto.createHash("sha256");
+            hash.update(password);
+            pass = hash.digest("hex");
+        }
+        else {
+            pass = data.password;
+        }
+        if (req.body.email){
+            email = req.body.email;
+        }
+        else {
+            email = data.email;
+        }
+        if (req.body.age){
+            age = req.body.age;
+        }
+        else{
+            age = data.age;
+        }
+        if (req.body.gender){
+            gender = req.body.gender;
+        }
+        else {
+            gender = data.gender;
+        }
+        if (req.body.sp){
+            sp = req.body.sp;
+        }
+        else {
+            sp = data.sp;
+        }
+        if (req.body.bio) {
+            bio = req.body.bio;
+        }
+        else{
+            bio = data.bio;
+        }
+        schema.user.update({
+            name: name,
+            surname: surname,        
+            username: username,
+            password: pass,
+            email: email,
+            age: age,
+            gender: gender,
+            sp: sp,
+            bio: bio}, async function(err, data){
+             if(err) throw err;
+                req.session.user = username;
+                res.redirect('/profile');
+        })
+    })
+})
 //Connect to DB
 mongoose.connect(
    process.env.DB_CONNECTION,

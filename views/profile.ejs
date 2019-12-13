@@ -40,21 +40,21 @@
         <figure><img class="is-rounded" src="../images/profile_image_holder.png"></figure>
     </div>
     <div class="field"></div>
-    <form method="POST" action="/register">
+    <form method="POST" action="/profile">
 
       <label class="label" style="color:white; ;">Name</label>
         <div class="control">
-          <input class="input" type="text" placeholder="<%= name%>" required></div>
+          <input class="input" type="text" placeholder="<%= name%>" name="name"></div>
    
     <div class="field">
         <label class="label" style="color:white; ;">Surname</label>
         <div class="control">
-          <input class="input" type="text" placeholder="<%= surname%>" name="surname" required></div>
+          <input class="input" type="text" placeholder="<%= surname%>" name="surname"></div>
    
     <div class="field">
       <label class="label" style="color:white;">Username</label>
         <div class="control has-icons-left has-icons-right">
-          <input class="input is-success" type="text" placeholder="<%= username%>" name="username" required>
+          <input class="input is-success" type="text" placeholder="<%= username%>" name="username">
           <span class="icon is-small is-left"><i class="fas fa-user"></i>
           </span><span class="icon is-small is-right"><i class="fas fa-check"></i>
           </span>
@@ -63,10 +63,10 @@
     </div>
     <label class="label" style="color:white; ;">Password</label>
     <div class="control">
-      <input class="input" type="password" placeholder="<%= password%>" name="password" required></div>
+      <input class="input" type="password" placeholder="<%= password%>" name="password"></div>
     <div class="field"><label class="label" style="color:white;">Email</label>
         <div class="control has-icons-left has-icons-right">
-          <input class="input" type="text" placeholder="<%= email%>" name="email" required>
+          <input class="input" type="text" placeholder="<%= email%>" name="email">
           <!-- <span class="icon is-small is-left"><i class="fas fa-envelope"></i></span>
           <span class="icon is-small is-right"><i class="fas fa-exclamation-triangle"></i>
           </span>
@@ -76,12 +76,12 @@
     </div> -->
     <div class="field"><label class="label" style="color:white;">Age</label>
         <div class="control">
-          <input class="input" type="text" placeholder="<%= age%>" name="age" required></div>
+          <input class="input" type="text" placeholder="<%= age%>" name="age"></div>
     </div>
     <div class="field"><label class="label" style="color:white;">Gender</label>
         <div class="control">
             <div class="select">
-              <select name="gender" placeholder="<%= gender%>" required>
+              <select name="gender" placeholder="<%= gender%>">
               <option>Male</option>
               <option>Female</option>
             </select>
@@ -91,7 +91,7 @@
     <div class="field"><label class="label" style="color:white;">Sexual preference</label>
         <div class="control">
             <div class="select">
-              <select name="sp" placeholder="<%= sp%>" required>
+              <select name="sp" placeholder="<%= sp%>">
               <option>heterosexual</option>
               <option>Homosexual</option>
               <option>Bisexual</option>
@@ -103,13 +103,12 @@
         <div class="control"><textarea class="textarea" placeholder="<%= bio%>" name="bio"></textarea></div>
     </div>
     <div class="field is-grouped">
-        <div class="control"><a herf="javascript:void(0)" onclick="toggle_visibility('popup-box1');"><button class="button is-link" type="submit" name="submit">Submit</button></div></a>
+        <div class="control"><button class="button is-link" type="submit" name="submit">Submit</button></div></a>
       <!-- popup-->
       <div id="popup-box1" class="popup-position">
         <div id="popup-wrapper">
           <div id="popup-container">
-            <h3>Added to database</h3>
-            <p>Great Success!</p>
+            <h3>pew</h3>
         <p><a herf="javascript:void(0)" onclick="toggle_visibility('popup-box1');">Close Popup</a></p>
           </div>
         </div>
