@@ -297,12 +297,18 @@ app.get('/image-upload',(req, res) =>{
                     files.isImage = false;
                 }
             });
+            
+            if(files.Profile == 'Profile Picture'){
+     
+        app.locals.profilePicture = req.session.user;
+    }
             if (app.locals.errlog == undefined)
                 app.locals.errlog =  'Please fill in the form to login!';
             res.render('image-upload',{files:files});
         }
     }
 )});
+//display images
 app.get('/image-upload',(req, res) =>{
     gfs.files.find().toArray((err, files)=>{
         //check if files
@@ -321,7 +327,7 @@ app.get('/image-upload',(req, res) =>{
             });
             if (app.locals.errlog == undefined)
                 app.locals.errlog =  'Please fill in the form to login!';
-            res.render('image-upload',{files:files});
+            res.render('image-upload',{files:files, username:req.session.user});
         }
     }
 )});
@@ -342,9 +348,8 @@ app.get('/profile-page',(req, res) =>{
                     files.isImage = false;
                 }
             });
-            if (app.locals.errlog == undefined)
-                app.locals.errlog =  'Please fill in the form to login!';
-            res.render('profile-page',{files:files});
+           
+            res.render('profile-page',{files:files,username:req.session.user});
         }
     }
 )});
@@ -377,29 +382,34 @@ app.get('/image/:filename',(req, res) =>{
 
   //Create mongo connection
   const conn = mongoose.createConnection(mongoURI);
+  app.locals.count = 1;
+    //Create storage engine
 
-
-
-  //Create storage engine
-
-  const storage = new GridFsStorage({
-    url:mongoURI,
-    file: (req, file) => {
-      return new Promise((resolve, reject) => {
-        crypto.randomBytes(16, (err, buf) => {
-          if (err) {
-            return reject(err);
-          }
-          const filename = buf.toString('hex') + path.extname(file.originalname);
-          const fileInfo = {
-            filename: filename,
-            bucketName: 'uploads'
-          };
-          resolve(fileInfo);
-        });
+    const storage = new GridFsStorage({
+        url:mongoURI,
+        file: (req, file) => {
+          return new Promise((resolve, reject) => {
+            crypto.randomBytes(16, (err, buf) => {
+              if (err) {
+                return reject(err);
+              }
+              if(app.locals.profilePicture === undefined){
+                var filename = req.session.user + app.locals.count++;
+              }
+              else{
+                  var filename = app.locals.profilePicture;
+              }
+              console.log(app.locals.profilePicture);
+              const fileInfo = {
+                filename: filename,
+                bucketName: 'uploads'
+              };
+              resolve(fileInfo);
+            });
+          });
+        }
       });
-    }
-  });
+    
   const upload = multer({ storage });
     //Init gfs
     let gfs;
@@ -407,10 +417,14 @@ app.get('/image/:filename',(req, res) =>{
         gfs = Grid(conn.db, mongoose.mongo);
         gfs.collection('uploads');
     })
+
 //uploads file to db
 app.post('/upload',upload.single('file'),(req,res)=>{
-     res.redirect('/profile');
+    console.log(req.body.imgtype);
+    
+     res.redirect('/profile-page');
 })
+
 //Connect to DB
 mongoose.connect(
    process.env.DB_CONNECTION,
@@ -418,5 +432,5 @@ mongoose.connect(
     () => console.log('connected to DB!', '\nServer is up and running!')
 );
 //How to start listening to the server
-const port = 5012;
+const port = 5022;
 app.listen(port,() => console.log('Server started on port',port));

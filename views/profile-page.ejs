@@ -58,7 +58,7 @@
 
 <% if(files){%>
 <% files.forEach(function(file) {%>
-
+<% if(file.filename === username+"1" || file.filename === username+"2" || file.filename === username+"3" || file.filename === username+"4"){%>
         <% if(file.isImage) {%>
             <img class="images"src="image/<%=file.filename %>" >
             <% } else {%>
@@ -66,7 +66,7 @@
                 <% } %>
     
                 
-    <% }) %>
+    <% }}) %>
     <%} else {%>
         <p>No files to show</p>
     <% } %>
