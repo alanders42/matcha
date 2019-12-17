@@ -24,7 +24,11 @@
     "express": "^4.17.1",
     "express-mailer": "^0.3.1",
     "express-session": "^1.17.0",
-    "mongoose": "^5.7.13"
+    "gridfs-stream": "^1.1.1",
+    "method-override": "^3.0.0",
+    "mongoose": "^5.7.13",
+    "multer": "^1.4.2",
+    "multer-gridfs-storage": "^4.0.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.1"

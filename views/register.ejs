@@ -6,18 +6,7 @@
     <link rel="stylesheet" href="../layout/index.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <script defer="" src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-    <!--Popup Javascript-->
-    <script type="text/javascript">
-     
-      function toggle_visibility(id) {
-         var e = document.getElementById(id);
-         if(e.style.display == 'block')
-            e.style.display = 'none';
-         else
-            e.style.display = 'block';
-      }
- 
-  </script>
+   
 </head>
 <body style ="background: url(../images/bg.png)">
 <header style="background: black;">
@@ -34,9 +23,12 @@
 </header>
 
 <div  class="wrapper" style="background: url(../images/bg.png)">
+<a href="/profilePic"><button id="button" style="height:auto;background-color:#828afc;color:#fff;">Upload Profile Picture</button><a></a></a>
+
     <div class="profile-img">
         <figure><img class="is-rounded" src="../images/profile_image_holder.png"></figure>
     </div>
+
     <div class="field"></div>
     <h3 style="color:red;"><%= erreg %></h3>
     <form method="POST" action="">
@@ -103,17 +95,7 @@
     </div>
     <div class="field is-grouped">
         <div class="control"><a herf="javascript:void(0)" onclick="toggle_visibility('popup-box1');"><button class="button is-link" type="submit" name="submit">Submit</button></div></a>
-        <!-- popup-->
-        <div id="popup-box1" class="popup-position">
-          <div id="popup-wrapper">
-            <div id="popup-container">
-              <h3><%= erreg %></h3>
-          <p><a herf="javascript:void(0)" onclick="toggle_visibility('popup-box1');">Close Popup</a></p>
-            </div>
-          </div>
-        </div>
-        </div>
-        <!--Popup end-->
+       
         <div class="control"><button class="button is-link is-light" type="submit" name="cancel">Cancel</button></div>
     </div>
 </div>

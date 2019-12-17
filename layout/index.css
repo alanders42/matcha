@@ -12,6 +12,7 @@ h1{
     margin-bottom: 4em;
     margin-top: 4em;
     background: url("../images/bg.png");
+    height:auto;
 
 }
 .profile-img{
@@ -45,7 +46,7 @@ h1{
     float:right;
     width: 10em;
     height: 2em;
-    margin-top:2em;
+    margin-top:1.5em;
 }
 button :hover{
     background-color: #009f8b;
