@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Matcha</title>
+    <link rel="stylesheet" href="../layout/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+  </head>
+  <body style="background: url(../images/bg.png); " >
+    <header style="background: url(../images/menu.png)">
+        <section class="section">
+            <div class="container">
+                <h1 style="font-weight:200;color:white; text-align: center"class="title">
+                    Matcha
+                </h1>
+                <p style="color:#fff; text-align: center" class ="subtitle">
+                    Find love here!
+                </p>
+            </div>
+            <a href="/register"><button style="color:#fff"id="button">Register</button><a>
+            <a href="/"><button style="color:#fff; margin-right:1%"id="button">Login</button><a>
+        </section>
+        <hr style="color:#fff"/>
+    </header>
+
+    <div class="wrapper">
+         <!-- login -->
+         <div class="login-page">
+        <div class="field">
+            <!--Form start-->
+            <form action="/forgotpass" method="POST">
+                <h1 style="font-weight:200; font-size:30px; margin-bottom: 1em;">Forgot Password</h1>
+            <p class="control has-icons-left has-icons-right">
+                <h3 style="color:red">Please Enter Your Email!</h3>
+                <br/>
+                <input name="enter_email" class="input" type="text" placeholder="Email">
+                <span class="icon is-small is-left">
+                <i class="fas fa-envelope"></i>
+                </span>
+                <span class="icon is-small is-right">
+                <i class="fas fa-check"></i>
+                </span>
+            </p>
+            </div>
+            <div class="field">
+            <p class="control">
+                <div class="control"><button class="button is-link" type="submit" name="submit">Forgot Password</button></div>
+                </button>
+            </p>
+                </div>
+            </form>
+                </div>
+            </div>
+            </section>
+        </div>
+        
+    <footer style = "background: url(images/menu.png)" class="footer">
+        <div class="content has-text-centered">
+        <p style="color:white;">
+            <strong style="color:white;">Matcha</strong> by J.T.A.B <a href="https://github.com/BrandonSwanepoel/Matcha"></a>
+        </p>
+        </div>
+    </footer>
+  </body>
+</html>

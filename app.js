@@ -42,8 +42,6 @@ app.set('view engine', 'ejs');
 
 //ROUTES
 
- 
-
 app.get('/',(req,res) => {
     if (app.locals.errlog == undefined)
         app.locals.errlog =  'Please fill in the form to login!';
@@ -58,12 +56,37 @@ app.get('/profilePic',(req,res) => {
     res.render('profilePic')
 });
 
+app.get('/forgotpass',(req,res) => {
+    res.render('forgot-pass')
+});
 
-// app.get('/verify/:vkey', (req, res) => {
+app.post('/forgotpass',(req,res) => {
+    schema.user.findOne({email: req.body.enter_email}, function (err, data){
+        req.session.user = data.username;
+        //send verification email to user
+        var key = data.username + Date.now();
+        const hashkey = crypto.createHash("sha256");
+        hashkey.update(key);
+        app.mailer.send('forgotpass-email', {
+            to: req.body.enter_email,
+            subject: 'Matcha Change Password',
+            vkey: hashkey.digest("hex")
+        }, function (err) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            console.log('Email sent to change ' + data.username + '\'/s password' );
+        })})
+});
+
+app.get('/changepass',(req,res) => {
+    res.render('change-pass')
+});
+
+app.post('/changepass',(req,res) => {
     
-//     res.render('verify');
-//     console.log(req.params.vkey);
-// });
+});
 
 //verify user account
 app.get('/verify', (req, res) => {
