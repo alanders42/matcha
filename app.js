@@ -59,17 +59,23 @@ app.get('/profilePic',(req,res) => {
 });
 
 
-app.get('/verify', (req, res) => {
-    res.render('verify');
-});
+// app.get('/verify/:vkey', (req, res) => {
+    
+//     res.render('verify');
+//     console.log(req.params.vkey);
+// });
 
 //verify user account
-app.get('/verify/:vkey', (req, res) => {
-    schema.user.findOne({vkey: req.params.vkey},function(err, data){
-        if(err) throw err;
-        console.log(data);
+app.get('/verify', (req, res) => {
+    var key = req.query.vkey.toString();
+    console.log(key);
+    schema.user.findOneAndUpdate({vkey: key},
+        {$set:{
+        verified: true}}, function(err, data){
+            if(err) throw err;
+            console.log(data.username + " Has been verified!");
+        })
         res.render('verify');
-    });
 });
 
 //Get all Users
@@ -173,19 +179,25 @@ app.post('/',urlencodedParser,(req,res) => {
         if (err) throw err;
 
         if (data){
-            if (data.username == req.body.enter_username) {
-                pass = hash.digest("hex");
-                console.log(pass);
-                if (data.password == pass){
-                    console.log("Logged in");
-                    req.session.user = req.body.enter_username;
-                    app.locals.errlog = undefined;
-                    res.redirect('home');
+            if(data.verified == true){
+                if (data.username == req.body.enter_username) {
+                    pass = hash.digest("hex");
+                    console.log(pass);
+                    if (data.password == pass){
+                        console.log("Logged in");
+                        req.session.user = req.body.enter_username;
+                        app.locals.errlog = undefined;
+                        res.redirect('home');
+                    }
+                    else{
+                        app.locals.errlog = 'Password incorrect';
+                        res.redirect('/');
+                    }
                 }
-                else{
-                    app.locals.errlog = 'Password incorrect';
-                    res.redirect('/');
-                }
+            }
+            else{
+                app.locals.errlog = 'Your Account has not been verified. Please Check your email!';
+                res.redirect('/');
             }
         }
         else{
@@ -264,7 +276,8 @@ app.post('/profile',urlencodedParser,(req,res) => {
         else{
             bio = data.bio;
         }
-        schema.user.update({
+        schema.user.findOneAndUpdate({username: req.session.user},
+            {$set:{
             name: name,
             surname: surname,        
             username: username,
@@ -273,7 +286,7 @@ app.post('/profile',urlencodedParser,(req,res) => {
             age: age,
             gender: gender,
             sp: sp,
-            bio: bio}, async function(err, data){
+            bio: bio}}, async function(err, data){
              if(err) throw err;
                 req.session.user = username;
                 res.redirect('/profile');
@@ -432,5 +445,5 @@ mongoose.connect(
     () => console.log('connected to DB!', '\nServer is up and running!')
 );
 //How to start listening to the server
-const port = 5022;
+const port = 8009;
 app.listen(port,() => console.log('Server started on port',port));
