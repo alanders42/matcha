@@ -17,6 +17,8 @@ const methodOverride = require('method-override');
 app.use(session({secret: 'ssshhhhh',saveUninitialized: true,resave: true}));
 var async = require('async');
 
+ //mongo Uri
+ const mongoURI = 'mongodb+srv://Matcha:Matcha123@wethinkcode-je391.mongodb.net/Matcha?retryWrites=true&w=majority';
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 //app.use(bodyParser.json());
 mailer.extend(app, {
@@ -56,6 +58,7 @@ app.get('/',(req,res) => {
 app.get('/profilePic',(req,res) => {
     res.render('profilePic')
 });
+
 
 app.get('/forgotpass',(req,res) => {
     res.render('forgot-pass')
@@ -134,31 +137,40 @@ app.get('/register/:username', (req, res) => {
     res.render('register', {erreg: app.locals.err});
 });
 //Get all users for matching
+
 app.get('/home',(req,res) => {
-    
-    schema.user.findOne({username: req.session.user}, async function(err, data){
+    schema.user.findOne({username: req.session.user},  function(err, data){
         if (data){
-            schema.user.findOne({sp: data.sp},function(err, data){
-                if(err) throw err;
+            mongoURI.Matcha.inserts.find({},{sp :data.sp}).limit(2);
+       console.log(data);
             if(data)
             {
+
             
                 if (app.locals.username == undefined){
                     app.locals.username = data.username;
                 }
+
                 res.render('home', {username: app.locals.username});
             }
-            });
+            
+            
+
         }
-       
-    
-    })
-   
-    if (app.locals.name == undefined)
-        app.locals.name =  'Please fill in the form to register!';
-    res.render('home', {erreg: app.locals.erreg});
-    
     });
+   
+
+    });
+    app.post('/home', (req, res) => {
+       
+                res.redirect('home');
+         
+         
+   
+   
+
+})
+
 //Adding User to DB!
 app.post('/register', profileUpload, urlencodedParser,async  function(req,res) {
     //validate password
@@ -450,9 +462,15 @@ app.get('/image/:filename',(req, res) =>{
         }
         
     })});
-          
-  //mongo Uri
-  const mongoURI = 'mongodb+srv://Matcha:Matcha123@wethinkcode-je391.mongodb.net/Matcha?retryWrites=true&w=majority';
+    //View another persons Page
+    app.get('/visitProfile',(req,res) => {
+        schema.user.findOne({username: app.locals.username}, async function(err, data){
+            if (err) throw err;
+            res.render('visitProfile', {name: data.name, surname: data.surname, username: data.username, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio});
+        });
+    });
+   
+ 
 
   //Create mongo connection
   const conn = mongoose.createConnection(mongoURI);

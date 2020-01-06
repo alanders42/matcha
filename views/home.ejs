@@ -34,14 +34,17 @@
         </div>
         <div class="field"></div>
     
-        <%= username%>
+        <a href="visitProfile"><div class="button"><%= username%></div></a>
 <div style="padding:1rem;">
     <div class="pick_user_button" >
         
         <div class="control"><button class="button is-link" type="submit" name="submit">I Choose you</button></div>
     </div>
-       
-        <div class="control"><button class="button is-link" type="submit" name="submit">Next</button></div>
+       <form action="/home" method="POST">
+        <div class="control"><button class="button is-link" type="submit" name="next">Next</button></div>
+        
+    </form>
+        
         
     </div>
   </div>
