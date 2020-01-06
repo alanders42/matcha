@@ -42,6 +42,9 @@ const mongoose = require('mongoose');
         default: 0,
         require: false
     },
+    image:{
+        type: String
+    },
     vkey: {
         type: String,
         require: false

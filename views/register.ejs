@@ -22,16 +22,22 @@
  
 </header>
 
-<div  class="wrapper" style="background: url(../images/bg.png)">
-<a href="/profilePic"><button id="button" style="height:auto;background-color:#828afc;color:#fff;">Upload Profile Picture</button><a></a></a>
+<!-- <div  class="wrapper" style="background: url(../images/bg.png)">
+<a href="/profilePic"><button id="button" style="height:auto;background-color:#828afc;color:#fff;">Upload Profile Picture</button><a></a></a> -->
 
+<div class="form-group">
+  <label for="icode" class="col-md-3 control-label">Profile Picture</label>
+  <div class="col-md-9">
+    <input type="file" class="form-control" name="file">
+  </div>
+</div>
     <div class="profile-img">
         <figure><img class="is-rounded" src="../images/profile_image_holder.png"></figure>
     </div>
 
     <div class="field"></div>
     <h3 style="color:red;"><%= erreg %></h3>
-    <form method="POST" action="">
+    <form method="POST" action="" enctype="multipart/form-data">
 
       <label class="label" style="color:white; ;">Name</label>
         <div class="control">

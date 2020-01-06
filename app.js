@@ -15,6 +15,7 @@ const GridFsStorage = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
 const methodOverride = require('method-override');
 app.use(session({secret: 'ssshhhhh',saveUninitialized: true,resave: true}));
+var async = require('async');
 
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 //app.use(bodyParser.json());
@@ -31,7 +32,7 @@ mailer.extend(app, {
   })
   //Middleware
   app.use(methodOverride('_method'));
-
+router.use(express.static(__dirname+"./public/"));
 
 
 //Import Routes
@@ -48,9 +49,9 @@ app.get('/',(req,res) => {
     res.render('login', {err: app.locals.errlog});
 });
 //render home page
-app.get('/home',(req,res) => {
-    res.render('home')
-});
+// app.get('/home',(req,res) => {
+//     res.render('home')
+// });
 //render Profile upload page
 app.get('/profilePic',(req,res) => {
     res.render('profilePic')
@@ -59,7 +60,18 @@ app.get('/profilePic',(req,res) => {
 app.get('/forgotpass',(req,res) => {
     res.render('forgot-pass')
 });
+var Storage = multer.diskStorage({
+    destination:"./public/uploads/",
+    filename:(req,file,cb)=>{
+        cb(null,file.fieldname+"_"+Date.now()+path.extname(file.originalname))
+    }
+});
+var profileUpload = multer({
+    storage:Storage
+}).single('file');
+router.post('/upload',profileUpload,function(req,res,next){
 
+})
 app.post('/forgotpass',(req,res) => {
     schema.user.findOne({email: req.body.enter_email}, function (err, data){
         req.session.user = data.username;
@@ -121,9 +133,34 @@ app.get('/register/:username', (req, res) => {
         app.locals.erreg =  'Please fill in the form to register!';
     res.render('register', {erreg: app.locals.err});
 });
-
+//Get all users for matching
+app.get('/home',(req,res) => {
+    
+    schema.user.findOne({username: req.session.user}, async function(err, data){
+        if (data){
+            schema.user.findOne({sp: data.sp},function(err, data){
+                if(err) throw err;
+            if(data)
+            {
+            
+                if (app.locals.username == undefined){
+                    app.locals.username = data.username;
+                }
+                res.render('home', {username: app.locals.username});
+            }
+            });
+        }
+       
+    
+    })
+   
+    if (app.locals.name == undefined)
+        app.locals.name =  'Please fill in the form to register!';
+    res.render('home', {erreg: app.locals.erreg});
+    
+    });
 //Adding User to DB!
-app.post('/register', urlencodedParser,async  function(req,res) {
+app.post('/register', profileUpload, urlencodedParser,async  function(req,res) {
     //validate password
     if (validate.checkPassword(req.body.password))
     {
@@ -152,6 +189,7 @@ app.post('/register', urlencodedParser,async  function(req,res) {
                     gender: req.body.gender,
                     sp: req.body.sp,
                     bio: req.body.bio,
+                    image: req.body.file,
                     vkey: vkey}).save(function(err){
                         if(err) throw err;
                         else{
@@ -199,8 +237,6 @@ app.post('/',urlencodedParser,(req,res) => {
     const hash= crypto.createHash("sha256");
         hash.update(req.body.enter_password);
     schema.user.findOne({username: req.body.enter_username}, async function(err, data){
-        if (err) throw err;
-
         if (data){
             if(data.verified == true){
                 if (data.username == req.body.enter_username) {
@@ -227,7 +263,9 @@ app.post('/',urlencodedParser,(req,res) => {
             app.locals.errlog = 'Username does not exist';
             res.redirect('/');
         }
+         
     });
+    
 })
 
 //render profile page
@@ -468,5 +506,5 @@ mongoose.connect(
     () => console.log('connected to DB!', '\nServer is up and running!')
 );
 //How to start listening to the server
-const port = 8009;
+const port = 8012;
 app.listen(port,() => console.log('Server started on port',port));
