@@ -144,51 +144,59 @@ app.get('/register/:username', (req, res) => {
 
 app.get('/home',(req,res) => {
     schema.user.findOne({username: req.session.user}, function(err, data){
-       app.locals.data = data; 
+        if(data){
+            app.locals.data = data;
 
-       if(app.locals.data.sp== "heterosexual")
-       {
-           if(app.locals.data.gender == "Male"){
-               app.locals.gender = "Female"
-           }
-           else
-           app.locals.gender = "Male"
-        }
-        if(app.locals.data.sp== "homosexual")
-       {
-           if(app.locals.data.gender == "Male"){
-               app.locals.gender = "Male"
-           }
-           else
-           app.locals.gender = "Female"
-        }
-            if(data)
-            {
-                    schema.user.find({
-                        sp:app.locals.data.sp,
-                        gender:app.locals.gender,
-                        sport:app.locals.data.sport,
-                        fitness:app.locals.data.fitness ,
-                        tecnology:app.locals.data.tecnology ,
-                        music:app.locals.data.music ,
-                        gaming:app.locals.data.gaming ,
-
-                        username:{$ne: req.session.user}},  function(err, data){
-                        
-                    if(data)
-                    {
-                        res.render('home',{users:data, name:req.session.user});
+                if(app.locals.data.sp== "heterosexual"){
+                    if(app.locals.data.gender == "Male"){
+                          app.locals.gender = "Female"
                     }
+                    else
+                    app.locals.gender = "Male"
                 }
-                    )}
-            })})
+
+                if(app.locals.data.sp== "homosexual"){
+                    if(app.locals.data.gender == "Male"){
+                        app.locals.gender = "Male"
+                    }
+                    else
+                        app.locals.gender = "Female"
+                }
+                if (app.locals.data.sp != "bisexual"){
+                schema.user.find({
+                    sp:app.locals.data.sp,
+                    //gender:app.locals.gender,
+                    sport:app.locals.data.sport,
+                    fitness:app.locals.data.fitness,
+                    tecnology:app.locals.data.tecnology,
+                    music:app.locals.data.music,
+                    gaming:app.locals.data.gaming,
+                    username:{$ne: req.session.user}},  function(err, data){
+                    
+                if(data){
+                    console.log(data);
+                    res.render('home',{users:data, name:req.session.user});
+                }
+                })
+                }
+            else {
+            schema.user.find({
+                sp:app.locals.data.sp,
+                sport:app.locals.data.sport,
+                fitness:app.locals.data.fitness,
+                tecnology:app.locals.data.tecnology,
+                music:app.locals.data.music,
+                gaming:app.locals.data.gaming,
+                username:{$ne: req.session.user}},  function(err, data){
                 
-
-
-          
-
-   
-
+            if(data){
+                console.log(data);
+                res.render('home',{users:data, name:req.session.user});
+            }
+            })
+        }
+    }  }) 
+});
     
     app.post('/home', (req, res) => {
        
