@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 require('dotenv/config');
 const schema = require('./models/User');
+const hobbiesSchema = require('./models/hobbies');
 const validate = require("./functions/validation");
 const crypto = require('crypto');
 const multer = require('multer');
@@ -58,7 +59,9 @@ app.get('/',(req,res) => {
 app.get('/profilePic',(req,res) => {
     res.render('profilePic')
 });
-
+app.get('/filter',(req,res) => {
+    res.render('filter')
+});
 
 app.get('/forgotpass',(req,res) => {
     res.render('forgot-pass')
@@ -130,6 +133,7 @@ app.get('/register',(req,res) => {
 app.get('/register/:username', (req, res) => {
     schema.user.findOne({username: req.params.username},function(err, data){
         if(err) throw err;
+        app.locals.username = req.params.username;
         console.log(data);
     });
     if (app.locals.erreg == undefined)
@@ -139,28 +143,53 @@ app.get('/register/:username', (req, res) => {
 //Get all users for matching
 
 app.get('/home',(req,res) => {
-    schema.user.findOne({username: req.session.user},  function(err, data){
-        if (data){
-            mongoURI.Matcha.inserts.find({},{sp :data.sp}).limit(2);
-       console.log(data);
+    schema.user.findOne({username: req.session.user}, function(err, data){
+       app.locals.data = data; 
+
+       if(app.locals.data.sp== "heterosexual")
+       {
+           if(app.locals.data.gender == "Male"){
+               app.locals.gender = "Female"
+           }
+           else
+           app.locals.gender = "Male"
+        }
+        if(app.locals.data.sp== "homosexual")
+       {
+           if(app.locals.data.gender == "Male"){
+               app.locals.gender = "Male"
+           }
+           else
+           app.locals.gender = "Female"
+        }
             if(data)
             {
+                    schema.user.find({
+                        sp:app.locals.data.sp,
+                        gender:app.locals.gender,
+                        sport:app.locals.data.sport,
+                        fitness:app.locals.data.fitness ,
+                        tecnology:app.locals.data.tecnology ,
+                        music:app.locals.data.music ,
+                        gaming:app.locals.data.gaming ,
 
-            
-                if (app.locals.username == undefined){
-                    app.locals.username = data.username;
+                        username:{$ne: req.session.user}},  function(err, data){
+                        
+                    if(data)
+                    {
+                        res.render('home',{users:data, name:req.session.user});
+                    }
                 }
+                    )}
+            })})
+                
 
-                res.render('home', {username: app.locals.username});
-            }
-            
-            
 
-        }
-    });
+          
+
    
 
-    });
+    
     app.post('/home', (req, res) => {
        
                 res.redirect('home');
@@ -191,6 +220,7 @@ app.post('/register', profileUpload, urlencodedParser,async  function(req,res) {
                 if (err) throw err;
                 if (data == null){
                 //add new user to db
+
                     var details = schema.user({
                     name:  req.body.name,
                     surname: req.body.surname,        
@@ -202,6 +232,12 @@ app.post('/register', profileUpload, urlencodedParser,async  function(req,res) {
                     sp: req.body.sp,
                     bio: req.body.bio,
                     image: req.body.file,
+                    sport: req.body.sport,
+                    fitness: req.body.fitness,
+                    tecnology: req.body.tecnology,
+                    music: req.body.music,
+                    gaming: req.body.gaming,
+                    ageBetween: req.body.ageBetween,
                     vkey: vkey}).save(function(err){
                         if(err) throw err;
                         else{
@@ -287,7 +323,69 @@ app.get('/profile',(req,res) => {
         res.render('profile', {name: data.name, surname: data.surname, username: data.username, password: "******", email: data.email, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio});
     });
 });
+//Filter search
+app.post('/filter',urlencodedParser,(req,res) => {
+    schema.user.findOne({username: req.session.user}, async function(err, data){
+        if (err) throw err;
+        if (req.body.ageBetween){
+            ageBetween = req.body.ageBetween;
+        }
+        else {
+            ageBetween= data.ageBetween;
+        }
+        if (req.body.sp){
+            sp = req.body.sp;
+        }
+        else {
+            sp = data.sp;
+        }
+        if (req.body.sport){
+            sport = req.body.sport;
+        }
+        else {
+            sport= "off";
+        }
+        if (req.body.fitness){
+            fitness= req.body.fitness;
+        }
+        else {
+            fitness = "off";
+        }
+        if (req.body.tecnology){
+            tecnology = req.body.tecnology;
+        }
+        else {
+            tecnology = "off";
+        }
+        if (req.body.music){
+            music = req.body.music;
+        }
+        else {
+            music = "off";
+        }
+        if (req.body.gaming){
+            gaming = req.body.gaming;
+        }
+        else{
+            gaming = "off";
+        }
+        schema.user.findOneAndUpdate({username: req.session.user},
+            {$set:{
+                ageBetween: ageBetween,
+                sp: sp,
+                sport: sport,
+                fitness: fitness,        
+                tecnology: tecnology,
+                music: music,
+                gaming: gaming
 
+            }}, async function(err, data){
+                if(err) throw err;
+                res.redirect('/home');
+        })
+    })
+})
+//Update Profile
 app.post('/profile',urlencodedParser,(req,res) => {
     schema.user.findOne({username: req.session.user}, async function(err, data){
         if (err) throw err;
@@ -464,7 +562,9 @@ app.get('/image/:filename',(req, res) =>{
     })});
     //View another persons Page
     app.get('/visitProfile',(req,res) => {
-        schema.user.findOne({username: app.locals.username}, async function(err, data){
+        var user = req.query.user.toString();
+        schema.user.findOne({username: user}, function(err, data){
+            
             if (err) throw err;
             res.render('visitProfile', {name: data.name, surname: data.surname, username: data.username, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio});
         });
@@ -524,5 +624,5 @@ mongoose.connect(
     () => console.log('connected to DB!', '\nServer is up and running!')
 );
 //How to start listening to the server
-const port = 8012;
+const port = 8013;
 app.listen(port,() => console.log('Server started on port',port));

@@ -17,6 +17,8 @@
             </a>
         </div><a href="/"><button id="button" style="background-color:#828afc;color:#fff;margin:1.5em">Sign Out</button><a></a></a>
     </div><a href="/profile-page"><button  id="button" style="background-color:#828afc;color:#fff; margin:1.5em">Profile</button><a></a></a>
+</div><a href="/filter"><button  id="button" style="background-color:#828afc;color:#fff; margin:1.5em">Filters</button><a></a></a>
+
       </section>
     <hr style="color:#fff;">
  
@@ -33,17 +35,19 @@
         
         </div>
         <div class="field"></div>
+   
+<% for(var user of users) {%>
     
-        <a href="visitProfile"><div class="button"><%= username%></div></a>
-<div style="padding:1rem;">
-    <div class="pick_user_button" >
-        
-        <div class="control"><button class="button is-link" type="submit" name="submit">I Choose you</button></div>
-    </div>
-       <form action="/home" method="POST">
-        <div class="control"><button class="button is-link" type="submit" name="next">Next</button></div>
-        
-    </form>
+
+
+    
+<form action=""></form>
+        <a href="visitProfile?user=<%= user.username%>"><div class="button is-link"><%= user.username%></div></a>
+   
+
+        <%}%>
+  
+
         
         
     </div>

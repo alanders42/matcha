@@ -48,6 +48,39 @@ const mongoose = require('mongoose');
     vkey: {
         type: String,
         require: false
+    },
+    sport:{
+        type:String,
+        default: 'off'
+      
+        
+    },
+    fitness: {
+        type:String,
+        default: 'off'
+       
+       
+    },
+    tecnology: {
+        type:String,
+        default: 'off'
+      
+        
+    },
+    music: {
+        type:String,
+        default: 'off'
+        
+        
+    },
+    gaming: {
+        type:String,
+        default: 'off'
+        
+    },
+    ageBetween: {
+        type:String,
+        require: true
     }
 });
 user = mongoose.model('Insert',UserSchema);
