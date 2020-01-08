@@ -146,7 +146,6 @@ app.get('/home',(req,res) => {
     schema.user.findOne({username: req.session.user}, function(err, data){
         if(data){
             app.locals.data = data;
-
                 if(app.locals.data.sp== "heterosexual"){
                     if(app.locals.data.gender == "Male"){
                           app.locals.gender = "Female"
@@ -154,7 +153,6 @@ app.get('/home',(req,res) => {
                     else
                     app.locals.gender = "Male"
                 }
-
                 if(app.locals.data.sp== "homosexual"){
                     if(app.locals.data.gender == "Male"){
                         app.locals.gender = "Male"
@@ -162,49 +160,56 @@ app.get('/home',(req,res) => {
                     else
                         app.locals.gender = "Female"
                 }
-                if (app.locals.data.sp != "bisexual"){
-                schema.user.find({
-                    sp:app.locals.data.sp,
-                    //gender:app.locals.gender,
-                    sport:app.locals.data.sport,
-                    fitness:app.locals.data.fitness,
-                    tecnology:app.locals.data.tecnology,
-                    music:app.locals.data.music,
-                    gaming:app.locals.data.gaming,
-                    username:{$ne: req.session.user}},  function(err, data){
+                if(app.locals.data.sp != "bisexual"){
+                    app.locals.arrayLength = app.locals.data.blocked.length;
+                    for(let val of app.locals.data.blocked) {
+                        console.log(val);
+                    }
                     
-                if(data){
-                    console.log(data);
-                    res.render('home',{users:data, name:req.session.user});
+                        console.log(app.locals.count);
+                        schema.user.find({
+                        sp:app.locals.data.sp,
+                        
+                        //gender:app.locals.gender,
+                        sport:app.locals.data.sport,
+                        fitness:app.locals.data.fitness,
+                        tecnology:app.locals.data.tecnology,
+                        music:app.locals.data.music,
+                        gaming:app.locals.data.gaming,
+                        username:{$ne: req.session.user}},  function(err, data){
+                        
+                        if(data){
+                   
+                            res.render('home',{users:data, name:req.session.user,blocked:app.locals.data.blocked});
+                        }
+            
+                        })
+                      
                 }
-                })
+                else {
+                    // if(app.locals.data.dislike == "off"){
+                        schema.user.find({
+                        sp:app.locals.data.sp,
+                        sport:app.locals.data.sport,
+                        fitness:app.locals.data.fitness,
+                        tecnology:app.locals.data.tecnology,
+                        music:app.locals.data.music,
+                        gaming:app.locals.data.gaming,
+                        username:{$ne: req.session.user}},  function(err, data){
+                            if(data){
+                    
+                                res.render('home',{users:data, name:req.session.user});
+                            }
+                        })
+                    // }
                 }
-            else {
-            schema.user.find({
-                sp:app.locals.data.sp,
-                sport:app.locals.data.sport,
-                fitness:app.locals.data.fitness,
-                tecnology:app.locals.data.tecnology,
-                music:app.locals.data.music,
-                gaming:app.locals.data.gaming,
-                username:{$ne: req.session.user}},  function(err, data){
-                
-            if(data){
-                console.log(data);
-                res.render('home',{users:data, name:req.session.user});
-            }
-            })
-        }
-    }  }) 
+        }  
+    }) 
 });
     
     app.post('/home', (req, res) => {
        
                 res.redirect('home');
-         
-         
-   
-   
 
 })
 
@@ -331,6 +336,8 @@ app.get('/profile',(req,res) => {
         res.render('profile', {name: data.name, surname: data.surname, username: data.username, password: "******", email: data.email, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio});
     });
 });
+
+
 //Filter search
 app.post('/filter',urlencodedParser,(req,res) => {
     schema.user.findOne({username: req.session.user}, async function(err, data){
@@ -568,13 +575,91 @@ app.get('/image/:filename',(req, res) =>{
         }
         
     })});
+//like a profile
+
+app.post('/like',urlencodedParser,(req,res) => {
+    schema.user.findOne({username: req.session.user}, async function(err, data){
+        if (err) throw err;
+        
+        function findIndex(str) { 
+            var index = str.indexOf(app.locals.visiting);
+            console.log(index);
+            return index
+        } 
+        app.locals.liked = data.like;
+        var str = app.locals.liked
+
+        var count =findIndex(app.locals.liked);
+        if (count == '-1'){
+            str.push(app.locals.visiting);
+            console.log('User Profile liked')
+        }
+        else {
+            const index = app.locals.liked.indexOf(count);
+            
+                app.locals.liked.splice(index, 1);
+                console.log(app.locals.liked)
+            console.log('User Profile is unliked')
+        }
+        schema.user.findOneAndUpdate({username: req.session.user},
+            {$set:{
+            like:str}}, async function(err, data){
+                if(err) throw err;
+                
+                res.redirect('home');
+        })
+    })
+})
+//block a profile
+app.post('/dislike',urlencodedParser,(req,res) => {
+    schema.user.findOne({username: req.session.user}, async function(err, data){
+        if (err) throw err;
+        
+        function findIndex(str) { 
+            var index = str.indexOf(app.locals.visiting);
+            return index
+        } 
+        app.locals.blocked = data.blocked;
+        var str = app.locals.blocked
+
+        var count =findIndex(app.locals.blocked);
+        if (count == '-1'){
+            str.push(app.locals.visiting);
+            console.log('User Profile blocked')
+        }
+        else {
+            const index = app.locals.blocked.indexOf(count);
+            app.locals.blocked.splice(index, 1);
+            console.log('User Profile is unblocked')
+        }
+        schema.user.findOneAndUpdate({username: req.session.user},
+            {$set:{
+            blocked:str}}, async function(err, data){
+                if(err) throw err;
+                
+                res.redirect('home');
+        })
+    })
+})
     //View another persons Page
     app.get('/visitProfile',(req,res) => {
         var user = req.query.user.toString();
         schema.user.findOne({username: user}, function(err, data){
-            
+            app.locals.visiting = data.username;
             if (err) throw err;
-            res.render('visitProfile', {name: data.name, surname: data.surname, username: data.username, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio});
+            schema.user.findOne({username: req.session.user}, async function(err, data){
+                if (err) throw err;
+                
+                function findIndex(str) { 
+                    var index = str.indexOf(app.locals.visiting);
+                    console.log(index);
+                    return index
+                } 
+                app.locals.liked = data.like;
+        
+                var count =findIndex(app.locals.liked);
+            res.render('visitProfile', {name: data.name, surname: data.surname, username: data.username, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio, like: count, dislike: data.dislike});
+            })
         });
     });
    
@@ -632,5 +717,5 @@ mongoose.connect(
     () => console.log('connected to DB!', '\nServer is up and running!')
 );
 //How to start listening to the server
-const port = 8013;
+const port = 8014;
 app.listen(port,() => console.log('Server started on port',port));

@@ -81,7 +81,16 @@ const mongoose = require('mongoose');
     ageBetween: {
         type:String,
         require: true
-    }
+    },
+    like: [{
+        type:String,
+        default: null
+    }],
+    blocked: [{
+        type:String,
+        default: null
+        
+    }]
 });
 user = mongoose.model('Insert',UserSchema);
 module.exports.user = user;

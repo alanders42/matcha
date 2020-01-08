@@ -7,18 +7,7 @@
     <link rel="stylesheet" href="../layout/index.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <script defer="" src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-<!--Popup Javascript-->
-    <script type="text/javascript">
-     
-          function toggle_visibility(id) {
-             var e = document.getElementById(id);
-             if(e.style.display == 'block')
-                e.style.display = 'none';
-             else
-                e.style.display = 'block';
-          }
-     
-      </script>
+
 </head>
 <body style ="background: url(../images/bg.png)">
 <header style="background: black;">
@@ -40,6 +29,20 @@
     <div class="profile-img">
         <figure><img class="is-rounded" src="../images/profile_image_holder.png"></figure>
     </div>
+    
+    <!-- Like button -->
+    <form action="/like" method="POST">
+      <% if( like  == -1) {%>
+          <button  class="button is-link" style="background-color:#828afc;color:#fff;margin-bottom:1em" name="like" value="<%= username %>">Like</button>
+      <% }else{ %>
+        <button class="button is-link"  style="background-color:#828afc;color:#fff;margin-bottom:1em" name="like" value="<%= username %>">Unlike</button>
+        <% } %>
+    </form>
+      <!-- disLike button -->
+      <form action="/dislike" method="POST">
+            <button  class="button is-link" style="background-color:#828afc;color:#fff" name="like" value="<%= username %>">Blocked</button>
+      </form>
+
     <div class="field"></div>
     
       <label class="label" style="color:white; ;">Name</label>
@@ -87,7 +90,7 @@
          
        
     </div>
-    <div class="field"><label class="label" style="color:white;" type="text">Bio</label>
+    <div class="field"><label class="label" style="color:white;" >Bio</label>
         <div class="control"><textarea class="textarea"><%= bio%></textarea></div>
     </div>
     </div>
