@@ -30,18 +30,20 @@
         <div class="profile-img" >
    
     <figure style="align-content: center;"><img  class="is-rounded" src="../images/profile_image_holder.png"></figure>
-      
-       
-        
         </div>
         <div class="field"></div>
-   
-<% for(var user of users) {%>
-    
-        <a href="visitProfile?user=<%= user.username%>"><div class="button is-link"><%= user.username%></div></a>
-
-    <%}%>
-
+        <!--Don't display Blocked Users-->
+        <% for(users of user){%>
+            <% var trueval = 0%>
+            <% for(block of blocked){%>
+                <% if(block == users.username){%>
+                    <% trueval = 1;%>
+                    <% break}%>
+            <% }%>
+            <% if(trueval == 0){%>
+                <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+            <%}%>
+        <%}%>
     </div>
   </div>
 </body>

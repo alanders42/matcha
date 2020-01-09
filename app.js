@@ -59,6 +59,7 @@ app.get('/',(req,res) => {
 app.get('/profilePic',(req,res) => {
     res.render('profilePic')
 });
+
 app.get('/filter',(req,res) => {
     res.render('filter')
 });
@@ -161,12 +162,13 @@ app.get('/home',(req,res) => {
                         app.locals.gender = "Female"
                 }
                 if(app.locals.data.sp != "bisexual"){
-                    app.locals.arrayLength = app.locals.data.blocked.length;
-                    for(let val of app.locals.data.blocked) {
-                        console.log(val);
+                    function splitStr(str){
+                    var string = str.split(" ")
                     }
-                    
-                        console.log(app.locals.count);
+                    var str = user.username
+                    app.locals.arrayLength = app.locals.data.blocked.length;
+                    app.locals.userLength = app.locals.data.username.length;
+                    var str=[]
                         schema.user.find({
                         sp:app.locals.data.sp,
                         
@@ -176,16 +178,19 @@ app.get('/home',(req,res) => {
                         tecnology:app.locals.data.tecnology,
                         music:app.locals.data.music,
                         gaming:app.locals.data.gaming,
-                        username:{$ne: req.session.user}},  function(err, data){
                         
-                        if(data){
-                   
-                            res.render('home',{users:data, name:req.session.user,blocked:app.locals.data.blocked});
-                        }
-            
+                            
+                        username:{$ne: req.session.user}},function(err,data){
+                            
+                            console.log(str)
+                            res.render('home',{user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength});
                         })
+                            
+                       
+                        
                       
-                }
+                    
+            }
                 else {
                     // if(app.locals.data.dislike == "off"){
                         schema.user.find({
@@ -198,12 +203,12 @@ app.get('/home',(req,res) => {
                         username:{$ne: req.session.user}},  function(err, data){
                             if(data){
                     
-                                res.render('home',{users:data, name:req.session.user});
+                                res.render('home',{user:app.locals.try, name:req.session.user});
                             }
                         })
                     // }
                 }
-        }  
+        }
     }) 
 });
     
@@ -717,5 +722,5 @@ mongoose.connect(
     () => console.log('connected to DB!', '\nServer is up and running!')
 );
 //How to start listening to the server
-const port = 8014;
+const port = 8013;
 app.listen(port,() => console.log('Server started on port',port));
