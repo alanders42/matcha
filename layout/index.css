@@ -1,4 +1,11 @@
 
+body{
+    margin:auto;
+    height:85.4em;
+}
+footer{
+    align:bottom;
+}
 h1{
     text-align: center;
     font: bolder;

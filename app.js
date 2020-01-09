@@ -615,6 +615,7 @@ app.post('/like',urlencodedParser,(req,res) => {
         })
     })
 })
+
 //block a profile
 app.post('/dislike',urlencodedParser,(req,res) => {
     schema.user.findOne({username: req.session.user}, async function(err, data){
@@ -662,9 +663,10 @@ app.post('/dislike',urlencodedParser,(req,res) => {
                 } 
                 app.locals.liked = data.like;
         
-                var count =findIndex(app.locals.liked);
-            res.render('visitProfile', {name: data.name, surname: data.surname, username: data.username, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio, like: count, dislike: data.dislike});
+                app.locals.count =findIndex(app.locals.liked);
             })
+            res.render('visitProfile', {name: data.name, surname: data.surname, username: data.username, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio, like: app.locals.count, dislike: data.dislike});
+
         });
     });
    
