@@ -32,15 +32,15 @@
     
     <!-- Like button -->
     <form action="/like" method="POST">
-      <% if( like  == -1) {%>
-          <button  class="button is-link" style="background-color:#828afc;color:#fff;margin-bottom:1em" name="like" value="<%= username %>">Like</button>
+      <% if(like == -1) {%>
+          <button  class="button is-link" style="background-color:#828afc;color:#fff;margin-bottom:1em" value="<%= username %>">Like</button>
       <% }else{ %>
-        <button class="button is-link"  style="background-color:#828afc;color:#fff;margin-bottom:1em" name="like" value="<%= username %>">Unlike</button>
+        <button class="button is-link"  style="background-color:#828afc;color:#fff;margin-bottom:1em"  value="<%= username %>">Unlike</button>
         <% } %>
     </form>
       <!-- disLike button -->
       <form action="/dislike" method="POST">
-            <button  class="button is-link" style="background-color:#828afc;color:#fff" name="like" value="<%= username %>">Blocked</button>
+            <button  class="button is-link" style="background-color:#828afc;color:#fff" value="<%= username %>">Blocked</button>
       </form>
 
     <div class="field"></div>

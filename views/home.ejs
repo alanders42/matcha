@@ -15,16 +15,28 @@
                 <h1 class="title" style="font-weight:200;color:white; text-align: center;">Matcha</h1>
                 <p class="subtitle" style="color:#fff; text-align: center;">Find love her!</p>
             </a>
-        <a href="/"><button id="button" style="background-color:#828afc;color:#fff;margin:1.5em">Sign Out</button></a>
-    <a href="/chats"><button  id="button" style="background-color:#828afc;color:#fff; margin:1.5em">Chats</button></a>
-    <a href="/profile-page"><button  id="button" style="background-color:#828afc;color:#fff; margin:1.5em">Profile</button></a>
+        <a href="/"><button class="button is-info"id="button" style="background-color:#828afc;color:#fff;margin:1.5em">Sign Out</button></a>
+    <a href="/chatList"><button  class="button is-info"id="button" style="background-color:#828afc;color:#fff; margin:1.5em">Chat List</button></a>
+    <a href="/profile-page"><button class="button is-info" id="button" style="background-color:#828afc;color:#fff; margin:1.5em">Profile</button></a>
 
-<a href="/filter"><button  id="button" style="background-color:#828afc;color:#fff; margin:1.5em">Filters</button></a>
+<a href="/filter"><button  class="button is-info" id="button" style="background-color:#828afc;color:#fff; margin:1.5em">Filters</button></a>
 
       </section>
     <hr style="color:#fff;">
  
 </header>
+<div style="float:right;margin:2em"class="field has-addons">
+    <div class="control">
+        <form action="/searchUser" method="POST">
+      <input class="input" type="text" placeholder="Search for a user">
+    </div>
+    <div class="control">
+      <a class="button is-info">
+        Search
+      </a>
+    </div>
+  </div>
+</form>
 <div  class="wrapper" style="background: url(../images/bg.png);">
 
     

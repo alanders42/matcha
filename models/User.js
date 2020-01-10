@@ -86,6 +86,10 @@ const mongoose = require('mongoose');
         type:String,
         default: null
     }],
+    likedBy:[{
+        type:String,
+        default:null
+    }],
     blocked: [{
         type:String,
         default: null

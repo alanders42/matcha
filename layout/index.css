@@ -4,7 +4,7 @@ body{
     height:85.4em;
 }
 footer{
-    align:bottom;
+    float:bottom;
 }
 h1{
     text-align: center;

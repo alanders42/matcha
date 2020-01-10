@@ -16,35 +16,32 @@
                 <p class="subtitle" style="color:#fff; text-align: center;">Find love her!</p>
             </a>
         <a href="/"><button id="button" style="background-color:#828afc;color:#fff;margin:1.5em">Sign Out</button></a>
-    <a href="/profile-page"><button  id="button" style="background-color:#828afc;color:#fff; margin:1.5em">Profile</button></a>
-<a href="/filter"><button  id="button" style="background-color:#828afc;color:#fff; margin:1.5em">Filters</button></a>
+<a href="/home"><button id="button" style="background-color:#828afc;color:#fff;margin-left:1.5em">Go Back</button><a>
+
 
       </section>
     <hr style="color:#fff;">
- 
+
 </header>
 <div  class="wrapper" style="background: url(../images/bg.png);">
 
     
     
-        <div class="profile-img" >
-   
-    <figure style="align-content: center;"><img  class="is-rounded" src="../images/profile_image_holder.png"></figure>
-        </div>
-        <div class="field"></div>
-        <!--Don't display Blocked Users-->
-        <% for(users of user){%>
+       
+     
+        <!--Display Liked Users-->
+        <% for(users of likedBy){%>
             <% var trueval = 0%>
-            <% for(block of blocked){%>
-                <% if(block == users.username){%>
+            <% for(liked of like){%>
+                <% if(liked == users){%>
                     <% trueval = 1;%>
                     <% break}%>
             <% }%>
-            <% if(trueval == 0){%>
-                <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+            <% if(trueval == 1){%>
+                <a href="chat?user=<%= liked%>"><div class="button is-link"><%= liked %></div></a>
             <%}%>
         <%}%>
-    </div>
+   
   </div>
 </body>
 <footer class="footer" style="background: url(../images/menu.png);">
