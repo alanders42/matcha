@@ -61,7 +61,7 @@ const mongoose = require('mongoose');
        
        
     },
-    tecnology: {
+    technology: {
         type:String,
         default: 'off'
       
@@ -94,7 +94,19 @@ const mongoose = require('mongoose');
         type:String,
         default: null
         
-    }]
+    }],
+    city: {
+        type:String,
+        default:null
+    },
+    country: {
+        type:String,
+        default:null
+    },
+    region:{
+        type:String,
+        default:null
+    }
 });
 user = mongoose.model('Insert',UserSchema);
 module.exports.user = user;

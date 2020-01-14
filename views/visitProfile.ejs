@@ -76,25 +76,45 @@
         <div class="control">
           <label class="input" type="text" ><%= age%></label></div>
     </div>
-    <div class="field"><label class="label" style="color:white;">Gender</label>
-        
-           
+    <div class="field"><label class="label" style="color:white;">Gender</label>   
               <label style="color:#fff"><%= gender%></label>
           </div>
         </div>
-    
-    <div class="field"><label class="label" style="color:white;">Sexual preference</label>
-        
-            
-              <label style="color:#fff"><%= sp%></label>
-         
-       
+        <div class="field"><label class="label" style="color:white;">Fame Rating</label>
+          <label checked style="color:#fff"><%= fame%></label>
+          
+        </div>
+        <% if(sport == 'on'){%>
+    <div class="field"><label class="label" style="color:white;">Sport</label>
+              <label checked style="color:#fff"><%= sport%></label>
+              <%}%>
     </div>
-    <div class="field"><label class="label" style="color:white;" >Bio</label>
-        <div class="control"><textarea class="textarea"><%= bio%></textarea></div>
-    </div>
-    </div>
+    <% if(fitness == 'on'){%>
+    <div class="field"><label class="label" style="color:white;">Fitness</label>
+      <label style="color:#fff"><%= fitness%></label>
+      <%}%>
 </div>
+<% if(technology == 'on'){%>
+<div class="field"><label class="label" style="color:white;">Technology</label>
+  <label style="color:#fff"><%= technology%></label>
+  <%}%>
+</div>
+<% if(music == 'on'){%>
+<div class="field"><label class="label" style="color:white;">Music</label>
+  <label style="color:#fff"><%= music%></label>
+  <%}%>
+</div>
+<% if(gaming == 'on'){%>
+<div class="field"><label class="label" style="color:white;">Gaming</label>
+ 
+  <label style="color:#fff"><%= gaming%></label>
+  <%}%>
+</div>
+    <div class="field"><label class="label" style="color:white;" >Bio</label>
+        <div class="control"><text class="textarea"><%= bio%></text></div>
+    </div>
+    </div>
+
 </form>
 </body>
 <footer class="footer" style="background: url(../images/menu.png);">

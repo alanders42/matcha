@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Matcha</title>
+    <link rel="stylesheet" href="../layout/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+    <script defer="" src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+   
+</head>
+<body style ="background: url(../images/bg.png)">
+<header style="background: black;">
+    <section class="section" style="background: black;">
+        <div class="container">
+            <a href="/">
+                <h1 class="title" style="font-weight:200;color:white; text-align: center;">Matcha</h1>
+                <p class="subtitle" style="color:#fff; text-align: center;">Find love here!</p>
+            </a>
+       
+    </div><a href="/"><button id="button" style="background-color:#828afc;color:#fff;margin:1.5em">Sign Out</button><a></a></a>
+</div><a href="/home"><button  id="button" style="background-color:#828afc;color:#fff; margin:1.5em">Go Back</button><a></a></a>
+      </section>
+    <hr style="color:#fff;">
+ 
+</header>
+
+    <div style="color:white;text-align: center;" class="field"><label class="label" style="color:white;" type="text">Sort</label>
+       <form action="/sort" method="POST">
+        <input type="checkbox" name="ascAge" > Asc Age<br><br>
+        <input type="checkbox" name="descAge" > Desc Age<br><br>
+        <input type="checkbox" name="location" > location<br><br>
+        <input type="checkbox" name="fameRating" > fame rating<br><br>
+        
+   
+        <!--Need to still sort by common tags-->
+    </div>
+  
+    <div class="field is-grouped">
+        <div class="control"><a herf="javascript:void(0)" "><button class="button is-link" type="submit" name="submit">Sort</button></div></a>
+       
+    </div>
+  </div>
+  </form>
+</body>
+<footer class="footer" style="background: url(../images/menu.png);">
+    <div class="content has-text-centered">
+        <p style="color:white;"><strong style="color:white;">Matcha</strong> by J.T.A.B <a href="https://github.com/BrandonSwanepoel/Matcha"></a></p>
+    </div>
+</footer>

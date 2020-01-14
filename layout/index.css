@@ -98,3 +98,6 @@ button :hover{
     margin: 40px auto;
     text-align: left;
 }
+.boxed {
+    border: 1px solid green ;
+  } 

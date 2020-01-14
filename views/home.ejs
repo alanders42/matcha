@@ -11,40 +11,27 @@
 <header style="background: black;">
     <section class="section" style="background: black;">
         <div class="container">
-            <a href="/">
+            <a href="/home">
                 <h1 class="title" style="font-weight:200;color:white; text-align: center;">Matcha</h1>
                 <p class="subtitle" style="color:#fff; text-align: center;">Find love her!</p>
             </a>
         <a href="/"><button class="button is-info"id="button" style="background-color:#828afc;color:#fff;margin:1.5em">Sign Out</button></a>
     <a href="/chatList"><button  class="button is-info"id="button" style="background-color:#828afc;color:#fff; margin:1.5em">Chat List</button></a>
     <a href="/profile-page"><button class="button is-info" id="button" style="background-color:#828afc;color:#fff; margin:1.5em">Profile</button></a>
+    <a href="/filteredSearch"><button  class="button is-info" id="button" style="background-color:#828afc;color:#fff; margin:1.5em">Filtered Search</button></a>
+    <a href="/sort"><button  class="button is-info" id="button" style="background-color:#828afc;color:#fff; margin:1.5em">Sort</button></a>
 
-<a href="/filter"><button  class="button is-info" id="button" style="background-color:#828afc;color:#fff; margin:1.5em">Filters</button></a>
 
       </section>
     <hr style="color:#fff;">
  
 </header>
-<div style="float:right;margin:2em"class="field has-addons">
-    <div class="control">
-        <form action="/searchUser" method="POST">
-      <input class="input" type="text" placeholder="Search for a user">
-    </div>
-    <div class="control">
-      <a class="button is-info">
-        Search
-      </a>
-    </div>
-  </div>
-</form>
+
 <div  class="wrapper" style="background: url(../images/bg.png);">
 
     
     
-        <div class="profile-img" >
    
-    <figure style="align-content: center;"><img  class="is-rounded" src="../images/profile_image_holder.png"></figure>
-        </div>
         <div class="field"></div>
         <!--Don't display Blocked Users-->
         <% for(users of user){%>
@@ -55,7 +42,21 @@
                     <% break}%>
             <% }%>
             <% if(trueval == 0){%>
-                <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                <% if((ageBetween == '18-25') && (users.age >=18 && users.age <=25)){%>
+                    <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                    <%}%>
+                <% if((ageBetween == '26-35') && (users.age >=26 && users.age <=35)){%>
+                    <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                    <%}%>
+                <% if((ageBetween == '36-45') && (users.age >=36 && users.age <=45)){%>
+                    <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                    <%}%>
+                <% if((ageBetween == '46-55') && (users.age >=46 && users.age <=55)){%>
+                    <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                    <%}%>
+                <% if((ageBetween == '56-older') && (users.age >=56)){%>
+                    <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                    <%}%>
             <%}%>
         <%}%>
     </div>

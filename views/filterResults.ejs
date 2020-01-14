@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Matcha</title>
+    <link rel="stylesheet" href="../layout/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+    <script defer="" src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+</head>
+<body style ="background: url(../images/bg.png)">
+<header style="background: black;">
+    <section class="section" style="background: black;">
+        <div class="container">
+            <a href="/">
+                <h1 class="title" style="font-weight:200;color:white; text-align: center;">Matcha</h1>
+                <p class="subtitle" style="color:#fff; text-align: center;">Find love her!</p>
+            </a>
+        <a href="/"><button class="button is-info"id="button" style="background-color:#828afc;color:#fff;margin:1.5em">Sign Out</button></a>
+    <a href="/home"><button  class="button is-info"id="button" style="background-color:#828afc;color:#fff; margin:1.5em">Go Back</button></a>
+
+
+      </section>
+    <hr style="color:#fff;">
+ 
+</header>
+<%= ageBetween %>
+<div  class="wrapper" style="background: url(../images/bg.png);">
+        <div class="field"></div>
+        <!--Display Searhed Users-->
+        <% for(users of user){%>
+            <% if((ageBetween == '18-25') && (users.age >=18 && users.age <=25)){%>
+                <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                <%}%>
+            <% if((ageBetween == '26-35') && (users.age >=26 && users.age <=35)){%>
+                <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                <%}%>
+            <% if((ageBetween == '36-45') && (users.age >=36 && users.age <=45)){%>
+                <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                <%}%>
+            <% if((ageBetween == '46-55') && (users.age >=46 && users.age <=55)){%>
+                <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                <%}%>
+            <% if((ageBetween == '56-older') && (users.age >=56)){%>
+                <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                <%}%>   
+        <%}%>
+    </div>
+  </div>
+</body>
+<footer class="footer" style="background: url(../images/menu.png);">
+    <div class="content has-text-centered">
+        <p style="color:white;"><strong style="color:white;">Matcha</strong> by J.T.A.B <a href="https://github.com/BrandonSwanepoel/Matcha"></a></p>
+    </div>
+</footer>

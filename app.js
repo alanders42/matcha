@@ -8,7 +8,6 @@ const bodyParser = require('body-parser');
 const path = require('path');
 require('dotenv/config');
 const schema = require('./models/User');
-const hobbiesSchema = require('./models/hobbies');
 const validate = require("./functions/validation");
 const crypto = require('crypto');
 const multer = require('multer');
@@ -17,6 +16,13 @@ const Grid = require('gridfs-stream');
 const methodOverride = require('method-override');
 app.use(session({secret: 'ssshhhhh',saveUninitialized: true,resave: true}));
 var async = require('async');
+// var ip2location = require('ip-to-location')
+const getIP = require('external-ip')();
+
+import {
+    atan2, chain, derivative, e, evaluate, log, pi, pow, round, sqrt
+  } from 'mathjs'
+
 
  //mongo Uri
  const mongoURI = 'mongodb+srv://Matcha:Matcha123@wethinkcode-je391.mongodb.net/Matcha?retryWrites=true&w=majority';
@@ -51,19 +57,14 @@ app.get('/',(req,res) => {
         app.locals.errlog =  'Please fill in the form to login!';
     res.render('login', {err: app.locals.errlog});
 });
-//render home page
-// app.get('/home',(req,res) => {
-//     res.render('home')
-// });
+
 //render Profile upload page
 app.get('/profilePic',(req,res) => {
     res.render('profilePic')
 });
-
-app.get('/filter',(req,res) => {
-    res.render('filter')
+app.get('/sort',(req,res) => {
+    res.render('sort')
 });
-
 app.get('/forgotpass',(req,res) => {
     res.render('forgot-pass')
 });
@@ -73,6 +74,17 @@ var Storage = multer.diskStorage({
         cb(null,file.fieldname+"_"+Date.now()+path.extname(file.originalname))
     }
 });
+function distance(lat1, lon1, lat2, lon2)
+{
+    var R = 6371;
+    var dLat =(lat2 - lat1) * Math.PI /180;
+    var dLon =(lon2 - lon1) * Math.PI / 180;
+    var a =
+    0.5 - Math.cos(dLat) / 2 + Math.cos(lat1 * Math.PI /180) * Math.cos(lat2*Math.PI/180) *(1 - Math.cos(dLon)) / 2;
+    return R * 2 * Math.atan2(Math.sqrt(a).Math.sqrt(1-a));
+}
+let dist = distance(-33.9258, 18.4259,-33.9165, 18.4155)
+console.log(dist +'km')
 var profileUpload = multer({
     storage:Storage
 }).single('file');
@@ -144,6 +156,38 @@ app.get('/register/:username', (req, res) => {
 //Get all users for matching
 
 app.get('/home',(req,res) => {
+    // let ip = req.header('x-forwarded-for')
+    getIP(function(err,ip){
+        var geoip = require('geoip-lite');
+    
+        var ips = ip;
+        var geo = geoip.lookup(ips);
+        if (err) throw err;
+                //add new user to db
+                if (err) throw err;
+
+                if (geo.city){
+                    city = geo.city;
+                }
+                if (geo.country){
+                    country = geo.country;
+                }
+                if (geo.region){
+                    region = geo.region;
+                }
+                console.log(geo)
+                schema.user.findOneAndUpdate({username: req.session.user},
+                    {$set:{
+                    city: city,
+                    country: country,        
+                    region: region,
+                    }}, async function(err, data){
+                     if(err) throw err;
+                })
+})
+   
+
+    
     schema.user.findOne({username: req.session.user}, function(err, data){
         if(data){
 
@@ -194,17 +238,18 @@ app.get('/home',(req,res) => {
                     }
                     schema.user.find({like:req.session.user},function(err,data){
                     })
+                        app.locals.userAge = data.ageBetween;
+                    
                         schema.user.find({
                         sp:app.locals.data.sp,
                         gender:app.locals.gender,
                         sport:app.locals.data.sport,
                         fitness:app.locals.data.fitness,
-                        tecnology:app.locals.data.tecnology,
+                        technology:app.locals.data.technology,
                         music:app.locals.data.music,
                         gaming:app.locals.data.gaming,
                         username:{$ne: req.session.user}},function(err,data){
-                           
-                            res.render('home',{user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength});
+                            res.render('home',{user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageIsValid:app.locals.age,ageBetween:app.locals.userAge});
                         })
                 }
                 else {
@@ -213,12 +258,12 @@ app.get('/home',(req,res) => {
                         sp:app.locals.data.sp,
                         sport:app.locals.data.sport,
                         fitness:app.locals.data.fitness,
-                        tecnology:app.locals.data.tecnology,
+                        technology:app.locals.data.technology,
                         music:app.locals.data.music,
                         gaming:app.locals.data.gaming,
                         username:{$ne: req.session.user}},  function(err, data){
                             if(data){
-                                res.render('home',{user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength});
+                                res.render('home',{user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageBetween:app.locals.userAge});
                             }
                         })
                     // }
@@ -226,7 +271,272 @@ app.get('/home',(req,res) => {
         }
     }) 
 });
+//Sorting
+app.post('/sort',urlencodedParser, (req, res) => {
+    schema.user.findOne({username: req.session.user}, function(err, data){
+        if(data){
+            
+
+            app.locals.data = data;
+            app.locals.arrayLength = app.locals.data.blocked.length;
+            app.locals.userLength = app.locals.data.username.length;
+            var str=[]
+            function findIndex(str) { 
+                var index = str.indexOf(app.locals.visiting);
+                return index
+            } 
+            app.locals.like = data.like;
+            var str = app.locals.like
     
+            var count =findIndex(app.locals.like);
+            if (count == '-1'){
+                str.push(app.locals.visiting);
+            }
+                if(app.locals.data.sp== "Heterosexual"){
+                    if(app.locals.data.gender == "Male"){
+                          app.locals.gender = "Female"
+                    }
+                    else
+                    app.locals.gender = "Male"
+                }
+                if(app.locals.data.sp== "Homosexual"){
+                    if(app.locals.data.gender == "Male"){
+                        app.locals.gender = "Male"
+                    }
+                    else
+                        app.locals.gender = "Female"
+                }
+                if(app.locals.data.sp != "Bisexual"){
+                    var str = user.username
+                    app.locals.arrayLength = app.locals.data.blocked.length;
+                    app.locals.userLength = app.locals.data.username.length;
+                    var str=[]
+                    function findIndex(str) { 
+                        var index = str.indexOf(app.locals.visiting);
+                        return index
+                    } 
+                    app.locals.like = data.like;
+                    var str = app.locals.like
+            
+                    var count =findIndex(app.locals.like);
+                    if (count == '-1'){
+                        str.push(app.locals.visiting);
+                    }
+                   
+                    schema.user.find({like:req.session.user},function(err,data){
+                  
+                    })
+                    
+                    
+                    app.locals.number = '0'
+                    if(req.body.ascAge == 'on'){
+                        app.locals.number = '1'
+                        schema.user.find({
+                            sp:app.locals.data.sp,
+                            gender:app.locals.gender,
+                            sport:app.locals.data.sport,
+                            fitness:app.locals.data.fitness,
+                            technology:app.locals.data.technology,
+                            music:app.locals.data.music,
+                            gaming:app.locals.data.gaming,
+                            username:{$ne: req.session.user}},function(err,data){
+                                res.render('home',{user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLengthm,ageBetween:app.locals.ageBetween});
+                            }).sort({age:app.locals.number})  
+                    }else if(req.body.descAge == 'on'){
+                        app.locals.number = '-1'
+                        schema.user.find({
+                            
+                            sp:app.locals.data.sp,
+                            gender:app.locals.gender,
+                            sport:app.locals.data.sport,
+                            fitness:app.locals.data.fitness,
+                            technology:app.locals.data.technology,
+                            music:app.locals.data.music,
+                            gaming:app.locals.data.gaming,
+                            username:{$ne: req.session.user}},function(err,data){
+                                res.render('home',{user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageBetween:app.locals.ageBetween});
+                            }).sort({age:app.locals.number})  
+
+                    }else if(req.body.fameRating == 'on'){
+                        app.locals.number = '1'
+                        schema.user.find({
+                            
+                            sp:app.locals.data.sp,
+                            gender:app.locals.gender,
+                            sport:app.locals.data.sport,
+                            fitness:app.locals.data.fitness,
+                            technology:app.locals.data.technology,
+                            music:app.locals.data.music,
+                            gaming:app.locals.data.gaming,
+                            username:{$ne: req.session.user}},function(err,data){
+                                res.render('home',{user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageBetween:app.locals.ageBetween});
+                            }).sort({likedBy:app.locals.number})  
+                    }
+                    
+                     //Still need to sort by location!!!!!!  
+                    
+                }   
+                else {
+                    // if(app.locals.data.dislike == "off"){
+                        schema.user.find({
+                        sp:app.locals.data.sp,
+                        sport:app.locals.data.sport,
+                        fitness:app.locals.data.fitness,
+                        technology:app.locals.data.technology,
+                        music:app.locals.data.music,
+                        gaming:app.locals.data.gaming,
+                        username:{$ne: req.session.user}},  function(err, data){
+                            if(data){
+                                res.render('home',{user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageBetween:app.locals.userAge});
+                            }
+                        }).sort({age: app.locals.number}) 
+                    // }
+                }
+        }
+    }) 
+});
+
+//Advanced Search
+app.post('/filterSearch',urlencodedParser,(req,res) =>{
+    app.locals.filterSearch= req.body
+    schema.user.findOne({username:req.session.user},function(err,data){
+        if(data){
+            if(err) throw err;
+            app.locals.filterSearch = data
+            if(app.locals.filterSearch.sp== "Heterosexual"){
+                if(app.locals.filterSearch.gender == "Male"){
+                    app.locals.filterSearch.gender = "Female"
+                }
+                else
+                app.locals.filterSearch.gender = "Male"
+            }
+            if(app.locals.filterSearch.sp== "Homosexual"){
+                if(app.locals.filterSearch.gender == "Male"){
+                    app.locals.filterSearchgender = "Male"
+                }
+                else
+                    app.locals.filterSearch.gender = "Female"
+            }
+            if(app.locals.filterSearch.sp != "Bisexual"){
+                if(req.body.sport == null)
+                {
+                    req.body.sport = "off"
+                }
+                if(req.body.fitness == null)
+                {
+                    req.body.fitness = 'off'
+                }
+                if(req.body.technology == null)
+                {
+                    req.body.technology = 'off'
+                }
+                if(req.body.music == null)
+                {
+                    req.body.music = 'off'
+                }
+                if(req.body.gaming == null)
+                {
+                    req.body.gaming = 'off'
+                }
+            schema.user.find({
+                
+                sp:req.body.sp,
+                gender:req.body.gender,
+                sport:req.body.sport,
+                fitness:req.body.fitness,
+                technology:req.body.technology,
+                music:req.body.music,
+                gaming:req.body.gaming,
+                username:{$ne: req.session.user}},function(err,data){
+                    
+                    res.render('filterResults',{user:data,ageBetween:req.body.ageBetween});
+                })
+        }
+        else{
+            schema.user.find({
+                sport:req.body.sport,
+                fitness:req.body.fitness,
+                technology:req.body.technology,
+                music:req.body.music,
+                gaming:req.body.gaming,
+                username:{$ne: req.session.user}},function(err,data){
+                    
+                    res.render('filterResults',{user:data, ageBetween:req.body.ageBetween});
+                })
+            }
+        }
+    })
+});
+//render filterSeach page
+app.get('/filteredSearch',(req,res) => {
+    schema.user.findOne({username: req.session.user}, async function(err, data){
+        if (err) throw err;
+        res.render('filteredSearch', {gender: data.gender, sp: data.sp});
+    });
+});
+// //ENTER results for advanced search
+// app.post('/profile',urlencodedParser,(req,res) => {
+//     schema.user.findOne({username: req.session.user}, async function(err, data){
+//         if (err) throw err;
+
+       
+//         if (req.body.sp){
+//             sp = req.body.sp;
+//         }
+//         else {
+//             sp = data.sp;
+//         }
+//         if (req.body.ageBetween){
+//             ageBetween = req.body.ageBetween;
+//         }
+//         else {
+//             ageBetween= data.ageBetween;
+//         }
+//         if (req.body.sport){
+//             sport = req.body.sport;
+//         }
+//         else {
+//             sport= "off";
+//         }
+//         if (req.body.fitness){
+//             fitness= req.body.fitness;
+//         }
+//         else {
+//             fitness = "off";
+//         }
+//         if (req.body.tecnology){
+//             tecnology = req.body.tecnology;
+//         }
+//         else {
+//             tecnology = "off";
+//         }
+//         if (req.body.music){
+//             music = req.body.music;
+//         }
+//         else {
+//             music = "off";
+//         }
+//         if (req.body.gaming){
+//             gaming = req.body.gaming;
+//         }
+//         else{
+//             gaming = "off";
+//         }
+//         schema.user.findOneAndUpdate({username: req.session.user},
+//             {$set:{
+//             sp: sp,
+//             ageBetween: ageBetween,
+//             sport: sport,
+//             fitness: fitness,        
+//             tecnology: tecnology,
+//             music: music,
+//             gaming: gaming}}, async function(err, data){
+//              if(err) throw err;
+//                 req.session.user = username;
+//                 res.redirect('/home');
+//         })
+//     })
+// })
 //Users you can chat to
 app.get('/chatList',(req,res) => {
     schema.user.findOne({username: req.session.user}, function(err, data){
@@ -258,24 +568,25 @@ app.post('/register', profileUpload, urlencodedParser,async  function(req,res) {
                 if (err) throw err;
                 if (data == null){
                 //add new user to db
-                    var details = schema.user({
-                    name:  req.body.name,
-                    surname: req.body.surname,        
-                    username: req.body.username,
-                    password: hashpw.digest("hex"),
-                    email: req.body.email,
-                    age: req.body.age,
-                    gender: req.body.gender,
-                    sp: req.body.sp,
-                    bio: req.body.bio,
-                    image: req.body.file,
-                    sport: req.body.sport,
-                    fitness: req.body.fitness,
-                    tecnology: req.body.tecnology,
-                    music: req.body.music,
-                    gaming: req.body.gaming,
-                    ageBetween: req.body.ageBetween,
-                    vkey: vkey}).save(function(err){
+                    schema.user({
+
+                        name:  req.body.name,
+                        surname: req.body.surname,        
+                        username: req.body.username,
+                        password: hashpw.digest("hex"),
+                        email: req.body.email,
+                        age: req.body.age,
+                        gender: req.body.gender,
+                        sp: req.body.sp,
+                        bio: req.body.bio,
+                        image: req.body.file,
+                        sport: req.body.sport,
+                        fitness: req.body.fitness,
+                        technology: req.body.technology,
+                        music: req.body.music,
+                        gaming: req.body.gaming,
+                        ageBetween: req.body.ageBetween,
+                        vkey: vkey}).save(function(err){
                         if(err) throw err;
                         else{
                         //send verification email to user
@@ -502,11 +813,11 @@ app.post('/profile',urlencodedParser,(req,res) => {
         else {
             fitness = "off";
         }
-        if (req.body.tecnology){
-            tecnology = req.body.tecnology;
+        if (req.body.technology){
+            technology = req.body.technology;
         }
         else {
-            tecnology = "off";
+            technology = "off";
         }
         if (req.body.music){
             music = req.body.music;
@@ -535,7 +846,7 @@ app.post('/profile',urlencodedParser,(req,res) => {
             ageBetween: ageBetween,
             sport: sport,
             fitness: fitness,        
-            tecnology: tecnology,
+            technology: technology,
             music: music,
             gaming: gaming}}, async function(err, data){
              if(err) throw err;
@@ -596,6 +907,12 @@ app.get('/image-upload',(req, res) =>{
 )});
 //load home-images
 app.get('/profile-page',(req, res) =>{
+    schema.user.findOne({username:req.session.user},function(err,data){
+        if(data){
+        app.locals.fameRating = data.likedBy.length
+       
+        }
+    })
     gfs.files.find().toArray((err, files)=>{
         //check if files
         if(!files || files.length == 0) {
@@ -612,7 +929,7 @@ app.get('/profile-page',(req, res) =>{
                 }
             });
            
-            res.render('profile-page',{files:files,username:req.session.user});
+            res.render('profile-page',{files:files,username:req.session.user,fameRating:app.locals.fameRating});
         }
     }
 )});
@@ -741,6 +1058,12 @@ app.post('/dislike',urlencodedParser,(req,res) => {
 
 //View another persons Page
 app.get('/visitProfile',(req,res) => {
+    schema.user.findOne({username:req.session.user},function(err,data){
+        if(data){
+        app.locals.fame = data.likedBy.length
+       console.log(app.locals.fame)
+        }
+    })
     var user = req.query.user.toString();
     schema.user.findOne({username: user}, function(err, data){
         app.locals.visiting = data.username;
@@ -757,8 +1080,7 @@ app.get('/visitProfile',(req,res) => {
     
             app.locals.count =findIndex(app.locals.liked);
         })
-        res.render('visitProfile', {name: data.name, surname: data.surname, username: data.username, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio, like: app.locals.count, dislike: data.dislike});
-
+        res.render('visitProfile', {name: data.name, surname: data.surname, username: data.username, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio, like: app.locals.count, dislike: data.dislike,sport:data.sport,fitness:data.fitness,technology:data.technology,music:data.music,gaming:data.gaming,fame:app.locals.fame});
     });
 });
 //View Users you can chat with
@@ -836,5 +1158,5 @@ mongoose.connect(
     () => console.log('connected to DB!', '\nServer is up and running!')
 );
 //How to start listening to the server
-const port = 8013;
+const port = 8012;
 app.listen(port,() => console.log('Server started on port',port));
