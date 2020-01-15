@@ -181,6 +181,7 @@ app.get('/home',(req,res) => {
         if(err) throw err;
         if(data){
             app.locals.userAge = data.ageBetween;
+            
             app.locals.userCountry = data.country;
             app.locals.userCity = data.city;
             app.locals.userPostal = data.postal;
@@ -232,6 +233,7 @@ app.get('/home',(req,res) => {
                     if (count == '-1'){
                         str.push(app.locals.visiting);
                     }
+                    count = 0;
                     schema.user.find({like:req.session.user},function(err,data){
                     })
                         schema.user.find({
@@ -243,7 +245,7 @@ app.get('/home',(req,res) => {
                         music:app.locals.data.music,
                         gaming:app.locals.data.gaming,
                         username:{$ne: req.session.user}},function(err,data){
-                            app.locals.userAge = data.ageBetween;
+                            if(err) throw err;
                             res.render('home',{user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageIsValid:app.locals.age,ageBetween:app.locals.userAge,userCounty:app.locals.userCountry, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
                         })
                 }
@@ -396,21 +398,21 @@ app.post('/filterSearch',urlencodedParser,(req,res) =>{
         if(data){
             if(err) throw err;
             app.locals.filterSearch = data
-            if(app.locals.filterSearch.sp== "Heterosexual"){
-                if(app.locals.filterSearch.gender == "Male"){
-                    app.locals.filterSearch.gender = "Female"
-                }
-                else
-                app.locals.filterSearch.gender = "Male"
-            }
-            if(app.locals.filterSearch.sp== "Homosexual"){
-                if(app.locals.filterSearch.gender == "Male"){
-                    app.locals.filterSearchgender = "Male"
-                }
-                else
-                    app.locals.filterSearch.gender = "Female"
-            }
-            if(app.locals.filterSearch.sp != "Bisexual"){
+            // if(app.locals.filterSearch.sp== "Heterosexual"){
+            //     if(app.locals.filterSearch.gender == "Male"){
+            //         app.locals.filterSearch.gender = "Female"
+            //     }
+            //     else
+            //     app.locals.filterSearch.gender = "Male"
+            // }
+            // if(app.locals.filterSearch.sp== "Homosexual"){
+            //     if(app.locals.filterSearch.gender == "Male"){
+            //         app.locals.filterSearchgender = "Male"
+            //     }
+            //     else
+            //         app.locals.filterSearch.gender = "Female"
+            // }
+            // if(app.locals.filterSearch.sp != "Bisexual"){
                 if(req.body.sport == null)
                 {
                     req.body.sport = "off"
@@ -444,19 +446,19 @@ app.post('/filterSearch',urlencodedParser,(req,res) =>{
                     
                     res.render('filterResults',{user:data,ageBetween:req.body.ageBetween,userCounty:app.locals.userCountry, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
                 })
-        }
-        else{
-            schema.user.find({
-                sport:req.body.sport,
-                fitness:req.body.fitness,
-                technology:req.body.technology,
-                music:req.body.music,
-                gaming:req.body.gaming,
-                username:{$ne: req.session.user}},function(err,data){
+    
+        // else{
+        //     schema.user.find({
+        //         sport:req.body.sport,
+        //         fitness:req.body.fitness,
+        //         technology:req.body.technology,
+        //         music:req.body.music,
+        //         gaming:req.body.gaming,
+        //         username:{$ne: req.session.user}},function(err,data){
                     
-                    res.render('filterResults',{user:data, ageBetween:req.body.ageBetween,userCounty:app.locals.userCountry, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
-                })
-            }
+        //             res.render('filterResults',{user:data, ageBetween:req.body.ageBetween,userCounty:app.locals.userCountry, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
+        //         })
+        //     }
         }
     })
 });

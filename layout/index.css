@@ -3,9 +3,7 @@ body{
     margin:auto;
     height:85.4em;
 }
-footer{
-    float:bottom;
-}
+
 h1{
     text-align: center;
     font: bolder;
@@ -14,12 +12,12 @@ h1{
 
 }
 .wrapper{
-    margin-left: 1em;
-    margin-right: 1em;
-    margin-bottom: 4em;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-bottom: 4em;
     margin-top: 4em;
     background: url("../images/bg.png");
-    height:auto;
+  
 
 }
 .profile-img{
