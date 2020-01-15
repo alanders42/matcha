@@ -175,12 +175,10 @@ app.get('/home',(req,res) => {
                     }}, async function(err, data){
                      if(err) throw err;
                 })
+        })
     })
-})
-   
-
-    
     schema.user.findOne({username: req.session.user}, function(err, data){
+        if(err) throw err;
         if(data){
             app.locals.userAge = data.ageBetween;
             app.locals.userCountry = data.country;
@@ -189,6 +187,7 @@ app.get('/home',(req,res) => {
             app.locals.data = data;
             app.locals.arrayLength = app.locals.data.blocked.length;
             app.locals.userLength = app.locals.data.username.length;
+            //Find if user has been liked
             var str=[]
             function findIndex(str) { 
                 var index = str.indexOf(app.locals.visiting);
@@ -201,22 +200,23 @@ app.get('/home',(req,res) => {
             if (count == '-1'){
                 str.push(app.locals.visiting);
             }
-                if(app.locals.data.sp== "Heterosexual"){
+                if(app.locals.data.sp == "Heterosexual"){
                     if(app.locals.data.gender == "Male"){
                           app.locals.gender = "Female"
                     }
-                    else
+                    else{
                     app.locals.gender = "Male"
+                    }
                 }
-                if(app.locals.data.sp== "Homosexual"){
+                if(app.locals.data.sp == "Homosexual"){
                     if(app.locals.data.gender == "Male"){
                         app.locals.gender = "Male"
                     }
-                    else
+                    else{
                         app.locals.gender = "Female"
+                    }
                 }
                 if(app.locals.data.sp != "Bisexual"){
-
                     var str = user.username
                     app.locals.arrayLength = app.locals.data.blocked.length;
                     app.locals.userLength = app.locals.data.username.length;
@@ -234,7 +234,6 @@ app.get('/home',(req,res) => {
                     }
                     schema.user.find({like:req.session.user},function(err,data){
                     })
-                    app.locals.userLat = 
                         schema.user.find({
                         sp:app.locals.data.sp,
                         gender:app.locals.gender,
@@ -1099,7 +1098,7 @@ app.get('/visitProfile',(req,res) => {
     
             app.locals.count =findIndex(app.locals.liked);
         })
-        res.render('visitProfile', {name: data.name, surname: data.surname, username: data.username, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio, like: app.locals.count, dislike: data.dislike,sport:data.sport,fitness:data.fitness,technology:data.technology,music:data.music,gaming:data.gaming,fame:app.locals.fame});
+        res.render('visitProfile', {photo:data.image,name: data.name, surname: data.surname, username: data.username, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio, like: app.locals.count, dislike: data.dislike,sport:data.sport,fitness:data.fitness,technology:data.technology,music:data.music,gaming:data.gaming,fame:app.locals.fame});
     });
 });
 //View Users you can chat with

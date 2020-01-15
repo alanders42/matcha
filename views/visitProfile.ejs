@@ -26,9 +26,7 @@
 </header>
 
 <div  class="wrapper" style="background: url(../images/bg.png)">
-    <div class="profile-img">
-        <figure><img class="is-rounded" src="../images/profile_image_holder.png"></figure>
-    </div>
+   
     
     <!-- Like button -->
     <form action="/like" method="POST">
@@ -43,7 +41,17 @@
             <button  class="button is-link" style="background-color:#828afc;color:#fff" value="<%= username %>">Blocked</button>
       </form>
 
-    <div class="field"></div>
+    <div class="field">
+        <div class="profile-img">
+            <% if(photo){%>       
+                    <img class="profile-img"class="rounded border-warning" src="data:image/jpg;base64,<%=photo%>" width="300" height="300">
+               <%}%>
+               <% if(photo == null){%>
+                <div class="profile-img">
+                    <figure><img class="is-rounded" src="../images/profile_image_holder.png"></figure>
+                </div>
+                <% }%>
+        </div>
     
       <label class="label" style="color:white; ;">Name</label>
         <div class="control">
