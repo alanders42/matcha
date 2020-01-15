@@ -19,7 +19,7 @@
                 <p class="subtitle" style="color:#fff; text-align: center;">Find love here!</p>
             </a>
         </div><a href="/"><button id="button" style="background-color:#828afc;color:#fff;margin:1.5em">Sign Out</button><a></a></a>
-<a href="/register"><button id="button" style="background-color:#828afc;color:#fff;">Go Back</button><a></a></a>
+<a href="/profile-page"><button id="button" style="background-color:#828afc;color:#fff;">Go Back</button><a></a></a>
 
 
       </section>
@@ -31,22 +31,13 @@
         <div class="col-md-6 m-auto">
 
 <h1 class="text-center display-4 my-4">Mongo File Upload</h1>
-<form action="/upload" method="POST" enctype="multipart/form-data">
+<form action="/gallery" method="POST" enctype="multipart/form-data">
     <div class="custom-file mb-3">
-        <input type="file" name="file" id="file" class="custom-file-input">
-        <label for="file" class="custom-file-label">
+       
+        <input type="file" class="form-control" name="photo" id="photo"accept="image/*" >
+        <label for="photo" class="custom-file-label">
             Choose File
         </label>
-    </div>
-    <div class="field"><label class="label" style="color:white;">Image Type</label>
-        <div class="control">
-            <div class="select">
-              <select name="img" required>
-              <option name="Profile">Profile Picture</option>
-              <option name="img">Image upload</option>
-            </select>
-          </div>
-        </div>
     </div>
     <input type="submit" value="Submit" class="btn btn-primary btn-block">
 </form>

@@ -52,6 +52,14 @@
             <%= fameRating %>
     </div>
   </article>
+    </div>
+  <br>
+  <div class="gallery">
+        <%if(gallery){%>
+            <% for(gal of gallery){%>     
+                <img src="data:image/jpg;base64,<%=gal%>" width="180" height="180">
+            <% }%>
+        <% }%>
     
   
    

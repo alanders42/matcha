@@ -108,6 +108,10 @@ const mongoose = require('mongoose');
         type:String,
         default:null
     },
+    gallery:[{
+        type:String,
+        default:null
+    }]
 });
 user = mongoose.model('Insert',UserSchema);
 module.exports.user = user;

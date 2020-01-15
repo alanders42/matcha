@@ -572,7 +572,38 @@ app.get('/chatList',(req,res) => {
         }
     })
 }) 
-
+//Add to Gallery
+app.post('/gallery', urlencodedParser,upload.single('photo'),(req, res) => {
+    schema.user.findOne({username: req.body.username}, function(err, data){
+        if(err) throw err;
+        var str = []
+        var len = data.gallery.length
+        var i = 0;
+    
+        if(data){
+            if (data.gallery == null){
+                str.push(req.file.buffer.toString('base64'));
+            }
+            else{
+                while(i < len)
+                {
+                    str.push(data.gallery[i])
+                    i++;
+                }
+                str.push(req.file.buffer.toString('base64'))
+                
+            }
+            schema.user.findOneAndUpdate({username: req.session.user},
+                {$set:{
+                gallery:str
+                }}, async function(err, data){
+                 if(err) throw err;
+                 console.log('added to Gallery')
+                 res.redirect('profile-page')
+            })
+        }
+    })
+})
 //Adding User to DB!
 app.post('/register', upload.single('photo'), urlencodedParser,async  function(req,res) {
     //validate password
@@ -965,10 +996,13 @@ app.get('/image-upload',(req, res) =>{
 //load home-images
 app.get('/profile-page',(req, res) =>{
     schema.user.findOne({username:req.session.user},function(err,data){
+        if(err) throw err;
         if(data){
-        app.locals.fameRating = data.likedBy.length
-        app.locals.image = data.image
-       
+            app.locals.fameRating = data.likedBy.length
+            app.locals.image = data.image
+            if(data.gallery){
+            app.locals.gallery = data.gallery
+            }
         }
     })
     gfs.files.find().toArray((err, files)=>{
@@ -987,7 +1021,7 @@ app.get('/profile-page',(req, res) =>{
                 }
             });
            
-            res.render('profile-page',{photo:app.locals.image,files:files,username:req.session.user,fameRating:app.locals.fameRating});
+            res.render('profile-page',{gallery:app.locals.gallery,photo:app.locals.image,files:files,username:req.session.user,fameRating:app.locals.fameRating});
         }
     }
 )});
