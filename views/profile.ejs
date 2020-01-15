@@ -28,7 +28,13 @@
 <div  class="wrapper" style="background: url(../images/bg.png)">
 
    
-    <form method="POST" action="/profile">
+    <form method="POST" action="/profile" enctype="multipart/form-data">
+      <div style="text-align: center;" class="form-group">
+          <label for="photo" class="label" class="col-md-3 control-label" style="color:white">Change Profile Picture</label>
+          <div style="color:white" class="col-md-9">
+            <input type="file" class="form-control" name="photo" id="photo"accept="image/*">
+          </div>
+        </div>
 
       <label class="label" style="color:white; ;">Name</label>
         <div class="control">

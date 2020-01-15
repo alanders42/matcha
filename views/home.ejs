@@ -39,7 +39,7 @@
                     <% break}%>
             <% }%>
             <% if(trueval == 0){%>
-                <% if((users.country == userCountry) && (users.city == userCity) && (users.postal == userPostal)){%>
+                <% if((users.city == userCity) && (users.postal == userPostal)){%>
                     <% if((ageBetween == '18-25') && (users.age >=18 && users.age <=25)){%>
                         <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
                         <%}%>

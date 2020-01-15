@@ -64,6 +64,9 @@ app.get('/',(req,res) => {
 app.get('/profilePic',(req,res) => {
     res.render('profilePic')
 });
+app.get('/changeLocation',(req,res) => {
+    res.render('changeLocation')
+});
 app.get('/sort',(req,res) => {
     res.render('sort')
 });
@@ -266,6 +269,35 @@ app.get('/home',(req,res) => {
         }
     }) 
 });
+//Change Location
+app.post('/changeLocation',urlencodedParser, (req, res) => {
+    schema.user.findOne({username: req.session.user}, function(err, data){
+        if(err) throw err;
+        if(data){
+            if (data.city != req.body.city){
+                city = req.body.city;
+            }
+            else
+                city = data.city
+            if (data.postal != req.body.postal){
+                postal = req.body.postal;
+            }
+            else
+                postal = data.postal
+            console.log(res)
+            schema.user.findOneAndUpdate({username: req.session.user},
+                {$set:{
+                city: city,
+                postal: postal,
+                }}, async function(err, data){
+                 if(err) throw err;
+                 console.log('location Changed')
+                 res.redirect('profile-page')
+            })
+        }
+    });
+});
+    
 //Sorting
 app.post('/sort',urlencodedParser, (req, res) => {
     schema.user.findOne({username: req.session.user}, function(err, data){
@@ -321,8 +353,6 @@ app.post('/sort',urlencodedParser, (req, res) => {
                     schema.user.find({like:req.session.user},function(err,data){
                   
                     })
-                    
-                    
                     app.locals.number = '0'
                     if(req.body.ascAge == 'on'){
                         app.locals.number = '1'
@@ -753,7 +783,7 @@ app.get('/profile',(req,res) => {
 //     })
 // })
 //Update Profile
-app.post('/profile',urlencodedParser,(req,res) => {
+app.post('/profile',upload.single('photo'),urlencodedParser,(req,res) => {
     schema.user.findOne({username: req.session.user}, async function(err, data){
         if (err) throw err;
 
@@ -850,6 +880,14 @@ app.post('/profile',urlencodedParser,(req,res) => {
         else{
             gaming = "off";
         }
+        if (req.file){
+            image = req.file.buffer.toString('base64');
+            app.locals.image = image
+            console.log("Hell yEah")
+        }
+        else{
+            image = app.locals.image;
+        }
         schema.user.findOneAndUpdate({username: req.session.user},
             {$set:{
             name: name,
@@ -860,7 +898,7 @@ app.post('/profile',urlencodedParser,(req,res) => {
             age: age,
             gender: gender,
             sp: sp,
-           
+            image: image,
             bio: bio,
             ageBetween: ageBetween,
             sport: sport,
