@@ -43,7 +43,8 @@ const mongoose = require('mongoose');
         require: false
     },
     image:{
-        type: String
+        type: String,
+        require: true
     },
     vkey: {
         type: String,
@@ -103,10 +104,10 @@ const mongoose = require('mongoose');
         type:String,
         default:null
     },
-    region:{
+    postal:{
         type:String,
         default:null
-    }
+    },
 });
 user = mongoose.model('Insert',UserSchema);
 module.exports.user = user;

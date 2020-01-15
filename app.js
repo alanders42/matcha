@@ -18,10 +18,11 @@ app.use(session({secret: 'ssshhhhh',saveUninitialized: true,resave: true}));
 var async = require('async');
 // var ip2location = require('ip-to-location')
 const getIP = require('external-ip')();
+const math = require("mathjs")
+const iplocation = require("iplocation").default
+var storage = multer.memoryStorage();
+var upload = multer({ storage: storage });
 
-import {
-    atan2, chain, derivative, e, evaluate, log, pi, pow, round, sqrt
-  } from 'mathjs'
 
 
  //mongo Uri
@@ -42,6 +43,7 @@ mailer.extend(app, {
   //Middleware
   app.use(methodOverride('_method'));
 router.use(express.static(__dirname+"./public/"));
+
 
 
 //Import Routes
@@ -74,17 +76,8 @@ var Storage = multer.diskStorage({
         cb(null,file.fieldname+"_"+Date.now()+path.extname(file.originalname))
     }
 });
-function distance(lat1, lon1, lat2, lon2)
-{
-    var R = 6371;
-    var dLat =(lat2 - lat1) * Math.PI /180;
-    var dLon =(lon2 - lon1) * Math.PI / 180;
-    var a =
-    0.5 - Math.cos(dLat) / 2 + Math.cos(lat1 * Math.PI /180) * Math.cos(lat2*Math.PI/180) *(1 - Math.cos(dLon)) / 2;
-    return R * 2 * Math.atan2(Math.sqrt(a).Math.sqrt(1-a));
-}
-let dist = distance(-33.9258, 18.4259,-33.9165, 18.4155)
-console.log(dist +'km')
+
+
 var profileUpload = multer({
     storage:Storage
 }).single('file');
@@ -156,41 +149,43 @@ app.get('/register/:username', (req, res) => {
 //Get all users for matching
 
 app.get('/home',(req,res) => {
-    // let ip = req.header('x-forwarded-for')
+    //Update IP
     getIP(function(err,ip){
-        var geoip = require('geoip-lite');
-    
-        var ips = ip;
-        var geo = geoip.lookup(ips);
         if (err) throw err;
+        var geo = iplocation(ip, [],function(err,res){
+            console.log(res.postal)
                 //add new user to db
                 if (err) throw err;
 
-                if (geo.city){
-                    city = geo.city;
+                if (res.city){
+                    city = res.city;
                 }
-                if (geo.country){
-                    country = geo.country;
+                if (res.country){
+                    country = res.country;
                 }
-                if (geo.region){
-                    region = geo.region;
+                if (res.postal){
+                    postal = res.postal;
                 }
-                console.log(geo)
+                console.log(res)
                 schema.user.findOneAndUpdate({username: req.session.user},
                     {$set:{
                     city: city,
                     country: country,        
-                    region: region,
+                    postal: postal,
                     }}, async function(err, data){
                      if(err) throw err;
                 })
+    })
 })
    
 
     
     schema.user.findOne({username: req.session.user}, function(err, data){
         if(data){
-
+            app.locals.userAge = data.ageBetween;
+            app.locals.userCountry = data.country;
+            app.locals.userCity = data.city;
+            app.locals.userPostal = data.postal;
             app.locals.data = data;
             app.locals.arrayLength = app.locals.data.blocked.length;
             app.locals.userLength = app.locals.data.username.length;
@@ -221,6 +216,7 @@ app.get('/home',(req,res) => {
                         app.locals.gender = "Female"
                 }
                 if(app.locals.data.sp != "Bisexual"){
+
                     var str = user.username
                     app.locals.arrayLength = app.locals.data.blocked.length;
                     app.locals.userLength = app.locals.data.username.length;
@@ -238,8 +234,7 @@ app.get('/home',(req,res) => {
                     }
                     schema.user.find({like:req.session.user},function(err,data){
                     })
-                        app.locals.userAge = data.ageBetween;
-                    
+                    app.locals.userLat = 
                         schema.user.find({
                         sp:app.locals.data.sp,
                         gender:app.locals.gender,
@@ -249,11 +244,11 @@ app.get('/home',(req,res) => {
                         music:app.locals.data.music,
                         gaming:app.locals.data.gaming,
                         username:{$ne: req.session.user}},function(err,data){
-                            res.render('home',{user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageIsValid:app.locals.age,ageBetween:app.locals.userAge});
+                            app.locals.userAge = data.ageBetween;
+                            res.render('home',{user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageIsValid:app.locals.age,ageBetween:app.locals.userAge,userCounty:app.locals.userCountry, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
                         })
                 }
                 else {
-                    // if(app.locals.data.dislike == "off"){
                         schema.user.find({
                         sp:app.locals.data.sp,
                         sport:app.locals.data.sport,
@@ -263,10 +258,9 @@ app.get('/home',(req,res) => {
                         gaming:app.locals.data.gaming,
                         username:{$ne: req.session.user}},  function(err, data){
                             if(data){
-                                res.render('home',{user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageBetween:app.locals.userAge});
+                                res.render('home',{user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageIsValid:app.locals.age,ageBetween:app.locals.userAge,userCounty:app.locals.userCountry, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
                             }
                         })
-                    // }
                 }
         }
     }) 
@@ -449,7 +443,7 @@ app.post('/filterSearch',urlencodedParser,(req,res) =>{
                 gaming:req.body.gaming,
                 username:{$ne: req.session.user}},function(err,data){
                     
-                    res.render('filterResults',{user:data,ageBetween:req.body.ageBetween});
+                    res.render('filterResults',{user:data,ageBetween:req.body.ageBetween,userCounty:app.locals.userCountry, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
                 })
         }
         else{
@@ -461,7 +455,7 @@ app.post('/filterSearch',urlencodedParser,(req,res) =>{
                 gaming:req.body.gaming,
                 username:{$ne: req.session.user}},function(err,data){
                     
-                    res.render('filterResults',{user:data, ageBetween:req.body.ageBetween});
+                    res.render('filterResults',{user:data, ageBetween:req.body.ageBetween,userCounty:app.locals.userCountry, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
                 })
             }
         }
@@ -549,7 +543,7 @@ app.get('/chatList',(req,res) => {
 }) 
 
 //Adding User to DB!
-app.post('/register', profileUpload, urlencodedParser,async  function(req,res) {
+app.post('/register', upload.single('photo'), urlencodedParser,async  function(req,res) {
     //validate password
     if (validate.checkPassword(req.body.password))
     {
@@ -569,7 +563,7 @@ app.post('/register', profileUpload, urlencodedParser,async  function(req,res) {
                 if (data == null){
                 //add new user to db
                     schema.user({
-
+                        image: req.file.buffer.toString('base64'),
                         name:  req.body.name,
                         surname: req.body.surname,        
                         username: req.body.username,
@@ -579,7 +573,6 @@ app.post('/register', profileUpload, urlencodedParser,async  function(req,res) {
                         gender: req.body.gender,
                         sp: req.body.sp,
                         bio: req.body.bio,
-                        image: req.body.file,
                         sport: req.body.sport,
                         fitness: req.body.fitness,
                         technology: req.body.technology,
@@ -589,6 +582,31 @@ app.post('/register', profileUpload, urlencodedParser,async  function(req,res) {
                         vkey: vkey}).save(function(err){
                         if(err) throw err;
                         else{
+                            getIP(function(err,ip){
+                                var geo = iplocation(ip, [],function(err,res){
+                                if (err) throw err;
+                                        //add new user to db
+                                        if (err) throw err;
+                        
+                                        if (res.city){
+                                            city = res.city;
+                                        }
+                                        if (res.country){
+                                            country = res.country;
+                                        }
+                                        if (res.postal){
+                                            postal = res.postal;
+                                        }
+                                        schema.user.findOneAndUpdate({username: req.session.user},
+                                            {$set:{
+                                            city: city,
+                                            country: country,        
+                                            postal: postal,
+                                            }}, async function(err, data){
+                                             if(err) throw err;
+                                        })
+                                    })
+                                })
                         //send verification email to user
                         app.mailer.send('email', {
                             to: req.body.email,
@@ -910,6 +928,7 @@ app.get('/profile-page',(req, res) =>{
     schema.user.findOne({username:req.session.user},function(err,data){
         if(data){
         app.locals.fameRating = data.likedBy.length
+        app.locals.image = data.image
        
         }
     })
@@ -929,7 +948,7 @@ app.get('/profile-page',(req, res) =>{
                 }
             });
            
-            res.render('profile-page',{files:files,username:req.session.user,fameRating:app.locals.fameRating});
+            res.render('profile-page',{photo:app.locals.image,files:files,username:req.session.user,fameRating:app.locals.fameRating});
         }
     }
 )});
@@ -1111,32 +1130,32 @@ const conn = mongoose.createConnection(mongoURI);
 app.locals.count = 1;
 //Create storage engine
 
-const storage = new GridFsStorage({
-    url:mongoURI,
-    file: (req, file) => {
-        return new Promise((resolve, reject) => {
-        crypto.randomBytes(16, (err, buf) => {
-            if (err) {
-            return reject(err);
-            }
-            if(app.locals.profilePicture === undefined){
-            var filename = req.session.user + app.locals.count++;
-            }
-            else{
-                var filename = app.locals.profilePicture;
-            }
-            console.log(app.locals.profilePicture);
-            const fileInfo = {
-            filename: filename,
-            bucketName: 'uploads'
-            };
-            resolve(fileInfo);
-        });
-        });
-    }
-    });
+// const storage = new GridFsStorage({
+//     url:mongoURI,
+//     file: (req, file) => {
+//         return new Promise((resolve, reject) => {
+//         crypto.randomBytes(16, (err, buf) => {
+//             if (err) {
+//             return reject(err);
+//             }
+//             if(app.locals.profilePicture === undefined){
+//             var filename = req.session.user + app.locals.count++;
+//             }
+//             else{
+//                 var filename = app.locals.profilePicture;
+//             }
+//             console.log(app.locals.profilePicture);
+//             const fileInfo = {
+//             filename: filename,
+//             bucketName: 'uploads'
+//             };
+//             resolve(fileInfo);
+//         });
+//         });
+//     }
+//     });
 
-const upload = multer({ storage });
+// const upload = multer({ storage });
 //Init gfs
 let gfs;
 conn.once('open',() =>{
@@ -1158,5 +1177,5 @@ mongoose.connect(
     () => console.log('connected to DB!', '\nServer is up and running!')
 );
 //How to start listening to the server
-const port = 8012;
+const port = 8013;
 app.listen(port,() => console.log('Server started on port',port));

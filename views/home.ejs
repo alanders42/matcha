@@ -29,11 +29,13 @@
 
 <div  class="wrapper" style="background: url(../images/bg.png);">
 
+
+        
     
-    
-   
+        <script>dist</script>
         <div class="field"></div>
         <!--Don't display Blocked Users-->
+       
         <% for(users of user){%>
             <% var trueval = 0%>
             <% for(block of blocked){%>
@@ -42,21 +44,23 @@
                     <% break}%>
             <% }%>
             <% if(trueval == 0){%>
-                <% if((ageBetween == '18-25') && (users.age >=18 && users.age <=25)){%>
-                    <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
-                    <%}%>
-                <% if((ageBetween == '26-35') && (users.age >=26 && users.age <=35)){%>
-                    <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
-                    <%}%>
-                <% if((ageBetween == '36-45') && (users.age >=36 && users.age <=45)){%>
-                    <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
-                    <%}%>
-                <% if((ageBetween == '46-55') && (users.age >=46 && users.age <=55)){%>
-                    <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
-                    <%}%>
-                <% if((ageBetween == '56-older') && (users.age >=56)){%>
-                    <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
-                    <%}%>
+                <% if((users.country == userCountry) && (users.city == userCity) && (users.postal == userPostal)){%>
+                    <% if((ageBetween == '18-25') && (users.age >=18 && users.age <=25)){%>
+                        <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                        <%}%>
+                    <% if((ageBetween == '26-35') && (users.age >=26 && users.age <=35)){%>
+                        <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                        <%}%>
+                    <% if((ageBetween == '36-45') && (users.age >=36 && users.age <=45)){%>
+                        <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                        <%}%>
+                    <% if((ageBetween == '46-55') && (users.age >=46 && users.age <=55)){%>
+                        <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                        <%}%>
+                    <% if((ageBetween == '56-older') && (users.age >=56)){%>
+                        <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                        <%}%>
+                <%}%>
             <%}%>
         <%}%>
     </div>
