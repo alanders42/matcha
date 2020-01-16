@@ -856,6 +856,8 @@ app.post('/profile',upload.single('photo'),urlencodedParser,(req,res) => {
         }
         if (req.body.email){
             email = req.body.email;
+            app.locals.changedEmail = email
+
         }
         else {
             email = data.email;
@@ -948,8 +950,33 @@ app.post('/profile',upload.single('photo'),urlencodedParser,(req,res) => {
             gaming: gaming}}, async function(err, data){
              if(err) throw err;
                 req.session.user = username;
-                res.redirect('/home');
-        })
+
+            //Send email when email has been changed   
+        // })
+        // if(req.body.email)
+        // {
+        //     veri:'false'
+        // }
+        // schema.user.findOneAndUpdate({username: req.session.user},
+        //     {$set:{
+        //         verified:veri}},async function(err,data){
+        //             if(err) throw err;
+        //             //send verify again
+        //             app.mailer.send('email', {
+        //                 to: app.locals.changedEmail,
+        //                 subject: 'Matcha Registration',
+        //                 vkey: vkey
+        //             }, function (err) {
+        //                 if (err) {
+        //                     console.log(err);
+        //                     return;
+        //                 }
+        //                 console.log('Registration email sent to ' + req.session.user);
+        //             })})
+        //             console.log("Added user to DB!")
+ 
+                    res.redirect('/home'); 
+            })
     })
 })
 //loads form
@@ -1066,7 +1093,6 @@ app.post('/like',urlencodedParser,(req,res) => {
         if (err) throw err;
         function findIndex(str) { 
             var index = str.indexOf(app.locals.visiting);
-            console.log(index);
             return index
         } 
         app.locals.liked = data.like;
@@ -1075,16 +1101,23 @@ app.post('/like',urlencodedParser,(req,res) => {
         var likedBy = app.locals.likedBy
 
         var count =findIndex(app.locals.liked);
+        
         if (count == '-1'){
             liked.push(app.locals.visiting);
             console.log('User Profile liked')
+            app.locals.count= '0'
+            
+        
         }
-        else {
+        else if(count == '0'){
             const index = app.locals.liked.indexOf(count);
             
-                app.locals.liked.splice(index, 1);
+                liked.splice(index, 1);
+
                 req.session.user.spl
                 console.log(app.locals.liked)
+                app.locals.count = '-1'
+            console.log(app.locals.likeOrNot)
             console.log('User Profile is unliked')
         }
         schema.user.findOneAndUpdate({username: req.session.user},
@@ -1158,6 +1191,22 @@ app.post('/dislike',urlencodedParser,(req,res) => {
         })
     })
 })
+//Report User Profile
+app.post('/reportUser', (req, res) => {
+    app.mailer.send('email', {
+        to: 'matchaprojectsup@gmail.com',
+        subject: app.locals.visiting +'has been reported by'+ req.session.user,
+        vkey:"The user has been reported"
+    }, function (err) {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        console.log(app.locals.visiting+' has been reported');
+});
+ res.redirect('home');
+})
+//Display Visiters Gallery
 app.get('/visitingGallery', (req, res) => {
     schema.user.findOne({username: app.locals.visiting}, function(err, data){
         if(err) throw err;
@@ -1187,9 +1236,7 @@ app.get('/visitProfile',(req,res) => {
                 console.log(index);
                 return index
             } 
-            app.locals.liked = data.like;
-    
-            app.locals.count =findIndex(app.locals.liked);
+          
         })
         res.render('visitProfile', {photo:data.image,name: data.name, surname: data.surname, username: data.username, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio, like: app.locals.count, dislike: data.dislike,sport:data.sport,fitness:data.fitness,technology:data.technology,music:data.music,gaming:data.gaming,fame:app.locals.fame});
     });

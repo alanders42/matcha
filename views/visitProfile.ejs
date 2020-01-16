@@ -24,16 +24,18 @@
     <hr style="color:#fff;">
  
 </header>
-
+<form action="/reportUser" method="POST">
+  <button class="button is-link" style="background-color:#cc2323;color:#fff;margin-bottom:1em">Report User</button>
+  </form>
 <div  class="wrapper" style="background: url(../images/bg.png)">
   <a href="visitingGallery"><button class="button is-link"  style="background-color:#828afc;color:#fff;margin-bottom:1em"  value="<%= username %>">Gallery</button></a>
-   
+ 
     <!-- Like button -->
     <form action="/like" method="POST">
-      <% if(like == -1) {%>
-          <button  class="button is-link" style="background-color:#828afc;color:#fff;margin-bottom:1em" value="<%= username %>">Like</button>
+      <% if(like == 0) {%>
+          <button  class="button is-link" style="background-color:#828afc;color:#fff;margin-bottom:1em" value="<%= username %>">Unlike</button>
       <% }else{ %>
-        <button class="button is-link"  style="background-color:#828afc;color:#fff;margin-bottom:1em"  value="<%= username %>">Unlike</button>
+        <button class="button is-link"  style="background-color:#828afc;color:#fff;margin-bottom:1em" >Like</button>
         <% } %>
     </form>
       <!-- disLike button -->
