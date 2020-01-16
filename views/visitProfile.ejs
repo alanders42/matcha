@@ -15,10 +15,10 @@
         <div class="container">
             <a href="/">
                 <h1 class="title" style="font-weight:200;color:white; text-align: center;">Matcha</h1>
-                <p class="subtitle" style="color:#fff; text-align: center;">Find love here!</p>
+                <p class="subtitle" style="color:#fff; text-align: center;margin-bottom: 2em;">Find love here!</p>
             </a>
-        </div><a href="/"><button id="button" style="background-color:#828afc;color:#fff;margin:1.5em">Sign Out</button><a></a></a>
-        <a href="/home"><button id="button" style="background-color:#828afc;color:#fff;margin-left:1.5em">Go Back</button><a></a>
+        </div><a href="/"><button class="button is-info"style="margin-left:9em;margin-bottom:2em;background-color:#828afc;color:#fff;margin-left:1.5em">Sign Out</button><a></a></a>
+        <a href="/home"><button class="button is-info"style="margin-left:9em;margin-bottom:2em;background-color:#828afc;color:#fff;margin-left:1.5em">Go Back</button><a></a>
 
       </section>
     <hr style="color:#fff;">
@@ -26,8 +26,8 @@
 </header>
 
 <div  class="wrapper" style="background: url(../images/bg.png)">
+  <a href="visitingGallery"><button class="button is-link"  style="background-color:#828afc;color:#fff;margin-bottom:1em"  value="<%= username %>">Gallery</button></a>
    
-    
     <!-- Like button -->
     <form action="/like" method="POST">
       <% if(like == -1) {%>
@@ -122,12 +122,14 @@
         <div class="control"><text class="textarea"><%= bio%></text></div>
     </div>
     </div>
+  
 
 </form>
-</body>
 <footer class="footer" style="background: url(../images/menu.png);">
-    <div class="content has-text-centered">
-        <p style="color:white;"><strong style="color:white;">Matcha</strong> by J.T.A.B <a href="https://github.com/BrandonSwanepoel/Matcha"></a></p>
-    </div>
+  <div class="content has-text-centered">
+      <p style="color:white;"><strong style="color:white;">Matcha</strong> by J.T.A.B <a href="https://github.com/BrandonSwanepoel/Matcha"></a></p>
+  </div>
 </footer>
+</body>
+
 

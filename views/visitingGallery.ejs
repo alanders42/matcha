@@ -8,46 +8,53 @@
     <link rel="stylesheet" href="../layout/index.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <script defer="" src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-
+      <style>
+      .images{
+          width: 30%;
+         
+         
+         
+      }
+      </style>
 </head>
 <body style ="background: url(../images/bg.png)">
+    
 <header style="background: black;">
     <section class="section" style="background: black;">
         <div class="container">
             <a href="/">
                 <h1 class="title" style="font-weight:200;color:white; text-align: center;">Matcha</h1>
-                <p class="subtitle" style="color:#fff; text-align: center;">Find love here!</p>
+                <p class="subtitle" style="color:#fff; text-align: center;margin-bottom:2em ;">Find love here!</p>
             </a>
-        </div><a href="/"><button style="background-color:#828afc;color:#fff;margin:1.5em">Sign Out</button></a>
-<a href="/profile-page"><button style="background-color:#828afc;color:#fff;">Go Back</button></a>
+<a href="/home"><button class="button is-info"style="margin-left:9em;margin-bottom:2em;background-color:#828afc;color:#fff;margin-left:1.5em">Home</button></a>
+        <a href="/"><button class="button is-info"style="margin-left:9em;margin-bottom:2em;background-color:#828afc;color:#fff;margin-left:1.5em">Sign Out</button></a>
 
-
+        </div>
       </section>
     <hr style="color:#fff;">
  
 </header>
-<div class="container">
-    <div class="row">
-        <div class="col-md-6 m-auto">
 
-<h1 class="text-center display-4 my-4">Mongo File Upload</h1>
-<form action="/gallery" method="POST" enctype="multipart/form-data">
-    <div class="custom-file mb-3">
-       
-        <input type="file" class="form-control" name="photo" id="photo"accept="image/*" >
-        <label for="photo" class="custom-file-label">
-            Choose File
-        </label>
-    </div>
+    <div class="wrapper2">
+<!-- <% if(photo){%>       
+        <img  class="profile-img" style="justify-content: center;" src="data:image/jpg;base64,<%=photo%>" width="400" height="400">
+   <%}%> 
+    -->
+    
+  <br>
+  <div class="gallery">
+        <%if(gallery){%>
+            <% for(gal of gallery){%>
+                    <img src="data:image/jpg;base64,<%=gal%>" width="200" height="180">
+            <% }%>
+        <% }%>
     
   
-    <input type="submit" value="Submit" class="btn btn-primary btn-block">
-</form>
-<hr>
+   
+   </div>
 
-        </div>
     </div>
-</div>
+
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>

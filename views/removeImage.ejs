@@ -24,14 +24,13 @@
         <div class="container">
             <a href="/">
                 <h1 class="title" style="font-weight:200;color:white; text-align: center;">Matcha</h1>
-                <p class="subtitle" style="color:#fff; text-align: center;padding-bottom: 2em;">Find love here!</p>
+                <p class="subtitle" style="color:#fff; text-align: center;">Find love here!</p>
             </a>
-        </div>
-<a href="/"><button class="button is-info"style="text-align:center; margin-bottom:2em;background-color:#828afc;color:#fff;margin-left:1.5em">Sign Out</button><a></a>
-<a href="/image-upload"><button class="button is-info"style="text-align:center; margin-bottom:2em;background-color:#828afc;color:#fff;margin-left:1.5em">Upload Image</button><a></a>
-<a href="/profile"><button class="button is-info"style="text-align:center; margin-bottom:2em;background-color:#828afc;color:#fff;margin-left:1.5em">Edit Profile</button><a></a></a>
-<a href="/changeLocation"><button class="button is-info"style="text-align:center; margin-bottom:2em;background-color:#828afc;color:#fff;margin-left:1.5em">Change Location</button><a></a></a>
-<a href="/home"><button class="button is-info"style="text-align:center; margin-bottom:2em;background-color:#828afc;color:#fff;margin-left:1.5em">Feed</button><a></a></a>
+        </div><a href="/"><button class="button is-info"id="button" style="background-color:#828afc;color:#fff;margin:1.5em">Sign Out</button><a></a>
+<a href="/image-upload"><button class="button is-info"id="button" style="background-color:#828afc;color:#fff;margin-left:1.5em">Upload Image</button><a></a>
+<a href="/profile"><button class="button is-info"id="button" style="background-color:#828afc;color:#fff;margin-left:1.5em">Edit Profile</button><a></a></a>
+<a href="/changeLocation"><button class="button is-info"id="button" style="background-color:#828afc;color:#fff;;margin-left:1.5em">Change Location</button><a></a></a>
+<a href="/home"><button class="button is-info"id="button" style="background-color:#828afc;color:#fff;">Feed</button><a></a></a>
 
 
       </section>
@@ -58,9 +57,17 @@
   <div class="gallery">
         <%if(gallery){%>
             <% for(gal of gallery){%>
+                <% var i = 0%>
+                <%if(galleryLen < 5){%>
                     <img src="data:image/jpg;base64,<%=gal%>" width="180" height="180">
+                    <% i++%>
+                <% }%>
+                <% if(galleryLen > 5){%>
+                    <h1 style="color: red;">ERROR</h1>
+              
             <% }%>
         <% }%>
+    <% }%>
     
   
    
@@ -72,7 +79,7 @@
                 <div class="col-md-6 m-auto">
                    
                        
-<% if(files){%>
+<!-- <% if(files){%>
 <% files.forEach(function(file) {%>
 <% if(file.filename === username+"1" || file.filename === username+"2" || file.filename === username+"3" || file.filename === username+"4"){%>
         <% if(file.isImage) {%>
@@ -85,7 +92,7 @@
     <% }}) %>
     <%} else {%>
         <p>No files to show</p>
-    <% } %>
+    <% } %> -->
 </div>
 </div>
     </div>

@@ -9,6 +9,7 @@
    
 </head>
 <body style ="background: url(../images/bg.png)">
+
 <header style="background: black;">
     <section class="section" style="background: black;">
         <div class="container">
@@ -25,41 +26,40 @@
 <!-- <div  class="wrapper" style="background: url(../images/bg.png)">
 <a href="/profilePic"><button id="button" style="height:auto;background-color:#828afc;color:#fff;">Upload Profile Picture</button><a></a></a> -->
 
-
-  
-    <div class="field"></div>
+<div class="wrapper" style ="background: url(../images/bg.png)">
     <h3 style="color:red;"><%= erreg %></h3>
     <form method="POST" action="" enctype="multipart/form-data">
 
-      <div class="form-group">
-        <label for="photo" class="col-md-3 control-label" style="color:white">Profile Picture</label>
-        <div style="color:white" class="col-md-9">
-          <input type="file" class="form-control" name="photo" id="photo"accept="image/*" required>
+      <div style="text-align: center;" class="form-group">
+          <label for="photo" class="label" class="col-md-3 control-label" style="color:white">Profile Picture</label>
+          <div style="color:white" class="col-md-9">
+            <input type="file" class="form-control" name="photo" id="photo"accept="image/*" required>
+          </div>
         </div>
-      </div>
 
       <label class="label" style="color:white; ;">Name</label>
         <div class="control">
-          <input class="input" type="text" placeholder="Text input" name="name" required></div>
+          <input class="input" type="text" placeholder="Text input" name="name" required>
+        </div>
    
     <div class="field">
         <label class="label" style="color:white; ;">Surname</label>
         <div class="control">
-          <input class="input" type="text" placeholder="Text input" name="surname" required></div>
-   
+          <input class="input" type="text" placeholder="Text input" name="surname" required>
+        </div>
+    </div>
     <div class="field">
       <label class="label" style="color:white;">Username</label>
         <div class="control has-icons-left has-icons-right">
           <input class="input is-success" type="text" placeholder="Text input" name="username" required>
-          <span class="icon is-small is-left"><i class="fas fa-user"></i>
-          </span><span class="icon is-small is-right"><i class="fas fa-check"></i>
-          </span>
+          <span class="icon is-small is-left"><i class="fas fa-user"></i></span>
+          <span class="icon is-small is-right"><i class="fas fa-check"></i></span>
         </div>
-        <p class="help is-success">This username is available</p>
     </div>
     <label class="label" style="color:white; ;">Password</label>
     <div class="control">
-      <input class="input" type="password" placeholder="Text input" name="password" required></div>
+      <input class="input" type="password" placeholder="Text input" name="password" required>
+    </div>
     <div class="field"><label class="label" style="color:white;">Email</label>
         <div class="control has-icons-left has-icons-right">
           <input class="input" type="text" placeholder="Email input" name="email" required>
@@ -69,10 +69,12 @@
         </div>
         <p
             class="help is-danger">This email is invalid</p> =-->
-    </div> 
+        </div> 
+    </div>
     <div class="field"><label class="label" style="color:white;">Age</label>
         <div class="control">
           <input class="input" type="text" placeholder="Age" name="age" required>
+        </div>
     </div>
     <div style="text-align: center;" class="field"><label class="label" style="color:white;">Gender</label>
         <div style="text-align: center;" class="control">
@@ -116,16 +118,22 @@
     </div>
 </div>
     <div class="field"><label class="label" style="color:white;" type="text">Bio</label>
-        <div class="control"><textarea class="textarea" placeholder="Textarea" name="bio"></textarea></div>
+        <div class="control"><textarea class="textarea" placeholder="Textarea" name="bio"></textarea>
+        </div>
     </div>
     <div class="field is-grouped">
-      <div class="control"><button class="button is-link" type="submit" name="submit">Submit</button></div></a>
+      <div class="control"><button class="button is-link" type="submit" name="submit">Submit</button>
+      </div>
     </div>
+  
 </form>
-</body>
+
+</div>
 <footer class="footer" style="background: url(../images/menu.png);">
-    <div class="content has-text-centered">
-        <p style="color:white;"><strong style="color:white;">Matcha</strong> by J.T.A.B <a href="https://github.com/BrandonSwanepoel/Matcha"></a></p>
-    </div>
+  <div class="content has-text-centered">
+      <p style="color:white;"><strong style="color:white;">Matcha</strong> by J.T.A.B <a href="https://github.com/BrandonSwanepoel/Matcha"></a></p>
+  </div>
 </footer>
+</body>
+
 

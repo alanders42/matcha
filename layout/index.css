@@ -1,7 +1,7 @@
 
 body{
     margin:auto;
-    height:85.4em;
+    
 }
 
 h1{
@@ -12,13 +12,18 @@ h1{
 
 }
 .wrapper{
-    padding-left: 1em;
-    padding-right: 1em;
-    padding-bottom: 4em;
+    padding-left: 8em;
+    padding-right: 8em;
+    padding-bottom: 100%;
     margin-top: 4em;
     background: url("../images/bg.png");
-  
-
+}
+.wrapper2{
+    padding-left: 2em;
+    padding-right: 2em;
+    padding-bottom: 100%;
+    margin-top: 4em;
+    background: url("../images/bg.png");
 }
 .profile-img{
     margin-top:2em;
@@ -99,3 +104,7 @@ button :hover{
 .boxed {
     border: 1px solid green ;
   } 
+  
+  .button2:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+  }

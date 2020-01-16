@@ -6,28 +6,31 @@
     <link rel="stylesheet" href="../layout/index.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <script defer="" src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body style ="background: url(../images/bg.png)">
-<header style="background: black;">
-    <section class="section" style="background: black;">
-        <div class="container">
+  
+<div style="background: black;">
+   <section class="section">
+        <div class="container"style="background: black;" >
             <a href="/home">
                 <h1 class="title" style="font-weight:200;color:white; text-align: center;">Matcha</h1>
                 <p class="subtitle" style="color:#fff; text-align: center;">Find love her!</p>
             </a>
-        <a href="/"><button class="button is-info"id="button" style="background-color:#828afc;color:#fff;margin:1.5em">Sign Out</button></a>
-    <a href="/chatList"><button  class="button is-info"id="button" style="background-color:#828afc;color:#fff; margin:1.5em">Chat List</button></a>
-    <a href="/profile-page"><button class="button is-info" id="button" style="background-color:#828afc;color:#fff; margin:1.5em">Profile</button></a>
-    <a href="/filteredSearch"><button  class="button is-info" id="button" style="background-color:#828afc;color:#fff; margin:1.5em">Filtered Search</button></a>
-    <a href="/sort"><button  class="button is-info" id="button" style="background-color:#828afc;color:#fff; margin:1.5em">Sort</button></a>
+        
+        <a href="/"><button class="button is-info"style="margin-left:9em;margin-bottom:2em;background-color:#828afc;color:#fff;margin-left:1.5em">Sign Out</button></a>
+    <a href="/chatList"><button  class="button is-info"style="margin-bottom:2em;background-color:#828afc;color:#fff; margin-left:1.5em">Chat List</button></a>
+    <a href="/profile-page"><button class="button is-info" style="margin-bottom:2em;background-color:#828afc;color:#fff; margin-left:1.5em">Profile</button></a>
+    <a href="/filteredSearch"><button  class="button is-info"  style="margin-bottom:2em;background-color:#828afc;color:#fff; margin-left:1.5em">Filtered Search</button></a>
+    <a href="/sort"><button  class="button "  style="margin-bottom:2em; background-color:#828afc;color:#fff; margin-left:1.5em">Sort</button></a>
+</div>
 
-
-      </section>
+   </section>
     <hr style="color:#fff;">
  
-</header>
+    </div>
 
-<div  class="wrapper" style="background: url(../images/bg.png);">
+<div  class="wrapper" >
         
         <!--Don't display Blocked Users-->
        
@@ -41,7 +44,7 @@
             <% if(trueval == 0){%>
                 <% if((users.city == userCity) && (users.postal == userPostal)){%>
                     <% if((ageBetween == '18-25') && (users.age >=18 && users.age <=25)){%>
-                        <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                        <a style="padding-top:10em;padding-left: 10em; padding-right: 10em;" href="visitProfile?user=<%= users.username%>"><button style=" background-color: #60b9e2;color:#fff;font-weight: 700;" class="button2 form-control" ><%= users.username %></button></a>
                         <%}%>
                     <% if((ageBetween == '26-35') && (users.age >=26 && users.age <=35)){%>
                         <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>

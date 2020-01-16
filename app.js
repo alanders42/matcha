@@ -574,25 +574,34 @@ app.get('/chatList',(req,res) => {
 }) 
 //Add to Gallery
 app.post('/gallery', urlencodedParser,upload.single('photo'),(req, res) => {
-    schema.user.findOne({username: req.body.username}, function(err, data){
+    schema.user.findOne({username: req.session.user}, function(err, data){
         if(err) throw err;
         var str = []
         var len = data.gallery.length
-        var i = 0;
+        console.log(len)
+        var i = len;
+        var j = 0;
+    
     
         if(data){
+            while(i)
+            {
+                str.push(data.gallery[j])
+                i--;
+                j++;
+            }
             if (data.gallery == null){
                 str.push(req.file.buffer.toString('base64'));
-            }
-            else{
-                while(i < len)
-                {
-                    str.push(data.gallery[i])
-                    i++;
+            }else{
+                if(len <= 3){
+                    str.push(req.file.buffer.toString('base64'))
                 }
-                str.push(req.file.buffer.toString('base64'))
-                
+                if(len >= 4){
+                    str.shift(data.gallery)
+                    str.push(req.file.buffer.toString('base64'))
+                }
             }
+            app.locals.galleryImages = str
             schema.user.findOneAndUpdate({username: req.session.user},
                 {$set:{
                 gallery:str
@@ -974,6 +983,7 @@ app.get('/image-upload',(req, res) =>{
 app.get('/image-upload',(req, res) =>{
     gfs.files.find().toArray((err, files)=>{
         //check if files
+        app.locals.galleryLen = data.gallery.length
         if(!files || files.length == 0) {
             res.render('image-upload',{files:false});
         } else{
@@ -989,7 +999,7 @@ app.get('/image-upload',(req, res) =>{
             });
             if (app.locals.errlog == undefined)
                 app.locals.errlog =  'Please fill in the form to login!';
-            res.render('image-upload',{files:files, username:req.session.user});
+            res.render('image-upload',{galleryLen:app.locals.galleryLen,files:files, username:req.session.user});
         }
     }
 )});
@@ -1001,7 +1011,8 @@ app.get('/profile-page',(req, res) =>{
             app.locals.fameRating = data.likedBy.length
             app.locals.image = data.image
             if(data.gallery){
-            app.locals.gallery = data.gallery
+            app.locals.galleryImages = data.gallery
+            app.locals.galleryLen = data.gallery.length
             }
         }
     })
@@ -1021,7 +1032,7 @@ app.get('/profile-page',(req, res) =>{
                 }
             });
            
-            res.render('profile-page',{gallery:app.locals.gallery,photo:app.locals.image,files:files,username:req.session.user,fameRating:app.locals.fameRating});
+            res.render('profile-page',{galleryLen:app.locals.galleryLen,gallery:app.locals.galleryImages,photo:app.locals.image,files:files,username:req.session.user,fameRating:app.locals.fameRating});
         }
     }
 )});
@@ -1147,13 +1158,21 @@ app.post('/dislike',urlencodedParser,(req,res) => {
         })
     })
 })
-
+app.get('/visitingGallery', (req, res) => {
+    schema.user.findOne({username: app.locals.visiting}, function(err, data){
+        if(err) throw err;
+        if(data){
+            app.locals.visitingGallery = data.gallery
+            app.locals.visitingProfilePicture = data.image
+        }
+        res.render('visitingGallery',{gallery:app.locals.visitingGallery,photo:app.locals.visitingProfilePicture});
+});
+})
 //View another persons Page
 app.get('/visitProfile',(req,res) => {
     schema.user.findOne({username:req.session.user},function(err,data){
         if(data){
         app.locals.fame = data.likedBy.length
-       console.log(app.locals.fame)
         }
     })
     var user = req.query.user.toString();
