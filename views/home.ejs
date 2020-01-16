@@ -46,7 +46,7 @@
             <% if(trueval == 0){%>
                 <% if((users.city == userCity) && (users.postal == userPostal)){%>
                     <% if((ageBetween == '18-25') && (users.age >=18 && users.age <=25)){%>
-                        <a style="padding-top:10em;padding-left: 10em; padding-right: 10em;" href="visitProfile?user=<%= users.username%>"><button style=" background-color: #60b9e2;color:#fff;font-weight: 700;" class="button2 form-control" ><%= users.username %></button></a>
+                        <a style="margin-top:2em;padding-left: 10em; padding-right: 10em;" href="visitProfile?user=<%= users.username%>"><button style=" background-color: #60b9e2;color:#fff;font-weight: 700;" class="button2 form-control" ><%= users.username %></button></a>
                         <%}%>
                     <% if((ageBetween == '26-35') && (users.age >=26 && users.age <=35)){%>
                         <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
