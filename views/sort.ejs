@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="../layout/index.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <script defer="" src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
    
 </head>
 <body style ="background: url(../images/bg.png)">
@@ -14,17 +16,20 @@
         <div class="container">
             <a href="/">
                 <h1 class="title" style="font-weight:200;color:white; text-align: center;">Matcha</h1>
-                <p class="subtitle" style="color:#fff; text-align: center;">Find love here!</p>
+                <p class="subtitle" style="color:#fff; text-align: center;padding-bottom: 2em;">Find love here!</p>
             </a>
-       
-    </div><a href="/"><button id="button" style="background-color:#828afc;color:#fff;margin:1.5em">Sign Out</button><a></a></a>
-</div><a href="/home"><button  id="button" style="background-color:#828afc;color:#fff; margin:1.5em">Go Back</button><a></a></a>
+        <a href="/home"><button  class="button is-info" style="margin-bottom:2em; background-color:#828afc;color:#fff; margin-left:1.5em">Go Back</button></a>
+
+        <a href="/"><button  class="button is-info" style="margin-bottom:2em; background-color:#828afc;color:#fff; margin-left:1.5em">Sign Out</button></a>
+    </div>
       </section>
     <hr style="color:#fff;">
- 
 </header>
 <div class="wrapper">
-    <div style="color:white;text-align: center;" class="field"><label class="label" style="color:white;" type="text">Sort</label>
+        <h1 style="color: #fff;font-weight: 700;font-size: 3em;">Sort Page</h1>
+        <br>
+        <hr>
+    <div style="color:white;text-align: center;" ><label class="label" style="color:white;" type="text"></label>
        <form action="/sort" method="POST">
         <input type="checkbox" name="ascAge" > Asc Age<br><br>
         <input type="checkbox" name="descAge" > Desc Age<br><br>
@@ -33,18 +38,18 @@
         
    
         <!--Need to still sort by common tags-->
+        <br>
+    <input type="submit" name="submit" value="Sort" class="btn btn-primary btn-block">
+    <br>
+
+        </form>
     </div>
+</div>
   
-    <div class="field is-grouped">
-        <div class="control"><a herf="javascript:void(0)" "><button class="button is-link" type="submit" name="submit">Sort</button></div></a>
-       
-    </div>
-  </div>
-  </form>
-  <footer class="footer" style="background: url(../images/menu.png);">
+<footer class="footer" style="background: url(../images/menu.png);width: 100; ;">
     <div class="content has-text-centered">
         <p style="color:white;"><strong style="color:white;">Matcha</strong> by J.T.A.B <a href="https://github.com/BrandonSwanepoel/Matcha"></a></p>
     </div>
-</footer>
+  </footer>
 </body>
 

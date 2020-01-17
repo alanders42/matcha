@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="../layout/index.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <script defer="" src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
 </head>
 <header style="background: black;">
     <section class="section" style="background: black;">
@@ -26,7 +28,9 @@
 
 
 <div  class="wrapper" style="background: url(../images/bg.png)">
-
+  <h1 style="color: #fff;font-weight: 700;font-size: 3em;">Edit Profile</h1>
+  <br>
+  <hr>
    
     <form method="POST" action="/profile" enctype="multipart/form-data">
       <div style="text-align: center;" class="form-group">
@@ -102,9 +106,9 @@
        <textarea class="textarea" placeholder="<%= bio%>" name="bio"></textarea>
     </div>
   </div>
-  <div class="field is-grouped">
-      <div  class="control"><button class="button is-link" type="submit" name="submit">Submit</button></div></a>
-    </div>
+ 
+      <div  class="control"><button class="btn btn-primary btn-block"type="submit" name="submit">Submit</button></div></a>
+    
     </form>
 </div>
 

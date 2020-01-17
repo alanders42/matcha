@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="../layout/index.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <script defer="" src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body style ="background: url(../images/bg.png)">
 <header style="background: black;">
@@ -13,10 +14,10 @@
         <div class="container">
             <a href="/">
                 <h1 class="title" style="font-weight:200;color:white; text-align: center;">Matcha</h1>
-                <p class="subtitle" style="color:#fff; text-align: center;">Find love her!</p>
+                <p class="subtitle" style="color:#fff; text-align: center;padding-bottom:2em;">Find love her!</p>
             </a>
-        <a href="/"><button class="button is-info"id="button" style="background-color:#828afc;color:#fff;margin:1.5em">Sign Out</button></a>
-    <a href="/home"><button  class="button is-info"id="button" style="background-color:#828afc;color:#fff; margin:1.5em">Go Back</button></a>
+    <a href="/home"><button  class="button is-info" style="margin-bottom:2em; background-color:#828afc;color:#fff; margin-left:1.5em">Go Back</button></a>
+    <a href="/"><button  class="button is-info" style="margin-bottom:2em; background-color:#828afc;color:#fff; margin-left:1.5em">Sign Out</button></a>
 
 
       </section>
@@ -29,19 +30,19 @@
             <% if(sameLocation == '1'){%>
                 <% if((users.city == userCity) && (users.postal == userPostal)){%>
                     <% if((ageBetween == '18-25') && (users.age >=18 && users.age <=25)){%>
-                        <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                        <a style="margin-top:2em;padding-left: 10em; padding-right: 10em;" href="visitProfile?user=<%= users.username%>"><button style=" background-color: #60b9e2;color:#fff;font-weight: 700;" class="button2 form-control" ><%= users.username %></button></a>
                         <%}%>
                     <% if((ageBetween == '26-35') && (users.age >=26 && users.age <=35)){%>
-                        <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                        <a style="margin-top:2em;padding-left: 10em; padding-right: 10em;" href="visitProfile?user=<%= users.username%>"><button style=" background-color: #60b9e2;color:#fff;font-weight: 700;" class="button2 form-control" ><%= users.username %></button></a>
                         <%}%>
                     <% if((ageBetween == '36-45') && (users.age >=36 && users.age <=45)){%>
-                        <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                        <a style="margin-top:2em;padding-left: 10em; padding-right: 10em;" href="visitProfile?user=<%= users.username%>"><button style=" background-color: #60b9e2;color:#fff;font-weight: 700;" class="button2 form-control" ><%= users.username %></button></a>
                         <%}%>
                     <% if((ageBetween == '46-55') && (users.age >=46 && users.age <=55)){%>
-                        <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                        <a style="margin-top:2em;padding-left: 10em; padding-right: 10em;" href="visitProfile?user=<%= users.username%>"><button style=" background-color: #60b9e2;color:#fff;font-weight: 700;" class="button2 form-control" ><%= users.username %></button></a>
                         <%}%>
                     <% if((ageBetween == '56-older') && (users.age >=56)){%>
-                        <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                        <a style="margin-top:2em;padding-left: 10em; padding-right: 10em;" href="visitProfile?user=<%= users.username%>"><button style=" background-color: #60b9e2;color:#fff;font-weight: 700;" class="button2 form-control" ><%= users.username %></button></a>
                         <%}%>
                 <%}%>
             <%}%>
@@ -49,19 +50,19 @@
         <% for(users of user){%>
             <% if(sameLocation == '0'){%>
                     <% if((ageBetween == '18-25') && (users.age >=18 && users.age <=25)){%>
-                        <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                        <a style="margin-top:2em;padding-left: 10em; padding-right: 10em;" href="visitProfile?user=<%= users.username%>"><button style=" background-color: #60b9e2;color:#fff;font-weight: 700;" class="button2 form-control" ><%= users.username %></button></a>
                     <%}%>
                     <% if((ageBetween == '26-35') && (users.age >=26 && users.age <=35)){%>
-                        <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                        <a style="margin-top:2em;padding-left: 10em; padding-right: 10em;" href="visitProfile?user=<%= users.username%>"><button style=" background-color: #60b9e2;color:#fff;font-weight: 700;" class="button2 form-control" ><%= users.username %></button></a>
                     <%}%>
                     <% if((ageBetween == '36-45') && (users.age >=36 && users.age <=45)){%>
-                        <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                        <a style="margin-top:2em;padding-left: 10em; padding-right: 10em;" href="visitProfile?user=<%= users.username%>"><button style=" background-color: #60b9e2;color:#fff;font-weight: 700;" class="button2 form-control" ><%= users.username %></button></a>
                     <%}%>
                     <% if((ageBetween == '46-55') && (users.age >=46 && users.age <=55)){%>
-                        <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                        <a style="margin-top:2em;padding-left: 10em; padding-right: 10em;" href="visitProfile?user=<%= users.username%>"><button style=" background-color: #60b9e2;color:#fff;font-weight: 700;" class="button2 form-control" ><%= users.username %></button></a>
                     <%}%>
                     <% if((ageBetween == '56-older') && (users.age >=56)){%>
-                        <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                        <a style="margin-top:2em;padding-left: 10em; padding-right: 10em;" href="visitProfile?user=<%= users.username%>"><button style=" background-color: #60b9e2;color:#fff;font-weight: 700;" class="button2 form-control" ><%= users.username %></button></a>
                     <%}%>
             <%}%>
         <%}%>

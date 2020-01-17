@@ -271,14 +271,18 @@ app.post('/changeLocation',urlencodedParser, (req, res) => {
     schema.user.findOne({username: req.session.user}, function(err, data){
         if(err) throw err;
         if(data){
-            if (data.city != req.body.city){
-                city = req.body.city;
+            if(req.body.city){
+                if (data.city != req.body.city){
+                    city = req.body.city;
+                }
             }
             else
                 city = data.city
+        if(req.body.postal){
             if (data.postal != req.body.postal){
                 postal = req.body.postal;
             }
+        }
             else
                 postal = data.postal
             console.log(res)
@@ -347,8 +351,6 @@ app.post('/sort',urlencodedParser, (req, res) => {
                     if (count == '-1'){
                         str.push(app.locals.visiting);
                     }
-                    console.log(app.locals.userCity)
-                   
                     schema.user.find({like:req.session.user},function(err,data){
                   
                     })
@@ -357,8 +359,6 @@ app.post('/sort',urlencodedParser, (req, res) => {
                     if(req.body.ascAge == 'on'){
                         app.locals.number = '1'
                         schema.user.find({
-                            postal:app.locals.userPostal,
-                            city:app.locals.userCity,
                             sp:app.locals.data.sp,
                             gender:app.locals.gender,
                             sport:app.locals.data.sport,
@@ -367,12 +367,11 @@ app.post('/sort',urlencodedParser, (req, res) => {
                             music:app.locals.data.music,
                             gaming:app.locals.data.gaming,
                             username:{$ne: req.session.user}},function(err,data){
-                                res.render('home',{locationTest:'0',user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageIsValid:app.locals.age,ageBetween:app.locals.userAge,userCounty:app.locals.userCountry, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
+                                res.render('home',{locationTest:'1',user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageIsValid:app.locals.age,ageBetween:app.locals.userAge,userCounty:app.locals.userCountry, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
                             }).sort({age:app.locals.number})
                     }else if(req.body.descAge == 'on'){
                         app.locals.number = '-1'
                         schema.user.find({
-                            
                             sp:app.locals.data.sp,
                             gender:app.locals.gender,
                             sport:app.locals.data.sport,
@@ -381,13 +380,11 @@ app.post('/sort',urlencodedParser, (req, res) => {
                             music:app.locals.data.music,
                             gaming:app.locals.data.gaming,
                             username:{$ne: req.session.user}},function(err,data){
-                                res.render('home',{locationTest:'0',user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageIsValid:app.locals.age,ageBetween:app.locals.userAge,userCounty:app.locals.userCountry, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
+                                res.render('home',{locationTest:'1',user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageIsValid:app.locals.age,ageBetween:app.locals.userAge,userCounty:app.locals.userCountry, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
                             }).sort({age:app.locals.number})  
-
                     }else if(req.body.fameRating == 'on'){
                         app.locals.number = '1'
                         schema.user.find({
-                            
                             sp:app.locals.data.sp,
                             gender:app.locals.gender,
                             sport:app.locals.data.sport,
@@ -396,7 +393,7 @@ app.post('/sort',urlencodedParser, (req, res) => {
                             music:app.locals.data.music,
                             gaming:app.locals.data.gaming,
                             username:{$ne: req.session.user}},function(err,data){
-                                res.render('home',{locationTest:'0',user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageIsValid:app.locals.age,ageBetween:app.locals.userAge,userCounty:app.locals.userCountry, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
+                                res.render('home',{locationTest:'1',user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageIsValid:app.locals.age,ageBetween:app.locals.userAge,userCounty:app.locals.userCountry, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
                             }).sort({likedBy:app.locals.number})
                         
                     }else if(req.body.location == 'on'){

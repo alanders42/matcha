@@ -8,34 +8,69 @@
     <script defer="" src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="/home">
+            <img src="/images/h.png" width="50" height="100">
+          </a>
+        </div>
+          <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
+        </div>
+      
+        <div id="navbarBasicExample" class="navbar-menu">
+          <div class="navbar-start">
+            <a href="/chatList"class="navbar-item">
+             Chat List
+            </a>
+      
+            <a href="/profile-page" class="navbar-item">
+              Profile
+            </a>
+      
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">
+                More
+              </a>
+      
+              <div class="navbar-dropdown">
+                <a href="/filteredSearch" class="navbar-item">
+                        Filtered Search
+                </a>
+                <a href="/sort" class="navbar-item">
+                  Sort
+                </a>
+                <hr class="navbar-divider">
+               
+              </div>
+            </div>
+          </div>
+      
+          <div class="navbar-end">
+            <div class="navbar-item">
+              <div class="buttons">
+                <a href="/" class="button is-primary">
+                  <strong>Sign up</strong>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
 <body style ="background: url(../images/bg.png)">
   
 <div style="background: black;">
-   <section class="section">
-        <div class="container"style="background: black;" >
-            <a href="/home">
-                <h1 class="title" style="font-weight:200;color:white; text-align: center;">Matcha</h1>
-                <p class="subtitle" style="color:#fff; text-align: center;margin-bottom: 2em;">Find love her!</p>
-            </a>
-        
-       
-    <a href="/sort"><button  class="button is-info" style="margin-bottom:2em; background-color:#828afc;color:#fff; margin-left:1.5em">Sort</button></a>
-    <a href="/filteredSearch"><button  class="button is-info"  style="margin-bottom:2em;background-color:#828afc;color:#fff; margin-left:1.5em">Filtered Search</button></a>
-    <a href="/chatList"><button  class="button is-info"style="margin-bottom:2em;background-color:#828afc;color:#fff; margin-left:1.5em">Chat List</button></a>
-    <a href="/profile-page"><button class="button is-info" style="margin-bottom:2em;background-color:#828afc;color:#fff; margin-left:1.5em">Profile</button></a>
-    <a href="/"><button class="button is-info"style="margin-left:9em;margin-bottom:2em;background-color:#828afc;color:#fff;margin-left:1.5em">Sign Out</button></a>
 
-</div>
-   </section>
-   
-    <hr style="color:#fff;">
- 
-    </div>
 
 <div  class="wrapper" >
         
         <!--Don't display Blocked Users-->
-      <% if(locationTest =='1'){%>
+    <% if(locationTest =='1'){%>
+        <h1 style="color:#fff"> Sorted Results</h1>
             <% for(users of user){%>
                 <% var trueval = 0%>
                 <% for(block of blocked){%>
@@ -44,7 +79,6 @@
                         <% break}%>
                 <% }%>
                 <% if(trueval == '0'){%>
-                   
                     <% if((users.city == userCity) && (users.postal == userPostal)){%>
                         <% if((ageBetween == '18-25') && (users.age >=18 && users.age <=25)){%>
                             <a style="margin-top:2em;padding-left: 10em; padding-right: 10em;" href="visitProfile?user=<%= users.username%>"><button style=" background-color: #60b9e2;color:#fff;font-weight: 700;" class="button2 form-control" ><%= users.username %></button></a>
@@ -90,12 +124,12 @@
                         <a style="margin-top:2em;padding-left: 10em; padding-right: 10em;" href="visitProfile?user=<%= users.username%>"><button style=" background-color: #60b9e2;color:#fff;font-weight: 700;" class="button2 form-control" ><%= users.username %></button></a>
                     <%}%>
                 <%}%>
-                <%}%>
-                <%}%>
+            <%}%>
+        <%}%>
     <% }%>
 
         <% if(locationTest == '0'){%>
-        <h1 style="color:#fff"> Same Geographical area</h1>
+        <h1 style="color:#fff"> Users in your suburb</h1>
         <hr>
         <% for(users of user){%>
             <% var trueval = 0%>
@@ -126,7 +160,7 @@
             <%}%>
         <%}%>
         <br><br><br><br>
-        <h1 style="color:#fff"> Not same Geographical area</h1>
+        <h1 style="color:#fff"> Users outside your suburb</h1>
 <hr>
         <% for(users of user){%>
             <% var trueval = 0%>

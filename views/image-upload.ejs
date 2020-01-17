@@ -10,33 +10,54 @@
     <script defer="" src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 
 </head>
+
+
+
 <body style ="background: url(../images/bg.png)">
-<header style="background: black;">
-    <section class="section" style="background: black;">
-        <div class="container">
-            <a href="/">
-                <h1 class="title" style="font-weight:200;color:white; text-align: center;">Matcha</h1>
-                <p class="subtitle" style="color:#fff; text-align: center;padding-bottom:2em ;">Find love here!</p>
-            </a>
-        </div><a href="/"><button  class="button is-info" style="margin-bottom:2em; background-color:#828afc;color:#fff; margin-left:1.5em">Sign Out</button></a>
-<a href="/profile-page"><button  class="button is-info" style="margin-bottom:2em; background-color:#828afc;color:#fff; margin-left:1.5em">Go Back</button></a>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+            <div class="navbar-brand">
+              <a class="navbar-item" href="/home">
+                <img src="/images/h.png" width="50" height="28">
+              </a>
+              <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"  data-target="navbarBasicExample">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+              </a>
+            </div>
+          
+            <div id="navbarBasicExample" class="navbar-menu">
+              <div class="navbar-start">
+                <a href="/profile-page" class="navbar-item">
+                  Profile
+                </a>
+              </div>
+            </div>
+            
+              <div class="navbar-end">
+                <div class="navbar-item">
+                  <div class="buttons">
+                    <a href="/" class="button is-primary">
+                      <strong>Sign up</strong>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </nav>
 
-
-      </section>
-    <hr style="color:#fff;">
- 
-</header>
+          
 <div  class="wrapper" >
-<div class="container">
+
     <div class="row">
         <div class="col-md-6 m-auto">
 
-<h1 class="text-center display-4 my-4">Upload an Image</h1>
+<h1 class="text-center display-4 my-4">Upload Image</h1>
 <form action="/gallery" method="POST" enctype="multipart/form-data">
     <div class=>
        
-        <input type="file"  name="photo" id="photo"accept="image/*" >
-        <label for="photo" >
+        <input type="file"  style="color:#fff" name="photo" id="photo"accept="image/*" >
+        <label for="photo" style="color:#fff">
             Choose File
         </label>
     </div>
@@ -47,7 +68,7 @@
 <hr>
 
         </div>
-    </div>
+  
 </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

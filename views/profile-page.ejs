@@ -41,8 +41,11 @@
 </header>
 
 <div  class="wrapper" style="background: url(../images/bg.png)">
+    <h1 style="color: #fff;font-weight: 700;font-size: 3em;">Profile Page</h1>
+<br>
+<hr>
     <div class="profile-img">
-
+    
   
    <article style="float: right;height: 6em;"  class="message is-link">
     <div style="float: right;height: 3em;" class="message-header">
@@ -54,11 +57,15 @@
     </div>
   </article>
     </div>
-    <% if(photo){%>       
+    <% if(photo){%>  
+        <div style="text-align: center;">   
         <img src="data:image/jpg;base64,<%=photo%>" width="300" height="300">
+    </div> 
    <%}%>
   <br>
   <hr>
+  <h1 style="color: #fff;font-weight: 700;font-size: 3em;">Gallery</h1>
+  <br>
   <div class="gallery">
         <%if(gallery){%>
             <% for(gal of gallery){%>
