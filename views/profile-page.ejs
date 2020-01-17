@@ -42,20 +42,23 @@
 
 <div  class="wrapper" style="background: url(../images/bg.png)">
     <div class="profile-img">
-<% if(photo){%>       
-        <img src="data:image/jpg;base64,<%=photo%>" width="300" height="300">
-   <%}%> 
+
+  
    <article style="float: right;height: 6em;"  class="message is-link">
     <div style="float: right;height: 3em;" class="message-header">
       <p >Fame Rating!</p>
     </div>
-   
+ 
     <div style="text-align:center; color:blue;font-weight: bolder;font-size: 2em;" >
             <%= fameRating %>
     </div>
   </article>
     </div>
+    <% if(photo){%>       
+        <img src="data:image/jpg;base64,<%=photo%>" width="300" height="300">
+   <%}%>
   <br>
+  <hr>
   <div class="gallery">
         <%if(gallery){%>
             <% for(gal of gallery){%>

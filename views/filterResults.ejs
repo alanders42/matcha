@@ -23,10 +23,10 @@
     <hr style="color:#fff;">
  
 </header>
-<%= ageBetween %>
 <div  class="wrapper" style="background: url(../images/bg.png);">
         <div class="field"></div>
         <% for(users of user){%>
+            <% if(sameLocation == '1'){%>
                 <% if((users.city == userCity) && (users.postal == userPostal)){%>
                     <% if((ageBetween == '18-25') && (users.age >=18 && users.age <=25)){%>
                         <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
@@ -45,6 +45,26 @@
                         <%}%>
                 <%}%>
             <%}%>
+        <%}%>
+        <% for(users of user){%>
+            <% if(sameLocation == '0'){%>
+                    <% if((ageBetween == '18-25') && (users.age >=18 && users.age <=25)){%>
+                        <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                    <%}%>
+                    <% if((ageBetween == '26-35') && (users.age >=26 && users.age <=35)){%>
+                        <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                    <%}%>
+                    <% if((ageBetween == '36-45') && (users.age >=36 && users.age <=45)){%>
+                        <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                    <%}%>
+                    <% if((ageBetween == '46-55') && (users.age >=46 && users.age <=55)){%>
+                        <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                    <%}%>
+                    <% if((ageBetween == '56-older') && (users.age >=56)){%>
+                        <a href="visitProfile?user=<%= users.username%>"><div class="button is-link"><%= users.username %></div></a>
+                    <%}%>
+            <%}%>
+        <%}%>
     </div>
   </div>
 </body>

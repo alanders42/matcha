@@ -156,7 +156,6 @@ app.get('/home',(req,res) => {
     getIP(function(err,ip){
         if (err) throw err;
         var geo = iplocation(ip, [],function(err,res){
-            console.log(res.postal)
                 //add new user to db
                 if (err) throw err;
 
@@ -169,7 +168,6 @@ app.get('/home',(req,res) => {
                 if (res.postal){
                     postal = res.postal;
                 }
-                console.log(res)
                 schema.user.findOneAndUpdate({username: req.session.user},
                     {$set:{
                     city: city,
@@ -184,7 +182,6 @@ app.get('/home',(req,res) => {
         if(err) throw err;
         if(data){
             app.locals.userAge = data.ageBetween;
-            
             app.locals.userCountry = data.country;
             app.locals.userCity = data.city;
             app.locals.userPostal = data.postal;
@@ -249,7 +246,7 @@ app.get('/home',(req,res) => {
                         gaming:app.locals.data.gaming,
                         username:{$ne: req.session.user}},function(err,data){
                             if(err) throw err;
-                            res.render('home',{user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageIsValid:app.locals.age,ageBetween:app.locals.userAge,userCounty:app.locals.userCountry, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
+                            res.render('home',{locationTest:'0',user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageIsValid:app.locals.age,ageBetween:app.locals.userAge, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
                         })
                 }
                 else {
@@ -262,7 +259,7 @@ app.get('/home',(req,res) => {
                         gaming:app.locals.data.gaming,
                         username:{$ne: req.session.user}},  function(err, data){
                             if(data){
-                                res.render('home',{user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageIsValid:app.locals.age,ageBetween:app.locals.userAge,userCounty:app.locals.userCountry, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
+                                res.render('home',{locationTest:'0',user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageIsValid:app.locals.age,ageBetween:app.locals.userAge, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
                             }
                         })
                 }
@@ -302,7 +299,8 @@ app.post('/changeLocation',urlencodedParser, (req, res) => {
 app.post('/sort',urlencodedParser, (req, res) => {
     schema.user.findOne({username: req.session.user}, function(err, data){
         if(data){
-            
+            app.locals.userCity = data.city;
+            app.locals.userPostal = data.postal;
 
             app.locals.data = data;
             app.locals.arrayLength = app.locals.data.blocked.length;
@@ -349,14 +347,18 @@ app.post('/sort',urlencodedParser, (req, res) => {
                     if (count == '-1'){
                         str.push(app.locals.visiting);
                     }
+                    console.log(app.locals.userCity)
                    
                     schema.user.find({like:req.session.user},function(err,data){
                   
                     })
                     app.locals.number = '0'
+                                                     
                     if(req.body.ascAge == 'on'){
                         app.locals.number = '1'
                         schema.user.find({
+                            postal:app.locals.userPostal,
+                            city:app.locals.userCity,
                             sp:app.locals.data.sp,
                             gender:app.locals.gender,
                             sport:app.locals.data.sport,
@@ -365,8 +367,8 @@ app.post('/sort',urlencodedParser, (req, res) => {
                             music:app.locals.data.music,
                             gaming:app.locals.data.gaming,
                             username:{$ne: req.session.user}},function(err,data){
-                                res.render('home',{user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLengthm,ageBetween:app.locals.ageBetween});
-                            }).sort({age:app.locals.number})  
+                                res.render('home',{locationTest:'0',user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageIsValid:app.locals.age,ageBetween:app.locals.userAge,userCounty:app.locals.userCountry, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
+                            }).sort({age:app.locals.number})
                     }else if(req.body.descAge == 'on'){
                         app.locals.number = '-1'
                         schema.user.find({
@@ -379,7 +381,7 @@ app.post('/sort',urlencodedParser, (req, res) => {
                             music:app.locals.data.music,
                             gaming:app.locals.data.gaming,
                             username:{$ne: req.session.user}},function(err,data){
-                                res.render('home',{user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageBetween:app.locals.ageBetween});
+                                res.render('home',{locationTest:'0',user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageIsValid:app.locals.age,ageBetween:app.locals.userAge,userCounty:app.locals.userCountry, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
                             }).sort({age:app.locals.number})  
 
                     }else if(req.body.fameRating == 'on'){
@@ -394,13 +396,43 @@ app.post('/sort',urlencodedParser, (req, res) => {
                             music:app.locals.data.music,
                             gaming:app.locals.data.gaming,
                             username:{$ne: req.session.user}},function(err,data){
-                                res.render('home',{user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageBetween:app.locals.ageBetween});
-                            }).sort({likedBy:app.locals.number})  
-                    }
+                                res.render('home',{locationTest:'0',user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageIsValid:app.locals.age,ageBetween:app.locals.userAge,userCounty:app.locals.userCountry, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
+                            }).sort({likedBy:app.locals.number})
+                        
+                    }else if(req.body.location == 'on'){
+                        schema.user.find({
+                            
+                            sp:app.locals.data.sp,
+                            gender:app.locals.gender,
+                            sport:app.locals.data.sport,
+                            fitness:app.locals.data.fitness,
+                            technology:app.locals.data.technology,
+                            music:app.locals.data.music,
+                            gaming:app.locals.data.gaming,
+                            username:{$ne: req.session.user}},function(err,data){
+                                res.render('home',{locationSort:'1',locationTest:'1',user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageIsValid:app.locals.age,ageBetween:app.locals.userAge,userCounty:app.locals.userCountry, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
+                            }
+                        )}
                     
                      //Still need to sort by location!!!!!!  
-                    
-                }   
+                       
+                    else {
+                        // if(app.locals.data.dislike == "off"){
+                            schema.user.find({
+                            sp:app.locals.data.sp,
+                            gender:app.locals.gender,
+                            sport:app.locals.data.sport,
+                            fitness:app.locals.data.fitness,
+                            technology:app.locals.data.technology,
+                            music:app.locals.data.music,
+                            gaming:app.locals.data.gaming,
+                            username:{$ne: req.session.user}},  function(err, data){
+                                if(data){
+                                    res.render('home',{ locationTest:'0',userCity:app.locals.userCity, userPostal:app.locals.userPostal,user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageBetween:app.locals.userAge});
+                                }
+                            }) 
+                    }
+                }
                 else {
                     // if(app.locals.data.dislike == "off"){
                         schema.user.find({
@@ -412,13 +444,12 @@ app.post('/sort',urlencodedParser, (req, res) => {
                         gaming:app.locals.data.gaming,
                         username:{$ne: req.session.user}},  function(err, data){
                             if(data){
-                                res.render('home',{user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageBetween:app.locals.userAge});
+                                res.render('home',{locationTest:'0', userCity:app.locals.userCity, userPostal:app.locals.userPostal,user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageBetween:app.locals.userAge});
                             }
-                        }).sort({age: app.locals.number}) 
-                    // }
+                        })
+                    }
                 }
-        }
-    }) 
+        }) 
 });
 
 //Advanced Search
@@ -426,6 +457,7 @@ app.post('/filterSearch',urlencodedParser,(req,res) =>{
     app.locals.filterSearch= req.body
     schema.user.findOne({username:req.session.user},function(err,data){
         if(data){
+
             if(err) throw err;
             app.locals.filterSearch = data
             // if(app.locals.filterSearch.sp== "Heterosexual"){
@@ -463,6 +495,14 @@ app.post('/filterSearch',urlencodedParser,(req,res) =>{
                 {
                     req.body.gaming = 'off'
                 }
+                if(req.body.sameLocation == null)
+                {
+                    app.locals.sameLocation  = '0'
+                }
+                else{
+                    app.locals.sameLocation = '1'
+                }
+
             schema.user.find({
                 
                 sp:req.body.sp,
@@ -474,7 +514,7 @@ app.post('/filterSearch',urlencodedParser,(req,res) =>{
                 gaming:req.body.gaming,
                 username:{$ne: req.session.user}},function(err,data){
                     
-                    res.render('filterResults',{user:data,ageBetween:req.body.ageBetween,userCounty:app.locals.userCountry, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
+                    res.render('filterResults',{userCity:app.locals.userCity, userPostal:app.locals.userPostal,sameLocation:app.locals.sameLocation,user:data,ageBetween:req.body.ageBetween,userCounty:app.locals.userCountry, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
                 })
     
         // else{
@@ -566,7 +606,6 @@ app.get('/filteredSearch',(req,res) => {
 app.get('/chatList',(req,res) => {
     schema.user.findOne({username: req.session.user}, function(err, data){
         app.locals.databag = data
-        console.log(data)
         if(data){
             res.render('chatList',{like:data.like,likedBy:data.likedBy});
         }
@@ -578,7 +617,6 @@ app.post('/gallery', urlencodedParser,upload.single('photo'),(req, res) => {
         if(err) throw err;
         var str = []
         var len = data.gallery.length
-        console.log(len)
         var i = len;
         var j = 0;
     
@@ -613,6 +651,7 @@ app.post('/gallery', urlencodedParser,upload.single('photo'),(req, res) => {
         }
     })
 })
+
 //Adding User to DB!
 app.post('/register', upload.single('photo'), urlencodedParser,async  function(req,res) {
     //validate password
@@ -755,7 +794,7 @@ app.post('/',urlencodedParser,(req,res) => {
 app.get('/profile',(req,res) => {
     schema.user.findOne({username: req.session.user}, async function(err, data){
         if (err) throw err;
-        res.render('profile', {name: data.name, surname: data.surname, username: data.username, password: "******", email: data.email, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio});
+        res.render('profile', {name: data.name, surname: data.surname, username: data.username, password: "******", email: data.email, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio,fameRating:data.likedBy});
     });
 });
 
@@ -1037,10 +1076,10 @@ app.get('/profile-page',(req, res) =>{
         if(data){
             app.locals.fameRating = data.likedBy.length
             app.locals.image = data.image
-            if(data.gallery){
+           
             app.locals.galleryImages = data.gallery
             app.locals.galleryLen = data.gallery.length
-            }
+            
         }
     })
     gfs.files.find().toArray((err, files)=>{
@@ -1106,8 +1145,6 @@ app.post('/like',urlencodedParser,(req,res) => {
             liked.push(app.locals.visiting);
             console.log('User Profile liked')
             app.locals.count= '0'
-            
-        
         }
         else if(count == '0'){
             const index = app.locals.liked.indexOf(count);
@@ -1221,11 +1258,13 @@ app.get('/visitingGallery', (req, res) => {
 app.get('/visitProfile',(req,res) => {
     schema.user.findOne({username:req.session.user},function(err,data){
         if(data){
-        app.locals.fame = data.likedBy.length
+        
         }
     })
     var user = req.query.user.toString();
     schema.user.findOne({username: user}, function(err, data){
+        app.locals.fame = data.likedBy.length
+
         app.locals.visiting = data.username;
         if (err) throw err;
         schema.user.findOne({username: req.session.user}, async function(err, data){
@@ -1238,9 +1277,11 @@ app.get('/visitProfile',(req,res) => {
             } 
           
         })
+        console.log(app.locals.fame)
         res.render('visitProfile', {photo:data.image,name: data.name, surname: data.surname, username: data.username, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio, like: app.locals.count, dislike: data.dislike,sport:data.sport,fitness:data.fitness,technology:data.technology,music:data.music,gaming:data.gaming,fame:app.locals.fame});
     });
 });
+
 //View Users you can chat with
     
 app.get('/chat',(req,res) => {

@@ -25,7 +25,7 @@
 </header>
 
   
-
+<div class="wrapper">
 
     <form method="POST" action="/filterSearch">
       <div style="text-align: center;" class="field"><label class="label" style="color:white;">Gender</label>
@@ -66,6 +66,9 @@
             </div>
         </div>
     </div>
+    <div style="color:white;text-align: center;" class="field"><label class="label" style="color:white;" type="text">Location</label>
+        <input type="checkbox" name="sameLocation" >Same location<br><br>
+    </div>
     <div style="color:white;text-align: center;" class="field"><label class="label" style="color:white;" type="text">Interests</label>
         <input type="checkbox" name="sport" >Sport<br><br>
         <input type="checkbox" name="fitness" >Fitness<br><br>
@@ -80,9 +83,11 @@
     </div>
   </div>
   </form>
-</body>
+</div>
 <footer class="footer" style="background: url(../images/menu.png);">
     <div class="content has-text-centered">
         <p style="color:white;"><strong style="color:white;">Matcha</strong> by J.T.A.B <a href="https://github.com/BrandonSwanepoel/Matcha"></a></p>
     </div>
 </footer>
+</body>
+
