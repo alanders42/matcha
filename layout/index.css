@@ -32,7 +32,7 @@ footer {
     left: 0;
     bottom: 0;
     width: 100%;
-    padding:2rem 1rem 3rem !important ;
+    padding:0 !important ;
 
     color: white;
     text-align: center;
