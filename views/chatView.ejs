@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <script defer="" src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
 </head>
 <script>document.addEventListener('DOMContentLoaded', () => {
 
@@ -76,13 +78,24 @@
 
     <div id="mario-chat">
         <div id="chat-window">
-            <div id="output"></div>
+            
+                        <div id="output">
+                            <% for(old of oldMessages){%>
+   <p><strong><%= old.from%> : </strong><%=old.msg%></p>
+
+                              <% }%>
+            </div>
+       
+            <div id="feedback"></div>
         </div>
-    <input id="handle" type="text" placeholder="Handle"/>
-    <input id="message" type="text" placeholder="Message"/>
-    <button id="send">Send</button>
+    <input hidden id="from" type="text" value='<%=from%>'/>
+    <input hidden id="to" type="text" value='<%=to%>'/>
+    <input hidden id="chatId" type="text" value='<%=chatId%>'/>
+    
+    <input style="text-align:center;background-color:white; color:#000;width:100%"id="message" type="text" placeholder="Message"/>
+    <button class="btn btn-primary btn-block"class="button"id="send">Send</button>
     </div>
-    <script src="/chat.js"></script>
+    <script src="/chats.js"></script>
     
      
         

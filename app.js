@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 require('dotenv/config');
 const schema = require('./models/User');
+const chatSchema = require('./models/chat');
 const validate = require("./functions/validation");
 const crypto = require('crypto');
 const multer = require('multer');
@@ -41,8 +42,8 @@ mailer.extend(app, {
     }
   })
   //Middleware
-  app.use(methodOverride('_method'));
-router.use(express.static(__dirname+"./public/"));
+    app.use(methodOverride('_method'));
+    app.use(express.static(__dirname + '/public'));
 
 
 
@@ -1263,8 +1264,12 @@ app.get('/visitProfile',(req,res) => {
     
 app.get('/chat',(req,res) => {
     var user = req.query.user.toString();
+    app.locals.nameOfusers1 = user + req.session.user;
+    app.locals.nameOfusers2 =req.session.user+ user ;
+
+ 
     schema.user.findOne({username: user}, function(err, data){
-        app.locals.chats = data.username;
+        app.locals.msgTo = data.username;
         if (err) throw err;
         schema.user.findOne({username: req.session.user}, async function(err, data){
             if (err) throw err;
@@ -1275,11 +1280,14 @@ app.get('/chat',(req,res) => {
                 return index
             } 
             app.locals.liked = data.like;
-    
             app.locals.count =findIndex(app.locals.liked);
         })
-        res.render('chatView', {name: data.name, surname: data.surname});
+        chatSchema.chat.find({$or:[[{chatId:app.locals.nameOfusers1}],[{chatId:app.locals.nameOfusers2}]]},function(err,data){
+            if (err) throw err;
+        res.render('chatView', {oldMessages:data,chatId:app.locals.nameOfusers,to:app.locals.msgTo,from:req.session.user});
+        })
     });
+
 });
 
 //Create mongo connection
@@ -1326,14 +1334,8 @@ app.post('/upload',upload.single('file'),(req,res)=>{
     
      res.redirect('/profile-page');
 })
-//Socket setup
-var io = socket(server);
-io.on('connection',function(socket){
-    console.log('made socket connection',socket.id);
-    socket.on('chat',function(data){
-        io.souckets.emit('chat',data);
-    })
-})
+
+
 //Connect to DB
 mongoose.connect(
    process.env.DB_CONNECTION,
@@ -1343,3 +1345,26 @@ mongoose.connect(
 //How to start listening to the server
 const port = 8013;
 var server =app.listen(port,() => console.log('Server started on port',port));
+
+//Socket setup
+var io = socket(server);
+io.on('connection',function(socket){
+    
+    console.log('made socket connection',socket.id);
+    socket.on('chat',function(data){
+        io.sockets.emit('chat',data);
+        saveMsg(data)
+        console.log('Message added to DB!')
+    });
+  
+    socket.on('typing',function(data){
+        socket.broadcast.emit('typing',data)
+    });
+});
+
+
+function saveMsg(data){
+	chatSchema.chat({chatId:data.chatId,from:data.from,msg: data.message, to: data.to}).save(function(err){
+	});
+};
+
