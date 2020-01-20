@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<html>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -33,22 +32,31 @@
         }
       
       });</script>
-  <body  >
-    <header >
-        <section class="section">
-            <div class="container">
-                <h1 style="font-weight:200;color:white; text-align: center"class="title">
-                    Matcha
-                </h1>
-                <p style="color:#fff; text-align: center;padding-bottom: 2em;" class ="subtitle">
-                    Find love here!
-                </p>
+       <nav class="navbar" role="navigation" aria-label="main navigation">
+            <div class="navbar-brand">
+              <a class="navbar-item">
+                <img src="/images/h.png" width="50" height="100">
+              </a>
+              <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+              </a>
             </div>
-            <a href="/register"><button  class="button is-info" style=" background-color:#828afc;color:#fff; margin-left:1.5em">Register</button><a>
-        </section>
-        <hr style="color:#fff"/>
-    </header>
-
+            <div id="navbarBasicExample" class="navbar-menu">
+              <div class="navbar-end">
+                <div class="navbar-item">
+                  <div class="buttons">
+                    <a href="/register" class="button is-primary">
+                      <strong>Sign up</strong>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+         
+          </nav>
+  <body style="height:100vh;background: linear-gradient(#FD4D52, #892B8B);" >
     <div class="wrapper">
         <h1 style="font-weight:200;font-size:45px;">Welcome</h1>
         
@@ -57,19 +65,14 @@
         <div class="field">
             <!--Form start-->
             <form action="/" method="POST">
-                <h1 style="font-weight:200; font-size:30px; margin-bottom: 1em;">Login</h1>
             <p class="control has-icons-left has-icons-right">
                 
-                    <h3 style="color:blue"><%= errlog %></h3>
+                    <h3 style="color:rgb(255, 255, 255)"><%= errlog %></h3>
                     
                     <br />
                 <input name="enter_username" class="input" type="text" placeholder="Username">
                 <span class="icon is-small is-left">
-                <i class="fas fa-envelope"></i>
-                </span>
-                <span class="icon is-small is-right">
-                <i class="fas fa-check"></i>
-                </span>
+                
             </p>
             </div>
             <div class="field">
@@ -92,14 +95,11 @@
                 
             </div>
             </section>
-      
-    </body>  
     <footer >
-        <div class="content has-text-centered">
-        <p style="color:white;">
-            <strong style="color:white;">Matcha</strong> by J.T.A.B <a href="https://github.com/BrandonSwanepoel/Matcha"></a>
-        </p>
-       
+            <div class="content has-text-centered">
+            <p style="color:white;">
+                <strong style="color:white;">Matcha</strong> by J.T.A.B <a href="https://github.com/BrandonSwanepoel/Matcha"></a>
+            </p>
+            
     </footer>
-  
-</html>
+</body>

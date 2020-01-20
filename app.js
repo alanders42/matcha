@@ -18,10 +18,10 @@ app.use(session({secret: 'ssshhhhh',saveUninitialized: true,resave: true}));
 var async = require('async');
 // var ip2location = require('ip-to-location')
 const getIP = require('external-ip')();
-const math = require("mathjs")
 const iplocation = require("iplocation").default
 var storage = multer.memoryStorage();
 var upload = multer({ storage: storage });
+var socket = require('socket.io');
 
 
 
@@ -1073,32 +1073,12 @@ app.get('/profile-page',(req, res) =>{
         if(data){
             app.locals.fameRating = data.likedBy.length
             app.locals.image = data.image
-           
-            app.locals.galleryImages = data.gallery
+            app.locals.galleryImage = data.gallery
             app.locals.galleryLen = data.gallery.length
-            
         }
+        res.render('profile-page',{galleryLen:app.locals.galleryLen,gallery:app.locals.galleryImage,photo:app.locals.image,username:req.session.user,fameRating:app.locals.fameRating});
     })
-    gfs.files.find().toArray((err, files)=>{
-        //check if files
-        if(!files || files.length == 0) {
-            res.render('profile-page',{files:false});
-        } else{
-            files.map(files => {
-                if(
-                    files.contentType ==='image/jpeg' ||
-                    files.contentType === 'image/png'
-                ) {
-                    files.isImage = true;
-                } else{
-                    files.isImage = false;
-                }
-            });
-           
-            res.render('profile-page',{galleryLen:app.locals.galleryLen,gallery:app.locals.galleryImages,photo:app.locals.image,files:files,username:req.session.user,fameRating:app.locals.fameRating});
-        }
-    }
-)});
+});
 //Display image
 app.get('/image/:filename',(req, res) =>{
     gfs.files.findOne({filename:req.params.filename},(err, files)=>{
@@ -1346,7 +1326,14 @@ app.post('/upload',upload.single('file'),(req,res)=>{
     
      res.redirect('/profile-page');
 })
-
+//Socket setup
+var io = socket(server);
+io.on('connection',function(socket){
+    console.log('made socket connection',socket.id);
+    socket.on('chat',function(data){
+        io.souckets.emit('chat',data);
+    })
+})
 //Connect to DB
 mongoose.connect(
    process.env.DB_CONNECTION,
@@ -1355,4 +1342,4 @@ mongoose.connect(
 );
 //How to start listening to the server
 const port = 8013;
-app.listen(port,() => console.log('Server started on port',port));
+var server =app.listen(port,() => console.log('Server started on port',port));

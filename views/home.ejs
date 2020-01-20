@@ -85,11 +85,7 @@
           </div>
         </div>
       </nav>
-<body >
-  
-
-
-
+<body style="height:200vh;background: linear-gradient(#FD4D52, #892B8B);">
 <div  class="wrapper" >
         
         <!--Don't display Blocked Users-->
@@ -104,6 +100,12 @@
                 <% }%>
                 <% if(trueval == '0'){%>
                     <% if((users.city == userCity) && (users.postal == userPostal)){%>
+                        <% if(users.image){%>  
+                            <div style="text-align: center;">   
+                            <img src="data:image/jpg;base64,<%=users.image%>" width="200" height="200">
+                        </div> 
+                  
+                       <%}%>
                         <% if((ageBetween == '18-25') && (users.age >=18 && users.age <=25)){%>
                             <a style="margin-top:2em;padding-left: 10em; padding-right: 10em;" href="visitProfile?user=<%= users.username%>"><button style=" background-color: #60b9e2;color:#fff;font-weight: 700;" class="button2 form-control" ><%= users.username %></button></a>
                         <%}%>
@@ -132,6 +134,11 @@
             <% }%>
             <% if(trueval == '0'){%>
                 <% if((users.city != userCity) && (users.postal != userPostal)){%>
+                    <% if(users.image){%> 
+                        <div style="text-align: center;">   
+                        <img src="data:image/jpg;base64,<%=users.image%>" width="150" height="150">
+                    </div> 
+                   <%}%>
                     <% if((ageBetween == '18-25') && (users.age >=18 && users.age <=25)){%>
                         <a style="margin-top:2em;padding-left: 10em; padding-right: 10em;" href="visitProfile?user=<%= users.username%>"><button style=" background-color: #60b9e2;color:#fff;font-weight: 700;" class="button2 form-control" ><%= users.username %></button></a>
                     <%}%>
@@ -163,8 +170,12 @@
                     <% break}%>
             <% }%>
             <% if(trueval == 0){%>
-               
                 <% if((users.city == userCity) && (users.postal == userPostal)){%>
+                    <% if(users.image){%> 
+                        <div style="text-align: center;">   
+                        <img src="data:image/jpg;base64,<%=users.image%>" width="150" height="150">
+                    </div> 
+                   <%}%>
                     <% if((ageBetween == '18-25') && (users.age >=18 && users.age <=25)){%>
                         <a style="margin-top:2em;padding-left: 10em; padding-right: 10em;" href="visitProfile?user=<%= users.username%>"><button style=" background-color: #60b9e2;color:#fff;font-weight: 700;" class="button2 form-control" ><%= users.username %></button></a>
                     <%}%>
@@ -195,7 +206,11 @@
             <% }%>
             <% if(trueval == 0){%>
                 <% if((users.city != userCity) && (users.postal != userPostal)){%>
-
+                    <% if(users.image){%> 
+                        <div style="text-align: center;">   
+                        <img src="data:image/jpg;base64,<%=users.image%>" width="150" height="150">
+                    </div> 
+                   <%}%>
                     <% if((ageBetween == '18-25') && (users.age >=18 && users.age <=25)){%>
                         <a style="margin-top:2em;padding-left: 10em; padding-right: 10em;" href="visitProfile?user=<%= users.username%>"><button style=" background-color: #60b9e2;color:#fff;font-weight: 700;" class="button2 form-control" ><%= users.username %></button></a>
                     <%}%>

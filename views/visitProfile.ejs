@@ -9,24 +9,66 @@
     <script defer="" src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 
 </head>
-<body style ="background: url(../images/bg.png)">
-<header style="background: black;">
-    <section class="section" style="background: black;">
-        <div class="container">
-            <a href="/">
-                <h1 class="title" style="font-weight:200;color:white; text-align: center;">Matcha</h1>
-                <p class="subtitle" style="color:#fff; text-align: center;margin-bottom: 2em;">Find love here!</p>
-            </a>
-        <a href="/home"><button class="button is-info"style="margin-left:9em;margin-bottom:2em;background-color:#828afc;color:#fff;margin-left:1.5em">Go Back</button><a></a>
-       <a href="/"><button class="button is-info"style="margin-left:9em;margin-bottom:2em;background-color:#828afc;color:#fff;margin-left:1.5em">Sign Out</button><a></a></a>
-      </section>
-    <hr style="color:#fff;">
- 
-</header>
+<script>document.addEventListener('DOMContentLoaded', () => {
 
-<div  class="wrapper" style="background: url(../images/bg.png)">
+    // Get all "navbar-burger" elements
+    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+  
+    // Check if there are any navbar burgers
+    if ($navbarBurgers.length > 0) {
+  
+      // Add a click event on each of them
+      $navbarBurgers.forEach( el => {
+        el.addEventListener('click', () => {
+  
+          // Get the target from the "data-target" attribute
+          const target = el.dataset.target;
+          const $target = document.getElementById(target);
+  
+          // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+          el.classList.toggle('is-active');
+          $target.classList.toggle('is-active');
+  
+        });
+      });
+    }
+  
+  });</script>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item">
+        <img src="/images/h.png" width="50" height="100">
+      </a>
+      <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+    <div id="navbarBasicExample" class="navbar-menu">
+      <div class="navbar-start">
+        <a href="/home"class="navbar-item">
+         Go back
+        </a>
+      </div>
+    
+      <div class="navbar-end">
+        <div class="navbar-item">
+          <div class="buttons">
+            <a href="/" class="button is-primary">
+              <strong>Sign out</strong>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <body  style="height:200vh;background: linear-gradient(#FD4D52, #892B8B);">
+
+<div  class="wrapper">
   <form action="/reportUser" method="POST">
-    <button class="button is-link" style="background-color:#cc2323;color:#fff;margin-bottom:1em">Report User</button>
+    <button class="button is-link" style="background-color:#ff0000;color:#fff;margin-bottom:1em">Report User</button>
     </form>
   <a href="visitingGallery"><button class="button is-link"  style="background-color:#828afc;color:#fff;margin-bottom:1em"  value="<%= username %>">Gallery</button></a>
  
@@ -72,7 +114,6 @@
           </span><span class="icon is-small is-right"><i class="fas fa-check"></i>
           </span>
         </div>
-        <p class="help is-success">This username is available</p>
     </div>
 
           <!-- <span class="icon is-small is-left"><i class="fas fa-envelope"></i></span>
@@ -126,9 +167,9 @@
 </div>
 
 </form>
-<footer class="footer" style="background: url(../images/menu.png);">
+<footer >
   <div class="content has-text-centered">
-      <p style="color:white;"><strong style="color:white;">Matcha</strong> by J.T.A.B <a href="https://github.com/BrandonSwanepoel/Matcha"></a></p>
+      <p style="color:rgb(0, 0, 0);"><strong style="color:rgb(0, 0, 0);">Matcha</strong> by J.T.A.B <a href="https://github.com/BrandonSwanepoel/Matcha"></a></p>
   </div>
 </footer>
 </body>

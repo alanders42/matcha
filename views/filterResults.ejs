@@ -8,27 +8,73 @@
     <script defer="" src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
-<body style ="background: url(../images/bg.png)">
-<header style="background: black;">
-    <section class="section" style="background: black;">
-        <div class="container">
-            <a href="/">
-                <h1 class="title" style="font-weight:200;color:white; text-align: center;">Matcha</h1>
-                <p class="subtitle" style="color:#fff; text-align: center;padding-bottom:2em;">Find love her!</p>
+<script>document.addEventListener('DOMContentLoaded', () => {
+
+        // Get all "navbar-burger" elements
+        const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+      
+        // Check if there are any navbar burgers
+        if ($navbarBurgers.length > 0) {
+      
+          // Add a click event on each of them
+          $navbarBurgers.forEach( el => {
+            el.addEventListener('click', () => {
+      
+              // Get the target from the "data-target" attribute
+              const target = el.dataset.target;
+              const $target = document.getElementById(target);
+      
+              // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+              el.classList.toggle('is-active');
+              $target.classList.toggle('is-active');
+      
+            });
+          });
+        }
+      
+      });</script>
+<nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+          <a class="navbar-item">
+            <img src="/images/h.png" width="50" height="100">
+          </a>
+        </div>
+          <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
+        </div>
+      
+        <div id="navbarBasicExample" class="navbar-menu">
+          <div class="navbar-start">
+            <a href="/home"class="navbar-item">
+             Go back
             </a>
-    <a href="/home"><button  class="button is-info" style="margin-bottom:2em; background-color:#828afc;color:#fff; margin-left:1.5em">Go Back</button></a>
-    <a href="/"><button  class="button is-info" style="margin-bottom:2em; background-color:#828afc;color:#fff; margin-left:1.5em">Sign Out</button></a>
-
-
-      </section>
-    <hr style="color:#fff;">
- 
-</header>
-<div  class="wrapper" style="background: url(../images/bg.png);">
+          </div>
+      
+          <div class="navbar-end">
+            <div class="navbar-item">
+              <div class="buttons">
+                <a href="/" class="button is-primary">
+                  <strong>Sign out</strong>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+<body style="height:200vh;background: linear-gradient(#FD4D52, #892B8B);" >
+<div  class="wrapper">
         <div class="field"></div>
         <% for(users of user){%>
             <% if(sameLocation == '1'){%>
                 <% if((users.city == userCity) && (users.postal == userPostal)){%>
+                    <% if(users.image){%> 
+                        <div style="text-align: center;">   
+                        <img src="data:image/jpg;base64,<%=users.image%>" width="300" height="300">
+                    </div> 
+                   <%}%>
                     <% if((ageBetween == '18-25') && (users.age >=18 && users.age <=25)){%>
                         <a style="margin-top:2em;padding-left: 10em; padding-right: 10em;" href="visitProfile?user=<%= users.username%>"><button style=" background-color: #60b9e2;color:#fff;font-weight: 700;" class="button2 form-control" ><%= users.username %></button></a>
                         <%}%>
@@ -49,6 +95,11 @@
         <%}%>
         <% for(users of user){%>
             <% if(sameLocation == '0'){%>
+                <% if(users.image){%> 
+                    <div style="text-align: center;">   
+                    <img src="data:image/jpg;base64,<%=users.image%>" width="300" height="300">
+                </div> 
+               <%}%>
                     <% if((ageBetween == '18-25') && (users.age >=18 && users.age <=25)){%>
                         <a style="margin-top:2em;padding-left: 10em; padding-right: 10em;" href="visitProfile?user=<%= users.username%>"><button style=" background-color: #60b9e2;color:#fff;font-weight: 700;" class="button2 form-control" ><%= users.username %></button></a>
                     <%}%>
@@ -69,7 +120,7 @@
     </div>
   </div>
 </body>
-<footer class="footer" style="background: url(../images/menu.png);">
+<footer>
     <div class="content has-text-centered">
         <p style="color:white;"><strong style="color:white;">Matcha</strong> by J.T.A.B <a href="https://github.com/BrandonSwanepoel/Matcha"></a></p>
     </div>

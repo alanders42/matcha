@@ -34,27 +34,40 @@
     }
   
   });</script>
-<body >
-
-<header >
-    <section >
-     
-            <a href="/">
-                <h1 class="title" style="font-weight:200;color:white; text-align: center;">Matcha</h1>
-                <p class="subtitle" style="color:#fff; text-align: center;padding-bottom:2em ;">Find love here!</p>
-            </a>
-        <a href="/"><button  class="button is-info" style=" background-color:#828afc;color:#fff; margin-left:1.5em">Login</button></a>
-      </section>
-    <hr style="color:#fff;">
-</header>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+          <a class="navbar-item">
+            <img src="/images/h.png" width="50" height="100">
+          </a>
+        </div>
+          <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
+        </div>
+      
+        <div id="navbarBasicExample" class="navbar-menu">
+          <div class="navbar-end">
+            <div class="navbar-item">
+              <div class="buttons">
+                <a href="/" class="button is-primary">
+                  <strong>Sign in</strong>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+<body style="height:280vh;background: linear-gradient(#FD4D52, #892B8B);" >
 <!-- <div  class="wrapper" style="background: url(../images/bg.png)">
 <a href="/profilePic"><button id="button" style="height:auto;background-color:#828afc;color:#fff;">Upload Profile Picture</button><a></a></a> -->
 
-<div class="wrapper" style ="background: url(../images/bg.png)">
-  <h1 style="color: #fff;font-weight: 700;font-size: 3em;">Register Page</h1>
+<div class="wrapper">
+  <h1 style="color: #fff;font-weight: 700;font-size: 3em;">Sign up</h1>
   <br>
   <hr>
-    <h3 style="color:red;"><%= erreg %></h3>
+    <h3 style="color:#fff;"><%= erreg %></h3>
     <form method="POST" action="" enctype="multipart/form-data">
 
       <div style="text-align: center;" class="form-group">
