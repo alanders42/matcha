@@ -67,7 +67,12 @@
       </div>
     </nav>
 <body style="height:110vh;background: linear-gradient(#FD4D52, #892B8B);">
-
+<script> 
+var socket = io();
+socket.on('show_notification', function (data) {
+  showDesktopNotification(data.title, data.message, data.icon);
+});</script>
+<div id="room">
 <div  class="wrapper">
 
     <div id="mario-chat">
@@ -76,7 +81,6 @@
                         <div id="output">
                             <% for(old of oldMessages){%>
    <p><strong><%= old.from%> : </strong><%=old.msg%></p>
-
                               <% }%>
             </div>
        
@@ -88,11 +92,16 @@
     
     <input style="text-align:center;background-color:white; color:#000;width:100%"id="message" type="text" placeholder="Message"/>
     <button class="btn btn-primary btn-block"class="button"id="send">Send</button>
+    <!-- <script>   $('#send').click(function () {
+     socket.broadcast.to(socketid).emit('message', 'for your eyes only');
+  })</script> -->
+ 
     </div>
     <script src="/chats.js"></script>
-    
+
      
         
+</div>
 </div>
 </body>
 <footer>

@@ -86,6 +86,12 @@
         <%}%>
    
   </div>
+  <script>
+    var socket = io.connect('http://localhost:8013');
+    socket.on('message', function(message) {
+        alert('You have a new message');
+    })
+</script>
   <footer >
     <div class="content has-text-centered">
         <p style="color:white;"><strong style="color:white;">Matcha</strong> by J.T.A.B <a href="https://github.com/BrandonSwanepoel/Matcha"></a></p>

@@ -22,7 +22,12 @@
 </header>
 
 <div  class="wrapper" style="background: url(../images/bg.png);">
-
+    <script>
+        var socket = io.connect('http://localhost:8013');
+        socket.on('message', function(message) {
+            alert('You have a new message');
+        })
+    </script>
   </div>
 </body>
 <footer class="footer" style="background: url(../images/menu.png);">

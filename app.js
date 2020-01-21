@@ -26,6 +26,7 @@ var socket = require('socket.io');
 
 
 
+
  //mongo Uri
  const mongoURI = 'mongodb+srv://Matcha:Matcha123@wethinkcode-je391.mongodb.net/Matcha?retryWrites=true&w=majority';
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
@@ -1264,8 +1265,11 @@ app.get('/visitProfile',(req,res) => {
     
 app.get('/chat',(req,res) => {
     var user = req.query.user.toString();
-    app.locals.nameOfusers1 = user + req.session.user;
-    app.locals.nameOfusers2 =req.session.user+ user ;
+    var chatId =[];
+    chatId.push(user);
+    chatId.push(req.session.user);
+    chatId.sort()
+    app.locals.nameOfusers1 = chatId[0] +chatId[1];
 
  
     schema.user.findOne({username: user}, function(err, data){
@@ -1282,7 +1286,7 @@ app.get('/chat',(req,res) => {
             app.locals.liked = data.like;
             app.locals.count =findIndex(app.locals.liked);
         })
-        chatSchema.chat.find({$or:[{chatId:app.locals.nameOfusers1},{chatId:app.locals.nameOfusers2}]},function(err,data){
+        chatSchema.chat.find({chatId:app.locals.nameOfusers1},function(err,data){
             if (err) throw err;
                 
                 res.render('chatView', {oldMessages:data,chatId:app.locals.nameOfusers1,to:app.locals.msgTo,from:req.session.user})
@@ -1354,22 +1358,53 @@ var server =app.listen(port,() => console.log('Server started on port',port));
 //Socket setup
 var io = socket(server);
 io.on('connection',function(socket){
-    
-    console.log('made socket connection',socket.id);
+    user[socket.id] = socket
+
+    // socket.emit('message','You are connected!');
+     // When the server receives a “message” type signal from the client   
+    //  socket.on('message', function (message) {
+    //     socket.emit('You have a new message: ');
+//     // }); 
+//     socket.on('message', function( data ) {
+//         console.log( 'Message received from'+data.from);
+//         socket.emit('message',+data.from);
+// });
+
+    console.log('made socket connection');
     socket.on('chat',function(data){
+        socket.join(data.chatId);
         io.sockets.emit('chat',data);
         saveMsg(data)
+
         console.log('Message added to DB!')
+       
     });
+    // socket.on('room',function(data){
+    //     socket.join(data);
+    //     console.log(data)
+    // })
   
+
+    socket.on('message', function(message) {
+        alert(message);
+    })
     socket.on('typing',function(data){
         socket.broadcast.emit('typing',data)
     });
-    socket.on('send to server',function(data){ 
-        socketId =  'jduffeyawe';
-        io.to(socketId).emit('notification', 'test data');
-     })
+    // socket.on('send to server',function(data){ 
+    //     socketId =  'jduffeyawe';
+    //     io.to(socketId).emit('notification', 'test data');
+    //  })
+     socket.on( 'new_notification', function( data ) {
+        console.log(ap.locals.nameOfusers1,'hello');
+        io.sockets.emit( 'show_notification', { 
+          title: data.title, 
+          message: 'hello', 
+         
+        });
+      });
 });
+
 
 function saveMsg(data){
 	chatSchema.chat({chatId:data.chatId,from:data.from,msg: data.message, to: data.to}).save(function(err){
