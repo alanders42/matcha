@@ -1282,10 +1282,15 @@ app.get('/chat',(req,res) => {
             app.locals.liked = data.like;
             app.locals.count =findIndex(app.locals.liked);
         })
-        chatSchema.chat.find({$or:[[{chatId:app.locals.nameOfusers1}],[{chatId:app.locals.nameOfusers2}]]},function(err,data){
+        chatSchema.chat.find({$or:[{chatId:app.locals.nameOfusers1},{chatId:app.locals.nameOfusers2}]},function(err,data){
             if (err) throw err;
-        res.render('chatView', {oldMessages:data,chatId:app.locals.nameOfusers,to:app.locals.msgTo,from:req.session.user});
+                
+                res.render('chatView', {oldMessages:data,chatId:app.locals.nameOfusers1,to:app.locals.msgTo,from:req.session.user})
+
+
         })
+        
+       
     });
 
 });
@@ -1360,11 +1365,15 @@ io.on('connection',function(socket){
     socket.on('typing',function(data){
         socket.broadcast.emit('typing',data)
     });
+    socket.on('send to server',function(data){ 
+        socketId =  'jduffeyawe';
+        io.to(socketId).emit('notification', 'test data');
+     })
 });
-
 
 function saveMsg(data){
 	chatSchema.chat({chatId:data.chatId,from:data.from,msg: data.message, to: data.to}).save(function(err){
 	});
 };
+
 
