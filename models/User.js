@@ -42,6 +42,11 @@ const mongoose = require('mongoose');
         default: 0,
         require: false
     },
+    status: {
+        type: Boolean,
+        default: 0,
+        require: false
+    },
     image:{
         type: String,
         require: true

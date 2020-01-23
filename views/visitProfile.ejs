@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <script defer="" src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  		<script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
+  		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+  		<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 <script>document.addEventListener('DOMContentLoaded', () => {
 
@@ -64,7 +69,14 @@
       </div>
     </div>
   </nav>
+  <div id='notif'>
+
+  </div>
+  <input hidden id="from" type="text" value='<%=name%>'/>
+  <input hidden id="uname" type="text" value='<%=name%>'/>
+  <input hidden id="to" type="text" value='<%=username%>'/>
   <body  style="height:200vh;background: linear-gradient(#FD4D52, #892B8B);">
+
 
 <div  class="wrapper">
   <form action="/reportUser" method="POST">
@@ -75,9 +87,9 @@
     <!-- Like button -->
     <form action="/like" method="POST">
       <% if(like == 0) {%>
-          <button  class="button is-link" style="background-color:#828afc;color:#fff;margin-bottom:1em" value="<%= username %>">Unlike</button>
+          <button  id="likeBtn" class="button is-link" style="background-color:#828afc;color:#fff;margin-bottom:1em" value="<%= username %>">Unlike</button>
       <% }else{ %>
-        <button class="button is-link"  style="background-color:#828afc;color:#fff;margin-bottom:1em" >Like</button>
+        <button id="unlikeBtn" class="button is-link"  style="background-color:#828afc;color:#fff;margin-bottom:1em" >Like</button>
         <% } %>
     </form>
       <!-- disLike button -->
@@ -167,6 +179,7 @@
 </div>
 
 </form>
+<script src="/notif.js"></script>
 <footer >
   <div class="content has-text-centered">
       <p style="color:rgb(0, 0, 0);"><strong style="color:rgb(0, 0, 0);">Matcha</strong> by J.T.A.B <a href="https://github.com/BrandonSwanepoel/Matcha"></a></p>

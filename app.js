@@ -2,7 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const mailer = require('express-mailer');
 const app = express();
-const router = express.Router();
+// const router = express.Router();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -12,17 +12,17 @@ const chatSchema = require('./models/chat');
 const validate = require("./functions/validation");
 const crypto = require('crypto');
 const multer = require('multer');
-const GridFsStorage = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
-const methodOverride = require('method-override');
+// const methodOverride = require('method-override');
 app.use(session({secret: 'ssshhhhh',saveUninitialized: true,resave: true}));
-var async = require('async');
+// var async = require('async');
 // var ip2location = require('ip-to-location')
 const getIP = require('external-ip')();
 const iplocation = require("iplocation").default
 var storage = multer.memoryStorage();
 var upload = multer({ storage: storage });
 var socket = require('socket.io');
+var flash= require('connect-flash')
 
 
 
@@ -43,9 +43,27 @@ mailer.extend(app, {
     }
   })
   //Middleware
-    app.use(methodOverride('_method'));
+    // app.use(methodOverride('_method'));
     app.use(express.static(__dirname + '/public'));
+    app.use(flash())
+    app.use(function(req,res,next){
+        res.locals.success_msg =
+        req.flash('success_msg');
+        res.locals.error_msg =
+        req.flash('error_msg');
+        res.locals.error =
+        req.flash('error');
+        next();
+    });
 
+    app.use(function(err, req, res, next) {
+        // set locals, only providing error in development
+        res.locals.message = err.message;
+        res.locals.error = req.app.get('env') === 'development' ? err : {};
+        // render the error page
+        res.status(err.status || 500);
+        res.render('error');
+    });
 
 
 //Import Routes
@@ -83,12 +101,12 @@ var Storage = multer.diskStorage({
 });
 
 
-var profileUpload = multer({
-    storage:Storage
-}).single('file');
-router.post('/upload',profileUpload,function(req,res,next){
+// var profileUpload = multer({
+//     storage:Storage
+// }).single('file');
+// router.post('/upload',profileUpload,function(req,res,next){
 
-})
+// })
 app.post('/forgotpass',(req,res) => {
     schema.user.findOne({email: req.body.enter_email}, function (err, data){
         req.session.user = data.username;
@@ -513,7 +531,7 @@ app.post('/filterSearch',urlencodedParser,(req,res) =>{
                 gaming:req.body.gaming,
                 username:{$ne: req.session.user}},function(err,data){
                     
-                    res.render('filterResults',{userCity:app.locals.userCity, userPostal:app.locals.userPostal,sameLocation:app.locals.sameLocation,user:data,ageBetween:req.body.ageBetween,userCounty:app.locals.userCountry, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
+                    res.render('filterResults',{name:req.session.user,userCity:app.locals.userCity, userPostal:app.locals.userPostal,sameLocation:app.locals.sameLocation,user:data,ageBetween:req.body.ageBetween,userCounty:app.locals.userCountry, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
                 })
     
         // else{
@@ -535,7 +553,7 @@ app.post('/filterSearch',urlencodedParser,(req,res) =>{
 app.get('/filteredSearch',(req,res) => {
     schema.user.findOne({username: req.session.user}, async function(err, data){
         if (err) throw err;
-        res.render('filteredSearch', {gender: data.gender, sp: data.sp});
+        res.render('filteredSearch', {name:req.session.user,gender: data.gender, sp: data.sp});
     });
 });
 // //ENTER results for advanced search
@@ -606,7 +624,7 @@ app.get('/chatList',(req,res) => {
     schema.user.findOne({username: req.session.user}, function(err, data){
         app.locals.databag = data
         if(data){
-            res.render('chatList',{like:data.like,likedBy:data.likedBy});
+            res.render('chatList',{name:req.session.user,like:data.like,likedBy:data.likedBy});
         }
     })
 }) 
@@ -793,7 +811,7 @@ app.post('/',urlencodedParser,(req,res) => {
 app.get('/profile',(req,res) => {
     schema.user.findOne({username: req.session.user}, async function(err, data){
         if (err) throw err;
-        res.render('profile', {name: data.name, surname: data.surname, username: data.username, password: "******", email: data.email, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio,fameRating:data.likedBy});
+        res.render('profile', {name:req.session.user,name: data.name, surname: data.surname, username: data.username, password: "******", email: data.email, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio,fameRating:data.likedBy});
     });
 });
 
@@ -862,7 +880,7 @@ app.get('/profile',(req,res) => {
 // })
 //Update Profile
 app.post('/profile',upload.single('photo'),urlencodedParser,(req,res) => {
-    schema.user.findOne({username: req.session.user}, async function(err, data){
+    schema.user.findOne({username: req.session.user}, function(err, data){
         if (err) throw err;
 
         if (req.body.name){
@@ -1064,7 +1082,7 @@ app.get('/image-upload',(req, res) =>{
             });
             if (app.locals.errlog == undefined)
                 app.locals.errlog =  'Please fill in the form to login!';
-            res.render('image-upload',{galleryLen:app.locals.galleryLen,files:files, username:req.session.user});
+            res.render('image-upload',{name:req.session.user,galleryLen:app.locals.galleryLen,files:files, username:req.session.user});
         }
     }
 )});
@@ -1078,7 +1096,7 @@ app.get('/profile-page',(req, res) =>{
             app.locals.galleryImage = data.gallery
             app.locals.galleryLen = data.gallery.length
         }
-        res.render('profile-page',{galleryLen:app.locals.galleryLen,gallery:app.locals.galleryImage,photo:app.locals.image,username:req.session.user,fameRating:app.locals.fameRating});
+        res.render('profile-page',{name:req.session.user,galleryLen:app.locals.galleryLen,gallery:app.locals.galleryImage,photo:app.locals.image,username:req.session.user,fameRating:app.locals.fameRating});
     })
 });
 //Display image
@@ -1230,12 +1248,12 @@ app.get('/visitingGallery', (req, res) => {
             app.locals.visitingGallery = data.gallery
             app.locals.visitingProfilePicture = data.image
         }
-        res.render('visitingGallery',{gallery:app.locals.visitingGallery,photo:app.locals.visitingProfilePicture});
+        res.render('visitingGallery',{name:req.session.user,gallery:app.locals.visitingGallery,photo:app.locals.visitingProfilePicture});
 });
 })
 //View another persons Page
 app.get('/visitProfile',(req,res) => {
-    schema.user.findOne({username:req.session.user},function(err,data){
+    schema.user.findOne({name:req.session.user,username:req.session.user},function(err,data){
         if(data){
         
         }
@@ -1257,7 +1275,7 @@ app.get('/visitProfile',(req,res) => {
           
         })
         console.log(app.locals.fame)
-        res.render('visitProfile', {photo:data.image,name: data.name, surname: data.surname, username: data.username, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio, like: app.locals.count, dislike: data.dislike,sport:data.sport,fitness:data.fitness,technology:data.technology,music:data.music,gaming:data.gaming,fame:app.locals.fame});
+        res.render('visitProfile', {name:req.session.user,photo:data.image,name: data.name, surname: data.surname, username: data.username, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio, like: app.locals.count, dislike: data.dislike,sport:data.sport,fitness:data.fitness,technology:data.technology,music:data.music,gaming:data.gaming,fame:app.locals.fame});
     });
 });
 
@@ -1289,7 +1307,7 @@ app.get('/chat',(req,res) => {
         chatSchema.chat.find({chatId:app.locals.nameOfusers1},function(err,data){
             if (err) throw err;
                 
-                res.render('chatView', {oldMessages:data,chatId:app.locals.nameOfusers1,to:app.locals.msgTo,from:req.session.user})
+                res.render('chatView', {name:req.session.user,oldMessages:data,chatId:app.locals.nameOfusers1,to:app.locals.msgTo,from:req.session.user})
 
 
         })
@@ -1355,10 +1373,14 @@ mongoose.connect(
 const port = 8013;
 var server =app.listen(port,() => console.log('Server started on port',port));
 
+var connectedUsers = [];
+
+
 //Socket setup
 var io = socket(server);
 io.on('connection',function(socket){
-    user[socket.id] = socket
+   
+    // var user = {}
 
     // socket.emit('message','You are connected!');
      // When the server receives a “message” type signal from the client   
@@ -1369,46 +1391,71 @@ io.on('connection',function(socket){
 //         console.log( 'Message received from'+data.from);
 //         socket.emit('message',+data.from);
 // });
+// socket.on('update',(data)=>{
+//     var check = 0;
+//     console.log('connected')
+//     for(var i in connectedUsers)
+//     {
+       
+//         if(connectedUsers[i].user == data.user)
+//         {
+//             connectedUsers[i].socketId = data.id
+//             check = 1
+//         }
+//     }
+//     if(check === 0)
+//     {
+//         user.user = data.user
+//         user.socketId = data.id
+//         connectedUsers.push(user)
+//     }
+//     for(var x in connectedUsers){
+//         console.log("Connected users " + connectedUsers[x].user + ": " + connectedUsers[x].socketId)
+//     }
+// })
 
-    console.log('made socket connection');
     socket.on('chat',function(data){
         socket.join(data.chatId);
-        io.sockets.emit('chat',data);
+        io.sockets.to(data.chatId).emit('chat',data);
         saveMsg(data)
+        // for(var i in connectedUsers){
+            // if(connectedUsers[i].user == data.to){
+              
 
-        console.log('Message added to DB!')
+                io.sockets.to(data.to).emit('msg_notification',data.from);
+                    //     message:'New message from '+ data.from
+                     
+                    // })
+        //     }
+        // }
        
+        console.log('Message added to DB!')
     });
-    // socket.on('room',function(data){
-    //     socket.join(data);
-    //     console.log(data)
+    socket.on('liked',(data)=>{
+        io.sockets.to(data.to).emit('like_notification',data.from);
+    });
+    socket.on('unliked',(data)=>{
+        io.sockets.to(data.to).emit('unlike_notification',data.from);
+    });
+    // socket.on('notification',(data)=>{
+    //     io.socket.emit('notification',data);
     // })
-  
-
-    socket.on('message', function(message) {
-        alert(message);
+    socket.on('room',function(data){
+        socket.join(data);
     })
-    socket.on('typing',function(data){
-        socket.broadcast.emit('typing',data)
-    });
+    socket.on('notif',function(data){
+        socket.join(data);
+    })
+
+    // socket.on('typing',function(data){
+    //     socket.broadcast.emit('typing',data)
+    // });
     // socket.on('send to server',function(data){ 
     //     socketId =  'jduffeyawe';
     //     io.to(socketId).emit('notification', 'test data');
     //  })
-     socket.on( 'new_notification', function( data ) {
-        console.log(ap.locals.nameOfusers1,'hello');
-        io.sockets.emit( 'show_notification', { 
-          title: data.title, 
-          message: 'hello', 
-         
-        });
-      });
 });
-
-
 function saveMsg(data){
 	chatSchema.chat({chatId:data.chatId,from:data.from,msg: data.message, to: data.to}).save(function(err){
 	});
 };
-
-

@@ -9,7 +9,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  		<script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
+  		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+  		<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+   
 </head>
+
 <script>document.addEventListener('DOMContentLoaded', () => {
 
         // Get all "navbar-burger" elements
@@ -33,7 +40,6 @@
             });
           });
         }
-      
       });</script>
     <nav class="navbar" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
@@ -66,6 +72,9 @@
         </div>
       </div>
     </nav>
+    <div id='notifblock'>
+
+    </div>
 <body style="height:110vh;background: linear-gradient(#FD4D52, #892B8B);">
 <script> 
 var socket = io();
@@ -74,35 +83,43 @@ socket.on('show_notification', function (data) {
 });</script>
 <div id="room">
 <div  class="wrapper">
-
+    
     <div id="mario-chat">
+       
         <div id="chat-window">
-            
+ 
                         <div id="output">
+                           
                             <% for(old of oldMessages){%>
    <p><strong><%= old.from%> : </strong><%=old.msg%></p>
                               <% }%>
             </div>
        
             <div id="feedback"></div>
+           
         </div>
+        
     <input hidden id="from" type="text" value='<%=from%>'/>
     <input hidden id="to" type="text" value='<%=to%>'/>
     <input hidden id="chatId" type="text" value='<%=chatId%>'/>
-    
+ 
+  
     <input style="text-align:center;background-color:white; color:#000;width:100%"id="message" type="text" placeholder="Message"/>
     <button class="btn btn-primary btn-block"class="button"id="send">Send</button>
     <!-- <script>   $('#send').click(function () {
      socket.broadcast.to(socketid).emit('message', 'for your eyes only');
   })</script> -->
- 
+  <script src="/chats.js"></script>
+  <input hidden id ="uname" type="text" value="<%= name%>"/>
+  <script src="/notif.js"></script>
+  
     </div>
-    <script src="/chats.js"></script>
 
      
         
 </div>
 </div>
+
 </body>
 <footer>
     <div class="content has-text-centered">
