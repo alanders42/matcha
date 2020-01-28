@@ -63,6 +63,18 @@
           <div class="navbar-end">
             <div class="navbar-item">
               <div class="buttons">
+                  <% if(status === true){%>
+                    <div  class="button is-primary">
+                      <strong>online</strong>
+                    </div>
+                    <% }%>
+                    <% if(status === false){%>
+                    <div class="button is-link" style="background-color:#ff0000;color:#fff;margin-bottom:1em">
+                    
+                          <strong>offline</strong>
+                         
+                    </div>
+                    <% }%>
                 <a href="/" class="button is-primary">
                   <strong>Sign out</strong>
                 </a>

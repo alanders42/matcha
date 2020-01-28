@@ -77,8 +77,23 @@ app.set('view engine', 'ejs');
 app.get('/',(req,res) => {
     if (app.locals.errlog == undefined)
         app.locals.errlog =  'Please fill in the form to login!';
+        schema.user.findOne({username: req.session.user}, function(err, data){
+            if(err) throw err;
+            if(data){
+                if(data.status == 'true'){
+                    status = 'false';
+                    console.log('logged out')
+                }
+                schema.user.findOneAndUpdate({username: req.session.user},
+                    {$set:{
+                        status:'false'
+                    }
+                }, async function(err, data){
+                    if(err) throw err;
+                })}})
     res.render('login', {err: app.locals.errlog});
 });
+
 
 //render Profile upload page
 app.get('/profilePic',(req,res) => {
@@ -208,6 +223,18 @@ app.get('/home',(req,res) => {
             app.locals.data = data;
             app.locals.arrayLength = app.locals.data.blocked.length;
             app.locals.userLength = app.locals.data.username.length;
+
+            if(data.status == "false"){
+                status = "true"
+                console.log('logged in')
+            }
+            schema.user.findOneAndUpdate({username: req.session.user},
+                {$set:{
+                    status:"true"
+                }
+            }, async function(err, data){
+                if(err) throw err;
+            })
             //Find if user has been liked
             var str=[]
             function findIndex(str) { 
@@ -266,7 +293,9 @@ app.get('/home',(req,res) => {
                         gaming:app.locals.data.gaming,
                         username:{$ne: req.session.user}},function(err,data){
                             if(err) throw err;
-                            res.render('home',{locationTest:'0',user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageIsValid:app.locals.age,ageBetween:app.locals.userAge, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
+                            if(data){
+                            res.render('home',{username: data.username,locationTest:'0',user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageIsValid:app.locals.age,ageBetween:app.locals.userAge, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
+                            }
                         })
                 }
                 else {
@@ -279,7 +308,8 @@ app.get('/home',(req,res) => {
                         gaming:app.locals.data.gaming,
                         username:{$ne: req.session.user}},  function(err, data){
                             if(data){
-                                res.render('home',{locationTest:'0',user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageIsValid:app.locals.age,ageBetween:app.locals.userAge, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
+                                console.log(data.username)
+                                res.render('home',{username: data.username,locationTest:'0',user:data, name:req.session.user,blocked:app.locals.data.blocked,length:app.locals.arrayLength,userLength:app.locals.userLength,ageIsValid:app.locals.age,ageBetween:app.locals.userAge, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
                             }
                         })
                 }
@@ -1134,7 +1164,6 @@ app.post('/like',urlencodedParser,(req,res) => {
         app.locals.liked = data.like;
         app.locals.likedBy = data.likedBy
         var liked = app.locals.liked
-        var likedBy = app.locals.likedBy
 
         var count =findIndex(app.locals.liked);
         
@@ -1169,19 +1198,20 @@ app.post('/like',urlencodedParser,(req,res) => {
             } 
             app.locals.liked = data.like;
             app.locals.likedBy = data.likedBy
-            var liked = app.locals.liked
             var likedBy = app.locals.likedBy
     
             var count =findIndex(app.locals.likedBy);
             if (count == '-1'){
                 likedBy.push(req.session.user);
                 console.log('User Profile likedBy')
+                app.locals.count= '0'
             }
-            else {
+            else if(count == '0'){
                 const index = app.locals.likedBy.indexOf(count);
                 
                     app.locals.likedBy.splice(index, 1);
                     console.log(app.locals.likedBy)
+                    app.locals.count = '-1'
                 console.log('User Profile is unlikedBy')
             }
             schema.user.findOneAndUpdate({username: app.locals.visiting},
@@ -1193,7 +1223,6 @@ app.post('/like',urlencodedParser,(req,res) => {
         })
     })
 })
-
 //block a profile
 app.post('/dislike',urlencodedParser,(req,res) => {
     schema.user.findOne({username: req.session.user}, async function(err, data){
@@ -1247,35 +1276,53 @@ app.get('/visitingGallery', (req, res) => {
         if(data){
             app.locals.visitingGallery = data.gallery
             app.locals.visitingProfilePicture = data.image
+            app.locals.status = data.status
         }
-        res.render('visitingGallery',{name:req.session.user,gallery:app.locals.visitingGallery,photo:app.locals.visitingProfilePicture});
+        res.render('visitingGallery',{status:app.locals.status,name:req.session.user,gallery:app.locals.visitingGallery,photo:app.locals.visitingProfilePicture});
 });
 })
 //View another persons Page
 app.get('/visitProfile',(req,res) => {
-    schema.user.findOne({name:req.session.user,username:req.session.user},function(err,data){
+    schema.user.findOne({username:req.session.user},function(err,data){
         if(data){
+            app.locals.like = data.like
         
         }
     })
     var user = req.query.user.toString();
     schema.user.findOne({username: user}, function(err, data){
         app.locals.fame = data.likedBy.length
-
+        app.locals.status = data.status
+        app.locals.likedBy = data.likedBy
+        app.locals.visitingUser = data.username
+        function findIndex(str) { 
+            var index = str.indexOf(app.locals.visitingUser);
+            return index
+        } 
+        var count =findIndex(app.locals.like);
+        if (count == '-1'){
+            app.locals.count= '-1'
+        }
+        else if(count == '0'){
+                app.locals.count = '0'
+        }
+        app.locals.likeCount = count
         app.locals.visiting = data.username;
         if (err) throw err;
-        schema.user.findOne({username: req.session.user}, async function(err, data){
-            if (err) throw err;
+        // schema.user.findOne({username: req.session.user}, async function(err, data){
+        //     if (err) throw err;
             
-            function findIndex(str) { 
-                var index = str.indexOf(app.locals.visiting);
-                console.log(index);
-                return index
-            } 
+        //     function findIndex(str) { 
+        //         var index = str.indexOf(app.locals.visiting);
+        //         console.log(index);
+        //         return index
+        //     } 
           
-        })
-        console.log(app.locals.fame)
-        res.render('visitProfile', {name:req.session.user,photo:data.image,name: data.name, surname: data.surname, username: data.username, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio, like: app.locals.count, dislike: data.dislike,sport:data.sport,fitness:data.fitness,technology:data.technology,music:data.music,gaming:data.gaming,fame:app.locals.fame});
+        // })
+        
+        console.log(app.locals.likeCount)
+        console.log('help')
+        res.render('visitProfile', {like:app.locals.count,status:app.locals.status,to:app.locals.visiting,uname:req.session.user,photo:data.image,name: data.name, surname: data.surname, username: data.username, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio, dislike: data.dislike,sport:data.sport,fitness:data.fitness,technology:data.technology,music:data.music,gaming:data.gaming,fame:app.locals.fame});
     });
 });
 
@@ -1292,6 +1339,7 @@ app.get('/chat',(req,res) => {
  
     schema.user.findOne({username: user}, function(err, data){
         app.locals.msgTo = data.username;
+        app.locals.status = data.status
         if (err) throw err;
         schema.user.findOne({username: req.session.user}, async function(err, data){
             if (err) throw err;
@@ -1302,12 +1350,13 @@ app.get('/chat',(req,res) => {
                 return index
             } 
             app.locals.liked = data.like;
+            
             app.locals.count =findIndex(app.locals.liked);
         })
         chatSchema.chat.find({chatId:app.locals.nameOfusers1},function(err,data){
             if (err) throw err;
                 
-                res.render('chatView', {name:req.session.user,oldMessages:data,chatId:app.locals.nameOfusers1,to:app.locals.msgTo,from:req.session.user})
+                res.render('chatView', {status:app.locals.status,name:req.session.user,oldMessages:data,chatId:app.locals.nameOfusers1,to:app.locals.msgTo,from:req.session.user})
 
 
         })
@@ -1436,6 +1485,9 @@ io.on('connection',function(socket){
     });
     socket.on('unliked',(data)=>{
         io.sockets.to(data.to).emit('unlike_notification',data.from);
+    });
+    socket.on('viewed',(data)=>{
+        io.sockets.to(data.to).emit('viewed_notification',data.from);
     });
     // socket.on('notification',(data)=>{
     //     io.socket.emit('notification',data);

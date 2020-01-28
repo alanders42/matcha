@@ -6,7 +6,9 @@ var notif = document.getElementById('notif'),
     to = document.getElementById('to'),
     message = document.getElementById('message'),
     from = document.getElementById('from');
-     
+    viewedBtn = document.getElementById('view'),
+    viewed = document.getElementById('view');
+    
     socket.emit('notif', uname.value);
     if (likeBtn){
     likeBtn.addEventListener('click',function(){
@@ -24,6 +26,27 @@ var notif = document.getElementById('notif'),
             })
         })}
 
+        if (viewedBtn){
+            viewedBtn.addEventListener('click',function(){
+                var viewed = document.getElementById('view');
+                document.getElementById("view").value = viewed;
+                console.log('to '+viewed.value)
+                
+                socket.emit('viewed',{
+                    from: from.value,
+                    to: viewed.value,
+                })
+            })}
+            
+            console.log('from'+from.value)
+            console.log('to'+viewed.value)
+       
+        socket.on('viewed_notification',function(data){
+        
+            notif.innerHTML += "<div class='alert alert-danger alert-dismissible fade show' role='alert'>" + 
+            "Your profile was viewed by " + data + 
+            "<button type='button' class='close' data-dismiss='alert' aria-label='close'><span aria=hidden='true'>&times;</span></span></button>" + "</div>";
+        })
         socket.on('unlike_notification',function(data){
         
             notif.innerHTML += "<div class='alert alert-danger alert-dismissible fade show' role='alert'>" + 
