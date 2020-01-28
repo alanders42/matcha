@@ -61,15 +61,15 @@
       <div class="navbar-end">
         <div class="navbar-item">
           <div class="buttons">
-              <% if(status === true){%>
+              <% if(status == "online"){%>
                 <div  class="button is-primary">
                   <strong>online</strong>
                 </div>
                 <% }%>
-                <% if(status === false){%>
+                <% if(status != "online"){%>
                 <div class="button is-link" style="background-color:#ff0000;color:#fff;margin-bottom:1em">
                 
-                      <strong>offline</strong>
+                      <strong><%=status%></strong>
                      
                 </div>
                 <% }%>

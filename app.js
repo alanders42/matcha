@@ -74,29 +74,6 @@ app.set('view engine', 'ejs');
 app.get('/',(req,res) => {
     if (app.locals.errlog == undefined)
         app.locals.errlog =  'Please fill in the form to login!';
-       
-        schema.user.findOne({username: req.session.user}, function(err, data){
-            if(err) throw err;
-            if(data){
-                if(data.status == 'true'){
-                    status = 'false';
-                    //last seen
-                    D = new Date();
-                    var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-                    schema.user.findOneAndUpdate({username: req.session.user},
-                        {$set:{
-                        status:"Last Seen: " + D.getHours() + ":" + D.getMinutes() + " - " + D.getDay() + " " + months[D.getMonth()] + " " + D.getFullYear()}}, async function(err, data){
-                            if(err) throw err;
-                    })
-                    console.log('logged out')
-                }
-                schema.user.findOneAndUpdate({username: req.session.user},
-                    {$set:{
-                        status:'false'
-                    }
-                }, async function(err, data){
-                    if(err) throw err;
-                })}})
     res.render('login', {err: app.locals.errlog});
 });
 
@@ -707,6 +684,18 @@ app.post('/register', upload.single('photo'), urlencodedParser,async  function(r
     }
 });
 
+app.get('/logout', (req,res) => {
+        //last seen
+        D = new Date();
+        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        schema.user.findOneAndUpdate({username: req.session.user},
+            {$set:{
+            status:"Last Seen: " + D.getHours() + ":" + D.getMinutes() + " - " + D.getDay() + " " + months[D.getMonth()] + " " + D.getFullYear()}},function(err, data){
+                if(err) throw err;
+        })
+        res.redirect('/');
+})
+
 //Get login form data and check if user exists
 app.post('/',urlencodedParser,(req,res) => {
     const hash= crypto.createHash("sha256");
@@ -721,6 +710,10 @@ app.post('/',urlencodedParser,(req,res) => {
                         console.log("Logged in");
                         req.session.user = req.body.enter_username;
                         app.locals.errlog = undefined;
+                        schema.user.findOneAndUpdate({username: req.session.user},
+                            {$set:{status:"online"}}, async function(err, data){
+                                if(err) throw err;
+                            })
                         res.redirect('home');
                     }
                     else{
@@ -1100,10 +1093,11 @@ app.post('/dislike',urlencodedParser,(req,res) => {
 })
 //Report User Profile
 app.post('/reportUser', (req, res) => {
-    app.mailer.send('email', {
+    app.mailer.send('report', {
         to: 'matchaprojectsup@gmail.com',
         subject: app.locals.visiting +'has been reported by'+ req.session.user,
-        vkey:"The user has been reported"
+        user: req.session.user,
+        repuser: app.locals.visiting
     }, function (err) {
         if (err) {
             console.log(err);
@@ -1155,7 +1149,7 @@ app.get('/visitProfile',(req,res) => {
         if (err) throw err;
         console.log(app.locals.count)
         console.log('help')
-        res.render('visitProfile', {name:req.session.user,like:app.locals.count,status:app.locals.status,to:app.locals.visiting,photo:data.image,name: data.name, surname: data.surname, username: data.username, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio, dislike: data.dislike,sport:data.sport,fitness:data.fitness,technology:data.technology,music:data.music,gaming:data.gaming,fame:app.locals.fame});
+        res.render('visitProfile', {name:req.session.user,like:app.locals.count,status:data.status,to:app.locals.visiting,photo:data.image,name: data.name, surname: data.surname, username: data.username, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio, dislike: data.dislike,sport:data.sport,fitness:data.fitness,technology:data.technology,music:data.music,gaming:data.gaming,fame:app.locals.fame});
     });
 });
 //View Users you can chat with
