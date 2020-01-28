@@ -85,7 +85,6 @@
 
   </div>
   <input hidden id="from" type="text" value='<%=name%>'/>
-  <input hidden id="uname" type="text" value='<%=name%>'/>
   <input hidden id="to" type="text" value='<%=username%>'/>
   <body  style="height:200vh;background: linear-gradient(#FD4D52, #892B8B);">
 
@@ -94,14 +93,14 @@
   <form action="/reportUser" method="POST">
     <button class="button is-link" style="background-color:#ff0000;color:#fff;margin-bottom:1em">Report User</button>
     </form>
-  <a href="visitingGallery"><button class="button is-link"  style="background-color:#828afc;color:#fff;margin-bottom:1em"  value="<%= username %>">Gallery</button></a>
+  <a href="visitingGallery"><button class="button is-link"  style="background-color:#828afc;color:#fff;margin-bottom:1em"  id="view" value="<%= username %>">Gallery</button></a>
  
     <!-- Like button -->
     <form action="/like" method="POST">
       <% if(like == 0) {%>
-          <button  id="likeBtn" class="button is-link" style="background-color:#828afc;color:#fff;margin-bottom:1em" value="<%= username %>">Unlike</button>
+          <button  id="unlikeBtn" class="button is-link" style="background-color:#828afc;color:#fff;margin-bottom:1em" value="<%= username %>">Unlike</button>
       <% }if(like == -1) { %>
-        <button id="unlikeBtn" class="button is-link"  style="background-color:#828afc;color:#fff;margin-bottom:1em" >Like</button>
+        <button id="likeBtn" class="button is-link"  style="background-color:#828afc;color:#fff;margin-bottom:1em" >Like</button>
         <% } %>
     </form>
       <!-- disLike button -->
@@ -191,6 +190,8 @@
 </div>
 
 </form>
+<input hidden id ="uname" type="text" value="<%= name%>"/>
+<script src="/chats.js"></script>
 <script src="/notif.js"></script>
 <footer >
   <div class="content has-text-centered">

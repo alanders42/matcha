@@ -841,7 +841,7 @@ app.post('/',urlencodedParser,(req,res) => {
 app.get('/profile',(req,res) => {
     schema.user.findOne({username: req.session.user}, async function(err, data){
         if (err) throw err;
-        res.render('profile', {name:req.session.user,name: data.name, surname: data.surname, username: data.username, password: "******", email: data.email, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio,fameRating:data.likedBy});
+        res.render('profile', {name: data.name, surname: data.surname, username: data.username, password: "******", email: data.email, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio,fameRating:data.likedBy});
     });
 });
 
@@ -1088,7 +1088,7 @@ app.get('/image-upload',(req, res) =>{
     }
             if (app.locals.errlog == undefined)
                 app.locals.errlog =  'Please fill in the form to login!';
-            res.render('image-upload',{files:files});
+            res.render('image-upload',{name:req.session.user,files:files});
         }
     }
 )});
@@ -1112,7 +1112,7 @@ app.get('/image-upload',(req, res) =>{
             });
             if (app.locals.errlog == undefined)
                 app.locals.errlog =  'Please fill in the form to login!';
-            res.render('image-upload',{name:req.session.user,galleryLen:app.locals.galleryLen,files:files, username:req.session.user});
+            res.render('image-upload',{galleryLen:app.locals.galleryLen,files:files, username:req.session.user});
         }
     }
 )});
@@ -1323,7 +1323,7 @@ app.get('/visitProfile',(req,res) => {
         
         console.log(app.locals.count)
         console.log('help')
-        res.render('visitProfile', {like:app.locals.count,status:app.locals.status,to:app.locals.visiting,uname:req.session.user,photo:data.image,name: data.name, surname: data.surname, username: data.username, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio, dislike: data.dislike,sport:data.sport,fitness:data.fitness,technology:data.technology,music:data.music,gaming:data.gaming,fame:app.locals.fame});
+        res.render('visitProfile', {name:req.session.user,like:app.locals.count,status:app.locals.status,to:app.locals.visiting,photo:data.image,name: data.name, surname: data.surname, username: data.username, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio, dislike: data.dislike,sport:data.sport,fitness:data.fitness,technology:data.technology,music:data.music,gaming:data.gaming,fame:app.locals.fame});
     });
 });
 //View Users you can chat with
