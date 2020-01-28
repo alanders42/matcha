@@ -11,9 +11,10 @@ var message = document.getElementById('message'),
       to = document.getElementById('to'),
       btn = document.getElementById('send'),
       output = document.getElementById('output'),
+      chatId = document.getElementById('chatId');
       feedback = document.getElementById('feedback');
 
-
+if (chatId){
       socket.emit('room',chatId.value)
 // Emit events
 btn.addEventListener('click', function(){
@@ -26,6 +27,7 @@ btn.addEventListener('click', function(){
     });
     message.value = "";
 });
+}
 
 // message.addEventListener('keypress', function(){
 //     socket.to().emit('typing', from.value);

@@ -86,19 +86,19 @@
                         <img src="data:image/jpg;base64,<%=users.image%>" width="300" height="300">
                     </div> 
                    <%}%>
-                    <% if((ageBetween == '18-25') && (users.age >=18 && users.age <=25)){%>
+                    <% if((ageBetween == '18-25') && (users.age >=18 && users.age <=25) && ((fameBetween == '0-17') && (users.likeBy.length >=0 && users.likeBy.length <=17) || (fameBetween == '18-25') && (users.likeBy.length >=18 && users.likeBy.length <=25))){%>
                         <a style="margin-top:2em;padding-left: 10em; padding-right: 10em;" href="visitProfile?user=<%= users.username%>"><button style=" background-color: #60b9e2;color:#fff;font-weight: 700;" class="button2 form-control" ><%= users.username %></button></a>
                         <%}%>
-                    <% if((ageBetween == '26-35') && (users.age >=26 && users.age <=35)){%>
+                    <% if((ageBetween == '26-35') && (users.age >=26 && users.age <=35)&& ((fameBetween == '0-17') && (users.likeBy.length >=0 && users.likeBy.length <=17) || (fameBetween == '18-25') && (users.likeBy.length >=18 && users.likeBy.length <=25))){%>
                         <a style="margin-top:2em;padding-left: 10em; padding-right: 10em;" href="visitProfile?user=<%= users.username%>"><button style=" background-color: #60b9e2;color:#fff;font-weight: 700;" class="button2 form-control" ><%= users.username %></button></a>
                         <%}%>
-                    <% if((ageBetween == '36-45') && (users.age >=36 && users.age <=45)){%>
+                    <% if((ageBetween == '36-45') && (users.age >=36 && users.age <=45)&& ((fameBetween == '0-17') && (users.likeBy.length >=0 && users.likeBy.length <=17) || (fameBetween == '18-25') && (users.likeBy.length >=18 && users.likeBy.length <=25))){%>
                         <a style="margin-top:2em;padding-left: 10em; padding-right: 10em;" href="visitProfile?user=<%= users.username%>"><button style=" background-color: #60b9e2;color:#fff;font-weight: 700;" class="button2 form-control" ><%= users.username %></button></a>
                         <%}%>
-                    <% if((ageBetween == '46-55') && (users.age >=46 && users.age <=55)){%>
+                    <% if((ageBetween == '46-55') && (users.age >=46 && users.age <=55)&& ((fameBetween == '0-17') && (users.likeBy.length >=0 && users.likeBy.length <=17) || (fameBetween == '18-25') && (users.likeBy.length >=18 && users.likeBy.length <=25))){%>
                         <a style="margin-top:2em;padding-left: 10em; padding-right: 10em;" href="visitProfile?user=<%= users.username%>"><button style=" background-color: #60b9e2;color:#fff;font-weight: 700;" class="button2 form-control" ><%= users.username %></button></a>
                         <%}%>
-                    <% if((ageBetween == '56-older') && (users.age >=56)){%>
+                    <% if((ageBetween == '56-older') && (users.age >=56) && ((fameBetween == '0-17')&& (users.likeBy.length >=0 && users.likeBy.length <=17) || (fameBetween == '18-25') && (users.likeBy.length >=18 && users.likeBy.length <=25))){%>
                         <a style="margin-top:2em;padding-left: 10em; padding-right: 10em;" href="visitProfile?user=<%= users.username%>"><button style=" background-color: #60b9e2;color:#fff;font-weight: 700;" class="button2 form-control" ><%= users.username %></button></a>
                         <%}%>
                 <%}%>

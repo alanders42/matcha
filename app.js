@@ -13,10 +13,8 @@ const validate = require("./functions/validation");
 const crypto = require('crypto');
 const multer = require('multer');
 const Grid = require('gridfs-stream');
-// const methodOverride = require('method-override');
 app.use(session({secret: 'ssshhhhh',saveUninitialized: true,resave: true}));
 // var async = require('async');
-// var ip2location = require('ip-to-location')
 const getIP = require('external-ip')();
 const iplocation = require("iplocation").default
 var storage = multer.memoryStorage();
@@ -24,12 +22,10 @@ var upload = multer({ storage: storage });
 var socket = require('socket.io');
 var flash= require('connect-flash')
 
-
-
-
  //mongo Uri
  const mongoURI = 'mongodb+srv://Matcha:Matcha123@wethinkcode-je391.mongodb.net/Matcha?retryWrites=true&w=majority';
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
+
 //app.use(bodyParser.json());
 mailer.extend(app, {
     from: 'matchaprojectsup@gmail.com',
@@ -42,28 +38,29 @@ mailer.extend(app, {
       pass: 'Matcha123'
     }
   })
-  //Middleware
-    // app.use(methodOverride('_method'));
-    app.use(express.static(__dirname + '/public'));
-    app.use(flash())
-    app.use(function(req,res,next){
-        res.locals.success_msg =
-        req.flash('success_msg');
-        res.locals.error_msg =
-        req.flash('error_msg');
-        res.locals.error =
-        req.flash('error');
-        next();
-    });
 
-    app.use(function(err, req, res, next) {
-        // set locals, only providing error in development
-        res.locals.message = err.message;
-        res.locals.error = req.app.get('env') === 'development' ? err : {};
-        // render the error page
-        res.status(err.status || 500);
-        res.render('error');
-    });
+//Middleware
+// app.use(methodOverride('_method'));
+app.use(express.static(__dirname + '/public'));
+app.use(flash())
+app.use(function(req,res,next){
+    res.locals.success_msg =
+    req.flash('success_msg');
+    res.locals.error_msg =
+    req.flash('error_msg');
+    res.locals.error =
+    req.flash('error');
+    next();
+});
+
+app.use(function(err, req, res, next) {
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
+});
 
 
 //Import Routes
@@ -77,11 +74,20 @@ app.set('view engine', 'ejs');
 app.get('/',(req,res) => {
     if (app.locals.errlog == undefined)
         app.locals.errlog =  'Please fill in the form to login!';
+       
         schema.user.findOne({username: req.session.user}, function(err, data){
             if(err) throw err;
             if(data){
                 if(data.status == 'true'){
                     status = 'false';
+                    //last seen
+                    D = new Date();
+                    var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                    schema.user.findOneAndUpdate({username: req.session.user},
+                        {$set:{
+                        status:"Last Seen: " + D.getHours() + ":" + D.getMinutes() + " - " + D.getDay() + " " + months[D.getMonth()] + " " + D.getFullYear()}}, async function(err, data){
+                            if(err) throw err;
+                    })
                     console.log('logged out')
                 }
                 schema.user.findOneAndUpdate({username: req.session.user},
@@ -93,7 +99,6 @@ app.get('/',(req,res) => {
                 })}})
     res.render('login', {err: app.locals.errlog});
 });
-
 
 //render Profile upload page
 app.get('/profilePic',(req,res) => {
@@ -115,30 +120,25 @@ var Storage = multer.diskStorage({
     }
 });
 
-
-// var profileUpload = multer({
-//     storage:Storage
-// }).single('file');
-// router.post('/upload',profileUpload,function(req,res,next){
-
-// })
-app.post('/forgotpass',(req,res) => {
-    schema.user.findOne({email: req.body.enter_email}, function (err, data){
-        req.session.user = data.username;
-        //send verification email to user
-        var key = data.username + Date.now();
+app.post('/forgotpass',urlencodedParser,(req,res) => {
+    var key = req.body.enter_email + Date.now();
         const hashkey = crypto.createHash("sha256");
         hashkey.update(key);
+        vkey = hashkey.digest("hex");
+    schema.user.findOneAndUpdate({email: req.body.enter_email}, {$set:{vkey:vkey}}, function (err, data){
+        //send verification email to user
         app.mailer.send('forgotpass-email', {
             to: req.body.enter_email,
             subject: 'Matcha Change Password',
-            vkey: hashkey.digest("hex")
+            vkey: vkey,
+            port:port
         }, function (err) {
             if (err) {
                 console.log(err);
                 return;
             }
             console.log('Email sent to change ' + data.username + '\'/s password' );
+            res.redirect('/', {err: app.locals.errlog});
         })})
 });
 
@@ -146,8 +146,19 @@ app.get('/changepass',(req,res) => {
     res.render('change-pass')
 });
 
-app.post('/changepass',(req,res) => {
-    
+app.post('/changepass',urlencodedParser,(req,res) => {
+    var key = req.params.vkey;
+    console.log(key)
+    var pass = req.body.new_password;
+    const hashkey = crypto.createHash("sha256");
+    hashkey.update(pass);
+    schema.user.findOneAndUpdate({vkey: key},
+        {$set:{
+        password: hashkey.digest("hex")}}, function(err, data){
+            if(err) throw err;
+            console.log(data + " Has been verified!");
+        })
+        res.redirect('/');
 });
 
 //verify user account
@@ -173,44 +184,32 @@ app.get('/register',(req,res) => {
     res.render('register', {erreg: app.locals.erreg});
 });
 
-//Get specific user
-app.get('/register/:username', (req, res) => {
-    schema.user.findOne({username: req.params.username},function(err, data){
-        if(err) throw err;
-        app.locals.username = req.params.username;
-        console.log(data);
-    });
-    if (app.locals.erreg == undefined)
-        app.locals.erreg =  'Please fill in the form to register!';
-    res.render('register', {erreg: app.locals.err});
-});
 //Get all users for matching
-
 app.get('/home',(req,res) => {
     //Update IP
     getIP(function(err,ip){
         if (err) throw err;
         var geo = iplocation(ip, [],function(err,res){
-                //add new user to db
-                if (err) throw err;
+            //add new user to db
+            if (err) throw err;
 
-                if (res.city){
-                    city = res.city;
-                }
-                if (res.country){
-                    country = res.country;
-                }
-                if (res.postal){
-                    postal = res.postal;
-                }
-                schema.user.findOneAndUpdate({username: req.session.user},
-                    {$set:{
-                    city: city,
-                    country: country,        
-                    postal: postal,
-                    }}, async function(err, data){
-                     if(err) throw err;
-                })
+            if (res.city){
+                city = res.city;
+            }
+            if (res.country){
+                country = res.country;
+            }
+            if (res.postal){
+                postal = res.postal;
+            }
+            schema.user.findOneAndUpdate({username: req.session.user},
+                {$set:{
+                city: city,
+                country: country,        
+                postal: postal,
+                }}, async function(err, data){
+                    if(err) throw err;
+            })
         })
     })
     schema.user.findOne({username: req.session.user}, function(err, data){
@@ -243,14 +242,14 @@ app.get('/home',(req,res) => {
             } 
             app.locals.like = data.like;
             var str = app.locals.like
-    
+
             var count =findIndex(app.locals.like);
             if (count == '-1'){
                 str.push(app.locals.visiting);
             }
                 if(app.locals.data.sp == "Heterosexual"){
                     if(app.locals.data.gender == "Male"){
-                          app.locals.gender = "Female"
+                            app.locals.gender = "Female"
                     }
                     else{
                     app.locals.gender = "Male"
@@ -464,7 +463,6 @@ app.post('/sort',urlencodedParser, (req, res) => {
                      //Still need to sort by location!!!!!!  
                        
                     else {
-                        // if(app.locals.data.dislike == "off"){
                             schema.user.find({
                             sp:app.locals.data.sp,
                             gender:app.locals.gender,
@@ -481,7 +479,6 @@ app.post('/sort',urlencodedParser, (req, res) => {
                     }
                 }
                 else {
-                    // if(app.locals.data.dislike == "off"){
                         schema.user.find({
                         sp:app.locals.data.sp,
                         sport:app.locals.data.sport,
@@ -504,24 +501,8 @@ app.post('/filterSearch',urlencodedParser,(req,res) =>{
     app.locals.filterSearch= req.body
     schema.user.findOne({username:req.session.user},function(err,data){
         if(data){
-
             if(err) throw err;
             app.locals.filterSearch = data
-            // if(app.locals.filterSearch.sp== "Heterosexual"){
-            //     if(app.locals.filterSearch.gender == "Male"){
-            //         app.locals.filterSearch.gender = "Female"
-            //     }
-            //     else
-            //     app.locals.filterSearch.gender = "Male"
-            // }
-            // if(app.locals.filterSearch.sp== "Homosexual"){
-            //     if(app.locals.filterSearch.gender == "Male"){
-            //         app.locals.filterSearchgender = "Male"
-            //     }
-            //     else
-            //         app.locals.filterSearch.gender = "Female"
-            // }
-            // if(app.locals.filterSearch.sp != "Bisexual"){
                 if(req.body.sport == null)
                 {
                     req.body.sport = "off"
@@ -551,7 +532,6 @@ app.post('/filterSearch',urlencodedParser,(req,res) =>{
                 }
 
             schema.user.find({
-                
                 sp:req.body.sp,
                 gender:req.body.gender,
                 sport:req.body.sport,
@@ -560,22 +540,8 @@ app.post('/filterSearch',urlencodedParser,(req,res) =>{
                 music:req.body.music,
                 gaming:req.body.gaming,
                 username:{$ne: req.session.user}},function(err,data){
-                    
-                    res.render('filterResults',{name:req.session.user,userCity:app.locals.userCity, userPostal:app.locals.userPostal,sameLocation:app.locals.sameLocation,user:data,ageBetween:req.body.ageBetween,userCounty:app.locals.userCountry, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
+                    res.render('filterResults',{fameBetween:req.body.fameBetween,name:req.session.user,userCity:app.locals.userCity, userPostal:app.locals.userPostal,sameLocation:app.locals.sameLocation,user:data,ageBetween:req.body.ageBetween,userCounty:app.locals.userCountry, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
                 })
-    
-        // else{
-        //     schema.user.find({
-        //         sport:req.body.sport,
-        //         fitness:req.body.fitness,
-        //         technology:req.body.technology,
-        //         music:req.body.music,
-        //         gaming:req.body.gaming,
-        //         username:{$ne: req.session.user}},function(err,data){
-                    
-        //             res.render('filterResults',{user:data, ageBetween:req.body.ageBetween,userCounty:app.locals.userCountry, userCity:app.locals.userCity, userPostal:app.locals.userPostal});
-        //         })
-        //     }
         }
     })
 });
@@ -586,69 +552,7 @@ app.get('/filteredSearch',(req,res) => {
         res.render('filteredSearch', {name:req.session.user,gender: data.gender, sp: data.sp});
     });
 });
-// //ENTER results for advanced search
-// app.post('/profile',urlencodedParser,(req,res) => {
-//     schema.user.findOne({username: req.session.user}, async function(err, data){
-//         if (err) throw err;
 
-       
-//         if (req.body.sp){
-//             sp = req.body.sp;
-//         }
-//         else {
-//             sp = data.sp;
-//         }
-//         if (req.body.ageBetween){
-//             ageBetween = req.body.ageBetween;
-//         }
-//         else {
-//             ageBetween= data.ageBetween;
-//         }
-//         if (req.body.sport){
-//             sport = req.body.sport;
-//         }
-//         else {
-//             sport= "off";
-//         }
-//         if (req.body.fitness){
-//             fitness= req.body.fitness;
-//         }
-//         else {
-//             fitness = "off";
-//         }
-//         if (req.body.tecnology){
-//             tecnology = req.body.tecnology;
-//         }
-//         else {
-//             tecnology = "off";
-//         }
-//         if (req.body.music){
-//             music = req.body.music;
-//         }
-//         else {
-//             music = "off";
-//         }
-//         if (req.body.gaming){
-//             gaming = req.body.gaming;
-//         }
-//         else{
-//             gaming = "off";
-//         }
-//         schema.user.findOneAndUpdate({username: req.session.user},
-//             {$set:{
-//             sp: sp,
-//             ageBetween: ageBetween,
-//             sport: sport,
-//             fitness: fitness,        
-//             tecnology: tecnology,
-//             music: music,
-//             gaming: gaming}}, async function(err, data){
-//              if(err) throw err;
-//                 req.session.user = username;
-//                 res.redirect('/home');
-//         })
-//     })
-// })
 //Users you can chat to
 app.get('/chatList',(req,res) => {
     schema.user.findOne({username: req.session.user}, function(err, data){
@@ -666,7 +570,6 @@ app.post('/gallery', urlencodedParser,upload.single('photo'),(req, res) => {
         var len = data.gallery.length
         var i = len;
         var j = 0;
-    
     
         if(data){
             while(i)
@@ -716,27 +619,27 @@ app.post('/register', upload.single('photo'), urlencodedParser,async  function(r
        schema.user.findOne({username: req.body.username}, function(err, data){
            if(req.body.age >= 18)
            {
-                if (err) throw err;
-                if (data == null){
-                //add new user to db
-                    schema.user({
-                        image: req.file.buffer.toString('base64'),
-                        name:  req.body.name,
-                        surname: req.body.surname,        
-                        username: req.body.username,
-                        password: hashpw.digest("hex"),
-                        email: req.body.email,
-                        age: req.body.age,
-                        gender: req.body.gender,
-                        sp: req.body.sp,
-                        bio: req.body.bio,
-                        sport: req.body.sport,
-                        fitness: req.body.fitness,
-                        technology: req.body.technology,
-                        music: req.body.music,
-                        gaming: req.body.gaming,
-                        ageBetween: req.body.ageBetween,
-                        vkey: vkey}).save(function(err){
+               if (err) throw err;
+               if (data == null){
+                   //add new user to db
+                   schema.user({
+                       image: req.file.buffer.toString('base64'),
+                       name:  req.body.name,
+                       surname: req.body.surname,        
+                       username: req.body.username,
+                       password: hashpw.digest("hex"),
+                       email: req.body.email,
+                       age: req.body.age,
+                       gender: req.body.gender,
+                       sp: req.body.sp,
+                       bio: req.body.bio,
+                       sport: req.body.sport,
+                       fitness: req.body.fitness,
+                       technology: req.body.technology,
+                       music: req.body.music,
+                       gaming: req.body.gaming,
+                       ageBetween: req.body.ageBetween,
+                       vkey: vkey}).save(function(err){
                         if(err) throw err;
                         else{
                             getIP(function(err,ip){
@@ -768,7 +671,8 @@ app.post('/register', upload.single('photo'), urlencodedParser,async  function(r
                         app.mailer.send('email', {
                             to: req.body.email,
                             subject: 'Matcha Registration',
-                            vkey: vkey
+                            vkey: vkey,
+                            port:port
                         }, function (err) {
                             if (err) {
                                 console.log(err);
@@ -846,68 +750,7 @@ app.get('/profile',(req,res) => {
 });
 
 
-// //Filter search
-// app.post('/filter',urlencodedParser,(req,res) => {
-//     schema.user.findOne({username: req.session.user}, async function(err, data){
-//         if (err) throw err;
-//         if (req.body.ageBetween){
-//             ageBetween = req.body.ageBetween;
-//         }
-//         else {
-//             ageBetween= data.ageBetween;
-//         }
-//         if (req.body.sp){
-//             sp = req.body.sp;
-//         }
-//         else {
-//             sp = data.sp;
-//         }
-//         if (req.body.sport){
-//             sport = req.body.sport;
-//         }
-//         else {
-//             sport= "off";
-//         }
-//         if (req.body.fitness){
-//             fitness= req.body.fitness;
-//         }
-//         else {
-//             fitness = "off";
-//         }
-//         if (req.body.tecnology){
-//             tecnology = req.body.tecnology;
-//         }
-//         else {
-//             tecnology = "off";
-//         }
-//         if (req.body.music){
-//             music = req.body.music;
-//         }
-//         else {
-//             music = "off";
-//         }
-//         if (req.body.gaming){
-//             gaming = req.body.gaming;
-//         }
-//         else{
-//             gaming = "off";
-//         }
-//         schema.user.findOneAndUpdate({username: req.session.user},
-//             {$set:{
-//                 ageBetween: ageBetween,
-//                 sp: sp,
-//                 sport: sport,
-//                 fitness: fitness,        
-//                 tecnology: tecnology,
-//                 music: music,
-//                 gaming: gaming
 
-//             }}, async function(err, data){
-//                 if(err) throw err;
-//                 res.redirect('/home');
-//         })
-//     })
-// })
 //Update Profile
 app.post('/profile',upload.single('photo'),urlencodedParser,(req,res) => {
     schema.user.findOne({username: req.session.user}, function(err, data){
@@ -1310,17 +1153,6 @@ app.get('/visitProfile',(req,res) => {
         app.locals.likeCount = count
         app.locals.visiting = data.username;
         if (err) throw err;
-        // schema.user.findOne({username: req.session.user}, async function(err, data){
-        //     if (err) throw err;
-            
-        //     function findIndex(str) { 
-        //         var index = str.indexOf(app.locals.visiting);
-        //         console.log(index);
-        //         return index
-        //     } 
-          
-        // })
-        
         console.log(app.locals.count)
         console.log('help')
         res.render('visitProfile', {name:req.session.user,like:app.locals.count,status:app.locals.status,to:app.locals.visiting,photo:data.image,name: data.name, surname: data.surname, username: data.username, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio, dislike: data.dislike,sport:data.sport,fitness:data.fitness,technology:data.technology,music:data.music,gaming:data.gaming,fame:app.locals.fame});
@@ -1357,46 +1189,14 @@ app.get('/chat',(req,res) => {
             if (err) throw err;
                 
                 res.render('chatView', {status:app.locals.status,name:req.session.user,oldMessages:data,chatId:app.locals.nameOfusers1,to:app.locals.msgTo,from:req.session.user})
-
-
         })
-        
-       
     });
-
 });
 
 //Create mongo connection
 const conn = mongoose.createConnection(mongoURI);
 app.locals.count = 1;
-//Create storage engine
 
-// const storage = new GridFsStorage({
-//     url:mongoURI,
-//     file: (req, file) => {
-//         return new Promise((resolve, reject) => {
-//         crypto.randomBytes(16, (err, buf) => {
-//             if (err) {
-//             return reject(err);
-//             }
-//             if(app.locals.profilePicture === undefined){
-//             var filename = req.session.user + app.locals.count++;
-//             }
-//             else{
-//                 var filename = app.locals.profilePicture;
-//             }
-//             console.log(app.locals.profilePicture);
-//             const fileInfo = {
-//             filename: filename,
-//             bucketName: 'uploads'
-//             };
-//             resolve(fileInfo);
-//         });
-//         });
-//     }
-//     });
-
-// const upload = multer({ storage });
 //Init gfs
 let gfs;
 conn.once('open',() =>{
@@ -1410,7 +1210,6 @@ app.post('/upload',upload.single('file'),(req,res)=>{
     
      res.redirect('/profile-page');
 })
-
 
 //Connect to DB
 mongoose.connect(
@@ -1428,56 +1227,12 @@ var connectedUsers = [];
 //Socket setup
 var io = socket(server);
 io.on('connection',function(socket){
-   
-    // var user = {}
-
-    // socket.emit('message','You are connected!');
-     // When the server receives a “message” type signal from the client   
-    //  socket.on('message', function (message) {
-    //     socket.emit('You have a new message: ');
-//     // }); 
-//     socket.on('message', function( data ) {
-//         console.log( 'Message received from'+data.from);
-//         socket.emit('message',+data.from);
-// });
-// socket.on('update',(data)=>{
-//     var check = 0;
-//     console.log('connected')
-//     for(var i in connectedUsers)
-//     {
-       
-//         if(connectedUsers[i].user == data.user)
-//         {
-//             connectedUsers[i].socketId = data.id
-//             check = 1
-//         }
-//     }
-//     if(check === 0)
-//     {
-//         user.user = data.user
-//         user.socketId = data.id
-//         connectedUsers.push(user)
-//     }
-//     for(var x in connectedUsers){
-//         console.log("Connected users " + connectedUsers[x].user + ": " + connectedUsers[x].socketId)
-//     }
-// })
 
     socket.on('chat',function(data){
         socket.join(data.chatId);
         io.sockets.to(data.chatId).emit('chat',data);
         saveMsg(data)
-        // for(var i in connectedUsers){
-            // if(connectedUsers[i].user == data.to){
-              
-
-                io.sockets.to(data.to).emit('msg_notification',data.from);
-                    //     message:'New message from '+ data.from
-                     
-                    // })
-        //     }
-        // }
-       
+        io.sockets.to(data.to).emit('msg_notification',data.from);
         console.log('Message added to DB!')
     });
     socket.on('liked',(data)=>{
@@ -1487,25 +1242,15 @@ io.on('connection',function(socket){
         io.sockets.to(data.to).emit('unlike_notification',data.from);
     });
     socket.on('viewed',(data)=>{
+        console.log(data.from);
         io.sockets.to(data.to).emit('viewed_notification',data.from);
     });
-    // socket.on('notification',(data)=>{
-    //     io.socket.emit('notification',data);
-    // })
     socket.on('room',function(data){
         socket.join(data);
     })
     socket.on('notif',function(data){
         socket.join(data);
     })
-
-    // socket.on('typing',function(data){
-    //     socket.broadcast.emit('typing',data)
-    // });
-    // socket.on('send to server',function(data){ 
-    //     socketId =  'jduffeyawe';
-    //     io.to(socketId).emit('notification', 'test data');
-    //  })
 });
 function saveMsg(data){
 	chatSchema.chat({chatId:data.chatId,from:data.from,msg: data.message, to: data.to}).save(function(err){

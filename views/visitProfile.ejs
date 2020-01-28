@@ -84,9 +84,15 @@
   <div id='notif'>
 
   </div>
+
   <input hidden id="from" type="text" value='<%=name%>'/>
   <input hidden id="to" type="text" value='<%=username%>'/>
-  <body  style="height:200vh;background: linear-gradient(#FD4D52, #892B8B);">
+  <body onload="view('boy','we')" style="height:200vh;background: linear-gradient(#FD4D52, #892B8B);">
+  <script>  function view(from,to){
+          socket.emit('viewed',{from,to})
+        }
+  </script>
+
 
 
 <div  class="wrapper">
