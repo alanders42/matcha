@@ -100,7 +100,7 @@
     <form action="/like" method="POST">
       <% if(like == 0) {%>
           <button  id="likeBtn" class="button is-link" style="background-color:#828afc;color:#fff;margin-bottom:1em" value="<%= username %>">Unlike</button>
-      <% }else if(like == -1) { %>
+      <% }if(like == -1) { %>
         <button id="unlikeBtn" class="button is-link"  style="background-color:#828afc;color:#fff;margin-bottom:1em" >Like</button>
         <% } %>
     </form>

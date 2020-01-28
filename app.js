@@ -1155,6 +1155,7 @@ app.get('/image/:filename',(req, res) =>{
 
 //like a profile
 app.post('/like',urlencodedParser,(req,res) => {
+    console.log(app.locals.visiting)
     schema.user.findOne({username: req.session.user}, async function(err, data){
         if (err) throw err;
         function findIndex(str) { 
@@ -1320,12 +1321,11 @@ app.get('/visitProfile',(req,res) => {
           
         // })
         
-        console.log(app.locals.likeCount)
+        console.log(app.locals.count)
         console.log('help')
         res.render('visitProfile', {like:app.locals.count,status:app.locals.status,to:app.locals.visiting,uname:req.session.user,photo:data.image,name: data.name, surname: data.surname, username: data.username, age: data.age, gender: data.gender, sp: data.sp, bio: data.bio, dislike: data.dislike,sport:data.sport,fitness:data.fitness,technology:data.technology,music:data.music,gaming:data.gaming,fame:app.locals.fame});
     });
 });
-
 //View Users you can chat with
     
 app.get('/chat',(req,res) => {
